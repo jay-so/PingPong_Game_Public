@@ -2,6 +2,7 @@ package org.prography.spring.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -29,4 +30,15 @@ public class UserRoom {
     @NotNull
     @Column(length = 25)
     private TeamStatus teamStatus;
+
+    @Builder
+    private UserRoom(
+            Room roomId,
+            User userId,
+            TeamStatus teamStatus
+    ) {
+        this.roomId = roomId;
+        this.userId = userId;
+        this.teamStatus = teamStatus;
+    }
 }
