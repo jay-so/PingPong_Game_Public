@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.prography.spring.domain.enums.UserStatus;
+import org.prography.spring.util.UserStatusConverter;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +14,7 @@ import static org.prography.spring.domain.enums.UserStatus.*;
 
 @Getter
 @Entity
+@Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
@@ -34,6 +36,7 @@ public class User {
 
     @NotNull
     @Column(length = 25)
+    @Convert(converter = UserStatusConverter.class)
     private UserStatus status = ACTIVE;
 
     @NotNull
