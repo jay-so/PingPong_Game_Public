@@ -2,6 +2,7 @@ package org.prography.spring.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -44,4 +45,21 @@ public class User {
 
     @NotNull
     private LocalDateTime updatedAt;
+
+    @Builder
+    private User(
+            Long fakerId,
+            String name,
+            String email,
+            UserStatus status,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
+        this.fakerId = fakerId;
+        this.name = name;
+        this.email = email;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 }
