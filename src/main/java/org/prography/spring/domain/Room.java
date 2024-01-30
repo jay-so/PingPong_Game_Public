@@ -2,6 +2,7 @@ package org.prography.spring.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -45,4 +46,21 @@ public class Room {
 
     @NotNull
     private LocalDateTime updatedAt;
+
+    @Builder
+    private Room(
+            String title,
+            User host,
+            RoomType roomType,
+            RoomStatus roomStatus,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
+        this.title = title;
+        this.host = host;
+        this.roomType = roomType;
+        this.roomStatus = roomStatus;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 }
