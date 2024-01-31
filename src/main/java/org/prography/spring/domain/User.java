@@ -1,17 +1,15 @@
 package org.prography.spring.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.prography.spring.domain.enums.UserStatus;
 import org.prography.spring.util.UserStatusConverter;
 
 import java.time.LocalDateTime;
-
-import static org.prography.spring.domain.enums.UserStatus.*;
 
 @Getter
 @Entity
@@ -38,7 +36,7 @@ public class User {
     @NotNull
     @Column(length = 25)
     @Convert(converter = UserStatusConverter.class)
-    private UserStatus status = ACTIVE;
+    private UserStatus status;
 
     @NotNull
     private LocalDateTime createdAt;
@@ -51,15 +49,22 @@ public class User {
             Long fakerId,
             String name,
             String email,
-            UserStatus status,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt
+            UserStatus status
     ) {
         this.fakerId = fakerId;
         this.name = name;
         this.email = email;
         this.status = status;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+    }
+
+    @PrePersist
+    public void initCreatedAt() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = this.createdAt;
+    }
+
+    @PreUpdate
+    public void initUpdatedAt() {
+        this.updatedAt = LocalDateTime.now();
     }
 }

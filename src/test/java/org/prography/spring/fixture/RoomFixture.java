@@ -3,7 +3,6 @@ package org.prography.spring.fixture;
 import org.prography.spring.domain.Room;
 import org.prography.spring.domain.User;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -19,8 +18,6 @@ public class RoomFixture {
                 .host(host)
                 .roomType(SINGLE)
                 .roomStatus(WAIT)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .build();
     }
 
@@ -34,8 +31,6 @@ public class RoomFixture {
                             .host(UserFixture.userBuild(i))
                             .roomType(SINGLE)
                             .roomStatus(WAIT)
-                            .createdAt(LocalDateTime.now())
-                            .updatedAt(LocalDateTime.now())
                             .build()
             );
         });

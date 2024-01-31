@@ -2,12 +2,11 @@ package org.prography.spring.fixture;
 
 import org.prography.spring.domain.User;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.prography.spring.domain.enums.UserStatus.WAITING;
+import static org.prography.spring.domain.enums.UserStatus.WAIT;
 
 public class UserFixture {
 
@@ -16,9 +15,7 @@ public class UserFixture {
                 .fakerId(fakerId)
                 .name("testUser")
                 .email("testUser@naver.com")
-                .status(WAITING)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
+                .status(WAIT)
                 .build();
     }
 
@@ -31,9 +28,7 @@ public class UserFixture {
                             .fakerId((long) i)
                             .name(String.format("testUser%d", i))
                             .email(String.format("testUser%d@naver.com)", i))
-                            .status(WAITING)
-                            .createdAt(LocalDateTime.now())
-                            .updatedAt(LocalDateTime.now())
+                            .status(WAIT)
                             .build()
             );
         });
