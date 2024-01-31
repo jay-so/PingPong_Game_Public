@@ -2,7 +2,6 @@ package org.prography.spring.fixture;
 
 import org.prography.spring.domain.User;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -17,8 +16,6 @@ public class UserFixture {
                 .name("testUser")
                 .email("testUser@naver.com")
                 .status(WAIT)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .build();
     }
 
@@ -32,8 +29,6 @@ public class UserFixture {
                             .name(String.format("testUser%d", i))
                             .email(String.format("testUser%d@naver.com)", i))
                             .status(WAIT)
-                            .createdAt(LocalDateTime.now())
-                            .updatedAt(LocalDateTime.now())
                             .build()
             );
         });
