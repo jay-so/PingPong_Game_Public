@@ -1,11 +1,11 @@
 package org.prography.spring.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.prography.spring.domain.enums.RoomStatus;
 import org.prography.spring.domain.enums.RoomType;
 import org.prography.spring.util.RoomStatusConverter;
@@ -52,15 +52,23 @@ public class Room {
             String title,
             User host,
             RoomType roomType,
-            RoomStatus roomStatus,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt
+            RoomStatus roomStatus
     ) {
         this.title = title;
         this.host = host;
         this.roomType = roomType;
         this.roomStatus = roomStatus;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
+
+    @PrePersist
+    public void initCreatedAt() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = this.createdAt;
+    }
+
+    @PreUpdate
+    public void initUpdatedAt() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
 }

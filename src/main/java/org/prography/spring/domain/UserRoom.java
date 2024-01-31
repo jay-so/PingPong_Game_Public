@@ -1,11 +1,11 @@
 package org.prography.spring.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.prography.spring.domain.enums.TeamStatus;
 
 @Getter
