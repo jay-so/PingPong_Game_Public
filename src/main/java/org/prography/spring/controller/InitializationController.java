@@ -24,6 +24,10 @@ public class InitializationController {
             @Valid @RequestBody InitializationRequest initializationRequest
     ) {
         initializationService.init(initializationRequest);
-        return new ApiResponse<>(SUCCESS.getCode(), SUCCESS.getMessage(), null);
+
+        return new ApiResponse<>(
+                SUCCESS.getCode(),
+                SUCCESS.getMessage(),
+                null);
     }
 }
