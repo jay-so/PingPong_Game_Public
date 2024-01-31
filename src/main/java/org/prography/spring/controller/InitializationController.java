@@ -28,6 +28,7 @@ public class InitializationController {
         return new ApiResponse<>(
                 SUCCESS.getCode(),
                 SUCCESS.getMessage(),
-                null);
+                null
+        );
     }
 }

@@ -27,6 +27,7 @@ public class UserController {
         return new ApiResponse<>(
                 SUCCESS.getCode(),
                 SUCCESS.getMessage(),
-                userListResponse);
+                userListResponse
+        );
     }
 }
