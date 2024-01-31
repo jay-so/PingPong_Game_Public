@@ -1,10 +1,17 @@
 package org.prography.spring.common;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public class ApiResponse<T> {
 
-    private Integer code;
+    private final Integer code;
 
-    private String message;
+    private final String message;
 
-    private T result;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private final T result;
 }
