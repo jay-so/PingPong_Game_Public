@@ -17,9 +17,9 @@ class UserRoomTest {
 
     @Test
     @DisplayName("정상적으로 유저가 방을 생성할 수 있다.")
-            void createUserRoomSuccess() {
+    void createUserRoomSuccess() {
         //given
-        User testUser = UserFixture.userBuild(1L);
+        User testUser = UserFixture.userBuild(1);
         Room testRoom = RoomFixture.roomBuild(testUser);
         UserRoom testUserRoom = UserRoomFixture.userRoomBuild(testUser, testRoom);
 

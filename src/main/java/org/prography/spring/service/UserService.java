@@ -29,8 +29,8 @@ public class UserService {
                 .toList();
 
         return UserListResponse.of(
-                users.getTotalElements(),
-                Long.valueOf(users.getTotalPages()),
+                (int) users.getTotalElements(),
+                users.getTotalPages(),
                 userResponses);
     }
 }

@@ -10,7 +10,7 @@ import static org.prography.spring.domain.enums.UserStatus.WAIT;
 
 public class UserFixture {
 
-    public static User userBuild(long fakerId) {
+    public static User userBuild(int fakerId) {
         return User.builder()
                 .fakerId(fakerId)
                 .name("testUser")
@@ -25,7 +25,7 @@ public class UserFixture {
         IntStream.range(0, count).forEach(i -> {
             users.add(
                     User.builder()
-                            .fakerId((long) i)
+                            .fakerId(i)
                             .name(String.format("testUser%d", i))
                             .email(String.format("testUser%d@naver.com)", i))
                             .status(WAIT)
