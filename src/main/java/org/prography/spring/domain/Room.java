@@ -70,5 +70,4 @@ public class Room {
     public void initUpdatedAt() {
         this.updatedAt = LocalDateTime.now();
     }
-
 }
