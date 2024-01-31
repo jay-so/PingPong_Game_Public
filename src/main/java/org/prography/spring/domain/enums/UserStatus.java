@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public enum UserStatus {
 
-    WAITING("대기"),
+    WAIT("대기"),
     ACTIVE("활성"),
     NON_ACTIVE("비활성"),
     ;
