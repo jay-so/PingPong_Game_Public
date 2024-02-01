@@ -82,10 +82,13 @@ public class InitializationService {
     }
 
     private UserStatus userStatusBasedOnFakeId(Integer fakerId) {
-        return switch (fakerId % 30) {
-            case 0 -> ACTIVE;
-            case 1 -> WAIT;
-            default -> NON_ACTIVE;
-        };
+        if (fakerId <= 30) {
+            return ACTIVE;
+        }
+
+        if (fakerId <= 60) {
+            return WAIT;
+        }
+        return NON_ACTIVE;
     }
 }
