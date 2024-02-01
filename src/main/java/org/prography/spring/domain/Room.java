@@ -78,4 +78,8 @@ public class Room {
     public void finishGame() {
         this.roomStatus = FINISH;
     }
+
+    public void exitRoom() {
+        this.roomStatus = FINISH;
+    }
 }

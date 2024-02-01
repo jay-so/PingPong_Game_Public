@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.prography.spring.common.ApiResponse;
 import org.prography.spring.dto.requestDto.AttentionUserRequest;
 import org.prography.spring.dto.requestDto.CreateRoomRequest;
+import org.prography.spring.dto.requestDto.ExitRoomRequest;
 import org.prography.spring.dto.requestDto.StartGameRequest;
 import org.prography.spring.dto.responseDto.RoomDetailResponse;
 import org.prography.spring.dto.responseDto.RoomListResponse;
@@ -80,6 +81,20 @@ public class RoomController {
             @Valid @RequestBody StartGameRequest startGameRequest
     ) {
         roomService.startGameById(roomId, startGameRequest.getUserId());
+
+        return new ApiResponse<>(
+                SUCCESS.getCode(),
+                SUCCESS.getMessage(),
+                null
+        );
+    }
+
+    @PostMapping("/out/{roomId}")
+    public ApiResponse<String> exitRoomById(
+            @PathVariable Long roomId,
+            @Valid @RequestBody ExitRoomRequest exitRoomRequest
+    ) {
+        roomService.exitRoomById(roomId, exitRoomRequest.getUserId());
 
         return new ApiResponse<>(
                 SUCCESS.getCode(),
