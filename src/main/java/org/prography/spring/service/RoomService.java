@@ -51,6 +51,13 @@ public class RoomService {
         RoomType roomType = from(createRoomRequest.getRoomType());
         Room room = createRoomRequest.toEntity(host, roomType);
         roomRepository.save(room);
+
+        UserRoom userRoom = UserRoom.builder()
+                .roomId(room)
+                .userId(host)
+                .teamStatus(RED)
+                .build();
+        userRoomRepository.save(userRoom);
     }
 
     public RoomListResponse findAllRooms(Pageable pageable) {
