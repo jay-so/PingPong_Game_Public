@@ -23,12 +23,17 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
 import static org.prography.spring.common.ApiResponseCode.SEVER_ERROR;
 import static org.prography.spring.domain.enums.RoomStatus.WAIT;
-import static org.prography.spring.domain.enums.RoomType.*;
-import static org.prography.spring.domain.enums.TeamStatus.*;
+import static org.prography.spring.domain.enums.RoomType.SINGLE;
+import static org.prography.spring.domain.enums.RoomType.from;
+import static org.prography.spring.domain.enums.TeamStatus.BLUE;
+import static org.prography.spring.domain.enums.TeamStatus.RED;
 import static org.prography.spring.domain.enums.UserStatus.ACTIVE;
 
 @Service
@@ -91,7 +96,7 @@ public class RoomService {
 
         Room room = roomRepository.findById(roomId).get();
         User user = userRepository.findById(userId).get();
-        TeamStatus teamStatus = initTeamStatus(userRoomRepository.findByRoomId_Id(roomId));
+        TeamStatus teamStatus = initTeamStatus(room, userRoomRepository.findByRoomId_Id(roomId));
 
         UserRoom userRoom = UserRoom.builder()
                 .roomId(room)
@@ -102,12 +107,31 @@ public class RoomService {
         userRoomRepository.save(userRoom);
     }
 
-    private TeamStatus initTeamStatus(List<UserRoom> userCount) {
+    @Transactional
+    public void startGameById(Long roomId, Long userId) {
+        validateRoomIsExist(roomId);
+        validateRoomStatusIsWait(roomId);
+        validateHostOfRoom(roomId, userId);
+        validationRoomIsFull(roomId);
+
+        Room room = roomRepository.findById(roomId).get();
+        room.startGame();
+        roomRepository.save(room);
+
+        ScheduledExecutorService finishGameStatus = Executors.newSingleThreadScheduledExecutor();
+        finishGameStatus.schedule(() -> {
+            room.finishGame();
+            roomRepository.save(room);
+        }, 1, TimeUnit.MINUTES);
+    }
+
+    private TeamStatus initTeamStatus(Room room, List<UserRoom> userCount) {
         long redTeamCount = userCount.stream()
                 .filter(userRoom -> userRoom.getTeamStatus().equals(RED))
                 .count();
 
-        return (redTeamCount < 2) ? RED : BLUE;
+        int maxRedTeamCount = room.getRoomType().equals(SINGLE) ? 1 : 2;
+        return (redTeamCount < maxRedTeamCount) ? RED : BLUE;
     }
 
     public void validateUserStatus(Long userId) {
@@ -163,8 +187,30 @@ public class RoomService {
         Room room = roomRepository.findById(roomId).get();
 
         int maxUserCount = room.getRoomType().equals(SINGLE) ? 2 : 4;
-
         if (userRoomInUser.size() >= maxUserCount) {
+            throw new BussinessException(BAD_REQUEST);
+        }
+    }
+
+    private void validationRoomIsFull(Long roomId) {
+        List<UserRoom> userRoomInUser = userRoomRepository.findByRoomId_Id(roomId);
+        Room room = roomRepository.findById(roomId).get();
+
+        int maxUserCount = room.getRoomType().equals(SINGLE) ? 2 : 4;
+        if (userRoomInUser.size() < maxUserCount) {
+            throw new BussinessException(BAD_REQUEST);
+        }
+    }
+
+    private void validateHostOfRoom(Long roomId, Long userId) {
+        Optional<Room> checkHostOfRoom = roomRepository.findById(roomId);
+
+        if (!checkHostOfRoom.isPresent()) {
+            throw new BussinessException(BAD_REQUEST);
+        }
+
+        Room room = checkHostOfRoom.get();
+        if (!room.getHost().getId().equals(userId)) {
             throw new BussinessException(BAD_REQUEST);
         }
     }
