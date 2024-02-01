@@ -8,6 +8,7 @@ import org.prography.spring.domain.User;
 import org.prography.spring.domain.UserRoom;
 import org.prography.spring.domain.enums.RoomType;
 import org.prography.spring.dto.requestDto.CreateRoomRequest;
+import org.prography.spring.dto.responseDto.RoomDetailResponse;
 import org.prography.spring.dto.responseDto.RoomListResponse;
 import org.prography.spring.dto.responseDto.RoomResponse;
 import org.prography.spring.repository.RoomRepository;
@@ -61,6 +62,13 @@ public class RoomService {
                 (int) rooms.getTotalElements(),
                 rooms.getTotalPages(),
                 roomResponses);
+    }
+
+    public RoomDetailResponse findRoomById(Integer roomId) {
+        Room room = roomRepository.findById(Long.valueOf(roomId))
+                .orElseThrow(() -> new BussinessException(BAD_REQUEST));
+
+        return RoomDetailResponse.of(room);
     }
 
     public void validateUserStatus(Integer userId) {

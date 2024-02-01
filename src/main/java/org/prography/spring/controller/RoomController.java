@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.prography.spring.common.ApiResponse;
 import org.prography.spring.dto.requestDto.CreateRoomRequest;
+import org.prography.spring.dto.responseDto.RoomDetailResponse;
 import org.prography.spring.dto.responseDto.RoomListResponse;
 import org.prography.spring.service.RoomService;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +42,19 @@ public class RoomController {
                 SUCCESS.getCode(),
                 SUCCESS.getMessage(),
                 roomListResponse
+        );
+    }
+
+    @GetMapping("/{roomId}")
+    public ApiResponse<RoomDetailResponse> findRoomById(
+            @PathVariable Integer roomId
+    ) {
+        RoomDetailResponse roomDetailResponse = roomService.findRoomById(roomId);
+
+        return new ApiResponse<>(
+                SUCCESS.getCode(),
+                SUCCESS.getMessage(),
+                roomDetailResponse
         );
     }
 }
