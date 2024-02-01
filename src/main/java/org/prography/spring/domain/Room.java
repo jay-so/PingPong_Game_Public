@@ -11,6 +11,8 @@ import org.prography.spring.domain.enums.RoomType;
 
 import java.time.LocalDateTime;
 
+import static org.prography.spring.domain.enums.RoomStatus.*;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,7 +28,7 @@ public class Room {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "users_id")
+    @JoinColumn(name = "host")
     private User host;
 
     @NotNull
@@ -67,5 +69,13 @@ public class Room {
     @PreUpdate
     public void initUpdatedAt() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public void startGame() {
+        this.roomStatus = PROGRESS;
+    }
+
+    public void finishGame() {
+        this.roomStatus = FINISH;
     }
 }

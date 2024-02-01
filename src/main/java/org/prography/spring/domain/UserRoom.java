@@ -30,6 +30,7 @@ public class UserRoom {
     @NotNull
     @Column(length = 25)
     @Enumerated(EnumType.STRING)
+    @JoinColumn(name = "team")
     private TeamStatus teamStatus;
 
     @Builder
