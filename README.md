@@ -273,7 +273,7 @@ GET /room?size={size}&page={page}
   "code" : 200,
   "message" : "API 요청이 성공했습니다.",
   "result" : {
-		"totelElements" : int,
+		"totalElements" : int,
 		"totalPages" : int,
 		"roomList" : [
 			{
