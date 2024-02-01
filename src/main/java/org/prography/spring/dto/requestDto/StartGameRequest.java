@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor(staticName = "from")
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
-public class AttentionUserRequest {
+public class StartGameRequest {
 
     @NotNull(message = "유저 아이디(userId)는 필수입니다.")
     private Long userId;
