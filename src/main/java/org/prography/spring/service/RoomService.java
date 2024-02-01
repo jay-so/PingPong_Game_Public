@@ -76,7 +76,7 @@ public class RoomService {
     }
 
     public RoomDetailResponse findRoomById(Long roomId) {
-        Room room = roomRepository.findById(Long.valueOf(roomId))
+        Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new BussinessException(BAD_REQUEST));
 
         return RoomDetailResponse.of(room);

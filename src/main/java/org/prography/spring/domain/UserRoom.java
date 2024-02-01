@@ -29,6 +29,7 @@ public class UserRoom {
 
     @NotNull
     @Column(length = 25)
+    @Enumerated(EnumType.STRING)
     private TeamStatus teamStatus;
 
     @Builder
