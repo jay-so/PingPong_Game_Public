@@ -12,7 +12,6 @@ public enum ApiResponseCode implements ResponseCode {
     SEVER_ERROR(500, "에러가 발생했습니다."),
     ;
 
-
     private final Integer code;
     private final String message;
 }
