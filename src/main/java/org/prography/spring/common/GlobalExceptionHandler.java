@@ -31,4 +31,16 @@ public class GlobalExceptionHandler {
     public ApiResponse handleBadRequest(HttpMessageNotReadableException e) {
         return new ApiResponse<>(BAD_REQUEST.getCode(), BAD_REQUEST.getMessage(), null);
     }
+
+    @ExceptionHandler(BussinessException.class)
+    @ResponseBody
+    public ApiResponse hadleBussinessException(BussinessException e) {
+        return new ApiResponse<>(e.getApiResponseCode().getCode(), e.getApiResponseCode().getMessage(), null);
+    }
+
+    @ExceptionHandler(InvalidEnumArgumentException.class)
+    @ResponseBody
+    public ApiResponse handleEnumArgumentException(InvalidEnumArgumentException e) {
+        return new ApiResponse<>(e.getApiResponseCode().getCode(), e.getApiResponseCode().getMessage(), null);
+    }
 }
