@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.prography.spring.domain.enums.TeamStatus;
 
+import static org.prography.spring.domain.enums.TeamStatus.BLUE;
+import static org.prography.spring.domain.enums.TeamStatus.RED;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -42,5 +45,9 @@ public class UserRoom {
         this.roomId = roomId;
         this.userId = userId;
         this.teamStatus = teamStatus;
+    }
+
+    public void changeTeamStatus() {
+        this.teamStatus = this.teamStatus.equals(RED) ? BLUE : RED;
     }
 }
