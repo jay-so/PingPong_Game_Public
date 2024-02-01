@@ -3,13 +3,13 @@ package org.prography.spring.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.prography.spring.common.ApiResponse;
-import org.prography.spring.common.ApiResponseCode;
 import org.prography.spring.dto.requestDto.CreateRoomRequest;
+import org.prography.spring.dto.responseDto.RoomListResponse;
 import org.prography.spring.service.RoomService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.*;
+
+import static org.prography.spring.common.ApiResponseCode.SUCCESS;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,9 +25,22 @@ public class RoomController {
         roomService.createRoom(createRoomRequest);
 
         return new ApiResponse<>(
-                ApiResponseCode.SUCCESS.getCode(),
-                ApiResponseCode.SUCCESS.getMessage(),
+                SUCCESS.getCode(),
+                SUCCESS.getMessage(),
                 null
+        );
+    }
+
+    @GetMapping
+    public ApiResponse<RoomListResponse> findAllRooms(
+            Pageable pageable
+    ) {
+        RoomListResponse roomListResponse = roomService.findAllRooms(pageable);
+
+        return new ApiResponse<>(
+                SUCCESS.getCode(),
+                SUCCESS.getMessage(),
+                roomListResponse
         );
     }
 }
