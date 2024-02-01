@@ -1,5 +1,7 @@
 package org.prography.spring.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.prography.spring.common.ApiResponse;
 import org.prography.spring.dto.responseDto.UserListResponse;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static org.prography.spring.common.ApiResponseCode.SUCCESS;
 
+@Tag(name = "User", description = "유저 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
@@ -18,6 +21,10 @@ public class UserController {
 
     private final UserService userService;
 
+    @Operation(
+            summary = "유저 전체 조회 API",
+            description = "생성된 모든 회원 정보를 가져옵니다."
+    )
     @GetMapping
     public ApiResponse<UserListResponse> findAllUsers(
             Pageable pageable
