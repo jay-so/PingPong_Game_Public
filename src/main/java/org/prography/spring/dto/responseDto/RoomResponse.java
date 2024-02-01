@@ -11,9 +11,9 @@ import org.prography.spring.domain.enums.RoomType;
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class RoomResponse {
 
-    private Integer id;
+    private Long id;
     private String title;
-    private Integer hostId;
+    private Long hostId;
     private RoomType roomType;
 
     public static RoomResponse from(Room room) {

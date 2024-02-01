@@ -14,9 +14,9 @@ public class RoomDetailResponse {
 
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    private Integer id;
+    private Long id;
     private String title;
-    private Integer hostId;
+    private Long hostId;
     private RoomType roomType;
     private RoomStatus roomStatus;
     private String createdAt;

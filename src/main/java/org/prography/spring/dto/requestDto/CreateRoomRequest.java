@@ -18,7 +18,7 @@ import static org.prography.spring.domain.enums.RoomStatus.*;
 public class CreateRoomRequest {
 
     @NotNull(message = "유저 아이디(userId)는 필수입니다.")
-    private Integer userId;
+    private Long userId;
 
     @NotNull(message = "방 유형(roomType)은 필수입니다.")
     private String roomType;

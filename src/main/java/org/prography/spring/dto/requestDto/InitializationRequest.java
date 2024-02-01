@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 public class InitializationRequest {
 
     @NotNull(message = "난수(seed)는 필수입니다.")
-    private Integer seed;
+    private Long seed;
 
     @NotNull(message = "생성할 데이터 수(quantity)는 필수입니다.")
-    private Integer quantity;
+    private Long quantity;
 }

@@ -68,7 +68,7 @@ public class InitializationService {
     }
 
     private User jsonToUser(JSONObject userJson) {
-        Integer fakerId = userJson.getInt("id");
+        Long fakerId = userJson.getLong("id");
         String name = userJson.getString("username");
         String email = userJson.getString("email");
         UserStatus status = userStatusBasedOnFakeId(fakerId);
@@ -81,7 +81,7 @@ public class InitializationService {
                 .build();
     }
 
-    private UserStatus userStatusBasedOnFakeId(Integer fakerId) {
+    private UserStatus userStatusBasedOnFakeId(Long fakerId) {
         if (fakerId <= 30) {
             return ACTIVE;
         }

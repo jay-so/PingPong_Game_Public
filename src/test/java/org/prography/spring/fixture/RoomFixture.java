@@ -28,7 +28,7 @@ public class RoomFixture {
             rooms.add(
                     Room.builder()
                             .title(String.format("testRoom%d", i))
-                            .host(UserFixture.userBuild(i))
+                            .host(UserFixture.userBuild((long) i))
                             .roomType(SINGLE)
                             .roomStatus(WAIT)
                             .build()
