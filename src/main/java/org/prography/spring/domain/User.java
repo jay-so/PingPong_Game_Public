@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.prography.spring.domain.enums.UserStatus;
-import org.prography.spring.util.UserStatusConverter;
 
 import java.time.LocalDateTime;
 
@@ -35,7 +34,7 @@ public class User {
 
     @NotNull
     @Column(length = 25)
-    @Convert(converter = UserStatusConverter.class)
+    @Enumerated(EnumType.STRING)
     private UserStatus status;
 
     @NotNull

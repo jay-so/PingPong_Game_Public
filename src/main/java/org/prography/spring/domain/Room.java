@@ -8,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.prography.spring.domain.enums.RoomStatus;
 import org.prography.spring.domain.enums.RoomType;
-import org.prography.spring.util.RoomStatusConverter;
-import org.prography.spring.util.RoomTypeConverter;
 
 import java.time.LocalDateTime;
 
@@ -33,12 +31,12 @@ public class Room {
 
     @NotNull
     @Column(length = 25)
-    @Convert(converter = RoomTypeConverter.class)
+    @Enumerated(EnumType.STRING)
     private RoomType roomType;
 
     @NotNull
     @Column(length = 25)
-    @Convert(converter = RoomStatusConverter.class)
+    @Enumerated(EnumType.STRING)
     private RoomStatus roomStatus;
 
     @NotNull
