@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.prography.spring.domain.enums.UserStatus;
-import org.prography.spring.util.UserStatusConverter;
 
 import java.time.LocalDateTime;
 
@@ -19,11 +18,11 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @NotNull
     @Column(unique = true)
-    private Long fakerId;
+    private Integer fakerId;
 
     @NotNull
     @Column(length = 255)
@@ -35,7 +34,7 @@ public class User {
 
     @NotNull
     @Column(length = 25)
-    @Convert(converter = UserStatusConverter.class)
+    @Enumerated(EnumType.STRING)
     private UserStatus status;
 
     @NotNull
@@ -46,7 +45,7 @@ public class User {
 
     @Builder
     private User(
-            Long fakerId,
+            Integer fakerId,
             String name,
             String email,
             UserStatus status

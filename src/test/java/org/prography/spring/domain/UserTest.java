@@ -17,7 +17,7 @@ class UserTest {
     @DisplayName("정상적으로 유저를 생성 할 수 있다.")
     void createUserSuccess() {
         //given
-        long expectedFakerId = 1L;
+        int expectedFakerId = 1;
         User testUser = UserFixture.userBuild(expectedFakerId);
 
         //when & then

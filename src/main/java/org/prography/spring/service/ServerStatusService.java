@@ -19,7 +19,7 @@ public class ServerStatusService {
             Status.UP, ApiResponseCode.SUCCESS
     );
 
-    public ApiResponse<String> serverStatusCheck() {
+    public ApiResponse<Void> serverStatusCheck() {
         HealthComponent healthComponent = healthEndpoint.health();
         Status status = healthComponent.getStatus();
 

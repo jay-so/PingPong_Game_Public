@@ -1,9 +1,8 @@
 package org.prography.spring.domain.enums;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.prography.spring.common.InvalidEnumArgumentException;
 
 import java.util.Collections;
 import java.util.Map;
@@ -11,26 +10,39 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
+
 @Getter
 @RequiredArgsConstructor
 public enum RoomStatus {
 
-    WAIT("대기"),
-    PROGRESS("진행중"),
-    FINISH("완료"),
+    WAIT("대기", "WAIT"),
+    PROGRESS("진행중", "PROGRESS"),
+    FINISH("완료", "FINISH"),
     ;
 
-    private static final Map<String, RoomStatus> roomStatusMap = Collections.unmodifiableMap(Stream.of(values())
-            .collect(Collectors.toMap(RoomStatus::getDescription, Function.identity())));
+    private final String krDescription;
+    private final String enDescription;
 
-    @JsonValue
-    private final String description;
+    private static final Map<String, RoomStatus> krDescripionMap =
+            Collections.unmodifiableMap(Stream.of(values())
+                    .collect(Collectors.toMap(RoomStatus::getKrDescription, Function.identity())));
 
-    @JsonCreator
-    public static RoomStatus from(String description) {
-        if (roomStatusMap.containsKey(description)) {
-            return roomStatusMap.get(description);
+    private static final Map<String, RoomStatus> enDescriptionMap =
+            Collections.unmodifiableMap(Stream.of(values())
+                    .collect(Collectors.toMap(RoomStatus::getEnDescription, Function.identity())));
+
+    public static RoomStatus from(String input) {
+        RoomStatus roomStatus = krDescripionMap.get(input);
+
+        if (roomStatus != null) {
+            return roomStatus;
         }
-        throw new IllegalArgumentException("RoomStatus not found");
+
+        roomStatus = enDescriptionMap.get(input);
+        if (roomStatus != null) {
+            return roomStatus;
+        }
+        throw new InvalidEnumArgumentException(BAD_REQUEST);
     }
 }

@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class InitializationRequest {
 
-    @NotNull(message = "난수 입력은 필수입니다.")
+    @NotNull(message = "난수(seed)는 필수입니다.")
     private Integer seed;
 
-    @NotNull(message = "생성할 데이터 수 입력은 필수입니다.")
+    @NotNull(message = "생성할 데이터 수(quantity)는 필수입니다.")
     private Integer quantity;
 }

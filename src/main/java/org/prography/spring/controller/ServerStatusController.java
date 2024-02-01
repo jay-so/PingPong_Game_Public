@@ -15,7 +15,7 @@ public class ServerStatusController {
     private final ServerStatusService serverStatusService;
 
     @GetMapping
-    public ApiResponse serverStatusCheck() {
+    public ApiResponse<Void> serverStatusCheck() {
         return serverStatusService.serverStatusCheck();
     }
 }
