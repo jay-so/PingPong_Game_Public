@@ -87,6 +87,7 @@ public class RoomService {
         return RoomDetailResponse.of(room);
     }
 
+    @Transactional
     public void attentionRoomById(Long roomId, Long userId) {
         validateRoomIsExist(roomId);
         validateRoomStatusIsWait(roomId);
@@ -105,6 +106,30 @@ public class RoomService {
                 .build();
 
         userRoomRepository.save(userRoom);
+    }
+
+    @Transactional
+    public void exitRoomById(Long roomId, Long userId) {
+        validateRoomIsExist(roomId);
+        validateUserIsInRoom(roomId, userId);
+        validateRoomStatusIsWait(roomId);
+
+        Room room = roomRepository.findById(roomId).get();
+
+        if (validateUserIsRoomHost(room, userId)) {
+            hostExitRoom(room);
+        }
+        userExitRoom(userId, roomId);
+    }
+
+    private void hostExitRoom(Room room) {
+        room.exitRoom();
+        roomRepository.save(room);
+        userRoomRepository.deleteByRoomId_Id(room.getId());
+    }
+
+    private void userExitRoom(Long userId, Long roomId) {
+        userRoomRepository.deleteByUserId_IdAndRoomId_Id(userId, roomId);
     }
 
     @Transactional
@@ -213,5 +238,17 @@ public class RoomService {
         if (!room.getHost().getId().equals(userId)) {
             throw new BussinessException(BAD_REQUEST);
         }
+    }
+
+    private void validateUserIsInRoom(Long roomId, Long userId) {
+        Optional<UserRoom> checkUserParticipate = userRoomRepository.findByRoomId_IdAndUserId_Id(roomId, userId);
+
+        if (!checkUserParticipate.isPresent()) {
+            throw new BussinessException(BAD_REQUEST);
+        }
+    }
+
+    private boolean validateUserIsRoomHost(Room room, Long userId) {
+        return room.getHost().getId().equals(userId);
     }
 }
