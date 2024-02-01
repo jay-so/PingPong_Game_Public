@@ -18,11 +18,11 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @NotNull
     @Column(unique = true)
-    private Integer fakerId;
+    private Long fakerId;
 
     @NotNull
     @Column(length = 255)
@@ -45,7 +45,7 @@ public class User {
 
     @Builder
     private User(
-            Integer fakerId,
+            Long fakerId,
             String name,
             String email,
             UserStatus status

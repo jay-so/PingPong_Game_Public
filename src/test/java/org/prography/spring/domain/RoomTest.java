@@ -18,7 +18,7 @@ class RoomTest {
     @DisplayName("정상적으로 방을 생성할 수 있다.")
     void createRoomSuccess() {
         //given
-        User testUser = UserFixture.userBuild(1);
+        User testUser = UserFixture.userBuild(1L);
         Room testRoom = RoomFixture.roomBuild(testUser);
 
         //when & then

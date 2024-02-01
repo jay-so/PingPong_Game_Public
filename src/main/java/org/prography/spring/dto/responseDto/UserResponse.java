@@ -15,8 +15,8 @@ public class UserResponse {
 
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    private Integer id;
-    private Integer fakerId;
+    private Long id;
+    private Long fakerId;
     private String name;
     private String email;
     private UserStatus status;
