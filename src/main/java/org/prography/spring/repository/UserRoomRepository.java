@@ -15,7 +15,7 @@ public interface UserRoomRepository extends JpaRepository<UserRoom, Long> {
 
     Optional<UserRoom> findByUserId_IdAndRoomId_Id(Long userId, Long roomId);
 
-    Optional<Long> countByRoomId_IdAndTeamStatus(Long roomId, TeamStatus changeTeamStatus);
+    Long countByRoomId_IdAndTeamStatus(Long roomId, TeamStatus changeTeamStatus);
 
     Optional<UserRoom> findByRoomId_IdAndUserId_Id(Long roomId, Long userId);
 
