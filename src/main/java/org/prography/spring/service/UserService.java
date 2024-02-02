@@ -2,8 +2,8 @@ package org.prography.spring.service;
 
 import lombok.RequiredArgsConstructor;
 import org.prography.spring.domain.User;
-import org.prography.spring.dto.responseDto.UserListResponse;
-import org.prography.spring.dto.responseDto.UserResponse;
+import org.prography.spring.dto.response.UserListResponse;
+import org.prography.spring.dto.response.UserResponse;
 import org.prography.spring.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
