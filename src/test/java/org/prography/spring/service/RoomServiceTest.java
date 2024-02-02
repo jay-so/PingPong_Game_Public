@@ -10,7 +10,7 @@ import org.prography.spring.domain.Room;
 import org.prography.spring.domain.User;
 import org.prography.spring.domain.UserRoom;
 import org.prography.spring.dto.request.CreateRoomRequest;
-import org.prography.spring.fixture.dto.CreateRoomDtoFixture;
+import org.prography.spring.fixture.dto.RoomDtoFixture;
 import org.prography.spring.repository.RoomRepository;
 import org.prography.spring.repository.UserRepository;
 import org.prography.spring.repository.UserRoomRepository;
@@ -50,7 +50,7 @@ public class RoomServiceTest {
         Room room = mock(Room.class);
         UserRoom userRoom = mock(UserRoom.class);
 
-        CreateRoomRequest createRoomRequest = CreateRoomDtoFixture.createRoomRequest();
+        CreateRoomRequest createRoomRequest = RoomDtoFixture.createRoomRequest();
 
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
         given(roomRepository.save(any(Room.class))).willReturn(room);

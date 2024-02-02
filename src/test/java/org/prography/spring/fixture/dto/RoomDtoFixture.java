@@ -3,7 +3,7 @@ package org.prography.spring.fixture.dto;
 import org.prography.spring.domain.enums.RoomType;
 import org.prography.spring.dto.request.CreateRoomRequest;
 
-public class CreateRoomDtoFixture {
+public class RoomDtoFixture {
 
     public static CreateRoomRequest createRoomRequest(){
         return CreateRoomRequest.builder()

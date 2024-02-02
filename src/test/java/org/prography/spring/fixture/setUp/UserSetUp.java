@@ -32,13 +32,13 @@ public class UserSetUp {
     }
 
     public User save() {
-        final User user = UserFixture.userBuild(1L);
+        User user = UserFixture.userBuild(1L);
 
         return userRepository.save(user);
     }
 
     public List<User> save(final int count) {
-        final List<User> users = UserFixture.usersBuild(count);
+        List<User> users = UserFixture.usersBuild(count);
 
         return userRepository.saveAll(users);
     }
