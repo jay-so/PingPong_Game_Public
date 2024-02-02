@@ -1,18 +1,15 @@
 package org.prography.spring.fixture.dto;
 
+import org.prography.spring.domain.enums.RoomType;
 import org.prography.spring.dto.request.CreateRoomRequest;
 
 public class CreateRoomDtoFixture {
 
-    public static CreateRoomRequest createRoomRequest(
-            final Long userId,
-            final String roomType,
-            final String title
-    ) {
+    public static CreateRoomRequest createRoomRequest(){
         return CreateRoomRequest.builder()
-                .userId(userId)
-                .roomType(roomType)
-                .title(title)
+                .userId(1L)
+                .roomType(String.valueOf(RoomType.SINGLE))
+                .title("테스트 방")
                 .build();
     }
 }

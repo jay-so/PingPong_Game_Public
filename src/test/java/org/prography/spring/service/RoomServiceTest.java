@@ -1,6 +1,5 @@
 package org.prography.spring.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,17 +42,6 @@ public class RoomServiceTest {
     @InjectMocks
     private RoomService roomService;
 
-    private CreateRoomRequest createRoomRequest;
-
-    @BeforeEach
-    void setUp() {
-        createRoomRequest = CreateRoomDtoFixture.createRoomRequest(
-                1L,
-                "SINGLE",
-                "Test Room"
-        );
-    }
-
     @Test
     @DisplayName("방 요청이 정상적으로 처리되면, 방이 생성된다.")
     void create_Room_Success() {
@@ -61,6 +49,8 @@ public class RoomServiceTest {
         User user = mock(User.class);
         Room room = mock(Room.class);
         UserRoom userRoom = mock(UserRoom.class);
+
+        CreateRoomRequest createRoomRequest = CreateRoomDtoFixture.createRoomRequest();
 
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
         given(roomRepository.save(any(Room.class))).willReturn(room);
