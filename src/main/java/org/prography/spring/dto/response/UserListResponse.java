@@ -1,4 +1,4 @@
-package org.prography.spring.dto.responseDto;
+package org.prography.spring.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;

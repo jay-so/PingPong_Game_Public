@@ -8,13 +8,14 @@ import org.prography.spring.domain.User;
 import org.prography.spring.domain.UserRoom;
 import org.prography.spring.domain.enums.RoomType;
 import org.prography.spring.domain.enums.TeamStatus;
-import org.prography.spring.dto.requestDto.CreateRoomRequest;
-import org.prography.spring.dto.responseDto.RoomDetailResponse;
-import org.prography.spring.dto.responseDto.RoomListResponse;
-import org.prography.spring.dto.responseDto.RoomResponse;
+import org.prography.spring.dto.request.CreateRoomRequest;
+import org.prography.spring.dto.response.RoomDetailResponse;
+import org.prography.spring.dto.response.RoomListResponse;
+import org.prography.spring.dto.response.RoomResponse;
 import org.prography.spring.repository.RoomRepository;
 import org.prography.spring.repository.UserRepository;
 import org.prography.spring.repository.UserRoomRepository;
+import org.prography.spring.service.validation.ValidateRoomService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,19 +23,16 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
 import static org.prography.spring.common.ApiResponseCode.SEVER_ERROR;
-import static org.prography.spring.domain.enums.RoomStatus.WAIT;
 import static org.prography.spring.domain.enums.RoomType.SINGLE;
 import static org.prography.spring.domain.enums.RoomType.from;
 import static org.prography.spring.domain.enums.TeamStatus.BLUE;
 import static org.prography.spring.domain.enums.TeamStatus.RED;
-import static org.prography.spring.domain.enums.UserStatus.ACTIVE;
 
 @Service
 @RequiredArgsConstructor
@@ -43,12 +41,13 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
     private final UserRoomRepository userRoomRepository;
+    private final ValidateRoomService validateRoomService;
 
     @Transactional
     public void createRoom(CreateRoomRequest createRoomRequest) {
-        validateUserStatus(createRoomRequest.getUserId());
-        validateUserIsParticipate(createRoomRequest.getUserId());
-        validateUserIsHost(createRoomRequest.getUserId());
+        validateRoomService.validateUserStatusIsActive(createRoomRequest.getUserId());
+        validateRoomService.validateUserIsParticipate(createRoomRequest.getUserId());
+        validateRoomService.validateUserIsHost(createRoomRequest.getUserId());
 
         User host = userRepository.findById(createRoomRequest.getUserId())
                 .orElseThrow(() -> new BussinessException(SEVER_ERROR));
@@ -89,14 +88,18 @@ public class RoomService {
 
     @Transactional
     public void attentionRoomById(Long roomId, Long userId) {
-        validateRoomIsExist(roomId);
-        validateRoomStatusIsWait(roomId);
-        validateUserStatusIsActive(userId);
-        validateUserIsParticipate(userId);
-        validateMaxUserCount(roomId);
+        validateRoomService.validateRoomIsExist(roomId);
+        validateRoomService.validateRoomStatusIsWait(roomId);
+        validateRoomService.validateUserStatusIsActive(userId);
+        validateRoomService.validateUserIsParticipate(userId);
+        validateRoomService.validateMaxUserCount(roomId);
 
-        Room room = roomRepository.findById(roomId).get();
-        User user = userRepository.findById(userId).get();
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new BussinessException(BAD_REQUEST));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BussinessException(BAD_REQUEST));
+
         TeamStatus teamStatus = initTeamStatus(room, userRoomRepository.findByRoomId_Id(roomId));
 
         UserRoom userRoom = UserRoom.builder()
@@ -110,13 +113,13 @@ public class RoomService {
 
     @Transactional
     public void exitRoomById(Long roomId, Long userId) {
-        validateRoomIsExist(roomId);
-        validateUserIsInRoom(roomId, userId);
-        validateRoomStatusIsWait(roomId);
+        validateRoomService.validateRoomIsExist(roomId);
+        validateRoomService.validateUserIsInRoom(roomId, userId);
+        validateRoomService.validateRoomStatusIsWait(roomId);
 
         Room room = roomRepository.findById(roomId).get();
 
-        if (validateUserIsRoomHost(room, userId)) {
+        if (validateRoomService.validateUserIsRoomHost(room, userId)) {
             hostExitRoom(room);
         }
         userExitRoom(userId, roomId);
@@ -134,10 +137,10 @@ public class RoomService {
 
     @Transactional
     public void startGameById(Long roomId, Long userId) {
-        validateRoomIsExist(roomId);
-        validateRoomStatusIsWait(roomId);
-        validateHostOfRoom(roomId, userId);
-        validationRoomIsFull(roomId);
+        validateRoomService.validateRoomIsExist(roomId);
+        validateRoomService.validateRoomStatusIsWait(roomId);
+        validateRoomService.validateHostOfRoom(roomId, userId);
+        validateRoomService.validateRoomIsFull(roomId);
 
         Room room = roomRepository.findById(roomId).get();
         room.startGame();
@@ -157,98 +160,5 @@ public class RoomService {
 
         int maxRedTeamCount = room.getRoomType().equals(SINGLE) ? 1 : 2;
         return (redTeamCount < maxRedTeamCount) ? RED : BLUE;
-    }
-
-    public void validateUserStatus(Long userId) {
-        Optional<User> checkUserStatusIsActive = userRepository.findByIdAndStatus(userId, ACTIVE);
-
-        if (!checkUserStatusIsActive.isPresent()) {
-            throw new BussinessException(BAD_REQUEST);
-        }
-    }
-
-    public void validateUserIsParticipate(Long userId) {
-        Optional<UserRoom> checkUserParticipate = userRoomRepository.findByUserId_Id(userId);
-
-        if (checkUserParticipate.isPresent()) {
-            throw new BussinessException(BAD_REQUEST);
-        }
-    }
-
-    public void validateUserIsHost(Long userId) {
-        Optional<Room> checkUserIsHost = roomRepository.findByHost_Id(userId);
-
-        if (checkUserIsHost.isPresent()) {
-            throw new BussinessException(BAD_REQUEST);
-        }
-    }
-
-    public void validateRoomIsExist(Long roomId) {
-        Optional<Room> checkRoomIsExist = roomRepository.findById(roomId);
-
-        if (!checkRoomIsExist.isPresent()) {
-            throw new BussinessException(BAD_REQUEST);
-        }
-    }
-
-    public void validateRoomStatusIsWait(Long roomId) {
-        Optional<Room> checkRoomStatusIsWait = roomRepository.findByIdAndRoomStatus(roomId, WAIT);
-
-        if (!checkRoomStatusIsWait.isPresent()) {
-            throw new BussinessException(BAD_REQUEST);
-        }
-    }
-
-    public void validateUserStatusIsActive(Long userId) {
-        Optional<User> checkUserStatusIsActive = userRepository.findByIdAndStatus(userId, ACTIVE);
-
-        if (!checkUserStatusIsActive.isPresent()) {
-            throw new BussinessException(BAD_REQUEST);
-        }
-    }
-
-    public void validateMaxUserCount(Long roomId) {
-        List<UserRoom> userRoomInUser = userRoomRepository.findByRoomId_Id(roomId);
-        Room room = roomRepository.findById(roomId).get();
-
-        int maxUserCount = room.getRoomType().equals(SINGLE) ? 2 : 4;
-        if (userRoomInUser.size() >= maxUserCount) {
-            throw new BussinessException(BAD_REQUEST);
-        }
-    }
-
-    private void validationRoomIsFull(Long roomId) {
-        List<UserRoom> userRoomInUser = userRoomRepository.findByRoomId_Id(roomId);
-        Room room = roomRepository.findById(roomId).get();
-
-        int maxUserCount = room.getRoomType().equals(SINGLE) ? 2 : 4;
-        if (userRoomInUser.size() < maxUserCount) {
-            throw new BussinessException(BAD_REQUEST);
-        }
-    }
-
-    private void validateHostOfRoom(Long roomId, Long userId) {
-        Optional<Room> checkHostOfRoom = roomRepository.findById(roomId);
-
-        if (!checkHostOfRoom.isPresent()) {
-            throw new BussinessException(BAD_REQUEST);
-        }
-
-        Room room = checkHostOfRoom.get();
-        if (!room.getHost().getId().equals(userId)) {
-            throw new BussinessException(BAD_REQUEST);
-        }
-    }
-
-    private void validateUserIsInRoom(Long roomId, Long userId) {
-        Optional<UserRoom> checkUserParticipate = userRoomRepository.findByRoomId_IdAndUserId_Id(roomId, userId);
-
-        if (!checkUserParticipate.isPresent()) {
-            throw new BussinessException(BAD_REQUEST);
-        }
-    }
-
-    private boolean validateUserIsRoomHost(Room room, Long userId) {
-        return room.getHost().getId().equals(userId);
     }
 }

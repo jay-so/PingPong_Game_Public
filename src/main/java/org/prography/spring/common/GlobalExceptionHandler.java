@@ -16,31 +16,31 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
-    public ApiResponse handleValidationException(MethodArgumentNotValidException e) {
+    public ApiResponse<Void> handleValidationException(MethodArgumentNotValidException e) {
         return new ApiResponse<>(BAD_REQUEST.getCode(), e.getBindingResult().getAllErrors().get(0).getDefaultMessage(), null);
     }
 
     @ExceptionHandler(RuntimeException.class)
     @ResponseBody
-    public ApiResponse handleServerError(Exception e) {
+    public ApiResponse<Void> handleServerError(Exception e) {
         return new ApiResponse<>(SEVER_ERROR.getCode(), SEVER_ERROR.getMessage(), null);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseBody
-    public ApiResponse handleBadRequest(HttpMessageNotReadableException e) {
+    public ApiResponse<Void> handleBadRequest(HttpMessageNotReadableException e) {
         return new ApiResponse<>(BAD_REQUEST.getCode(), BAD_REQUEST.getMessage(), null);
     }
 
     @ExceptionHandler(BussinessException.class)
     @ResponseBody
-    public ApiResponse hadleBussinessException(BussinessException e) {
+    public ApiResponse<Void> hadleBussinessException(BussinessException e) {
         return new ApiResponse<>(e.getApiResponseCode().getCode(), e.getApiResponseCode().getMessage(), null);
     }
 
     @ExceptionHandler(InvalidEnumArgumentException.class)
     @ResponseBody
-    public ApiResponse handleEnumArgumentException(InvalidEnumArgumentException e) {
+    public ApiResponse<Void> handleEnumArgumentException(InvalidEnumArgumentException e) {
         return new ApiResponse<>(e.getApiResponseCode().getCode(), e.getApiResponseCode().getMessage(), null);
     }
 }

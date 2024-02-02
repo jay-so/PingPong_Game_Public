@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.prography.spring.common.ApiResponse;
-import org.prography.spring.dto.responseDto.UserListResponse;
+import org.prography.spring.dto.response.UserListResponse;
 import org.prography.spring.service.UserService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -31,15 +31,13 @@ public class TeamService {
         validateUserParticipationInRoom(roomId, userId);
         validateChangeTeamStatus(roomId, userId);
 
-        UserRoom userRoom = userRoomRepository.
-                findByUserId_IdAndRoomId_Id(userId, roomId).get();
-        userRoom.changeTeamStatus();
+        Optional<UserRoom> userRoom = userRoomRepository
+                .findByUserId_IdAndRoomId_Id(userId, roomId);
+        userRoom.ifPresent(UserRoom::changeTeamStatus);
     }
 
     private void validateRoomIsExist(Long roomId) {
-        Optional<Room> checkRoomIsExist = roomRepository.findById(roomId);
-
-        if (!checkRoomIsExist.isPresent()) {
+        if (!roomRepository.existsById(roomId)) {
             throw new BussinessException(BAD_REQUEST);
         }
     }
@@ -61,16 +59,17 @@ public class TeamService {
     }
 
     private void validateChangeTeamStatus(Long roomId, Long userId) {
-        Room room = roomRepository.findById(roomId).get();
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new BussinessException(BAD_REQUEST));
 
         int maxTeamStatusChangeCount = room.getRoomType().equals(SINGLE) ? 1 : 2;
         UserRoom userRoom = userRoomRepository.findByUserId_IdAndRoomId_Id(userId, roomId)
                 .orElseThrow(() -> new BussinessException(BAD_REQUEST));
 
         TeamStatus changeTeamStatus = userRoom.getTeamStatus() == RED ? BLUE : RED;
-        Optional<Long> changeTeamMemberCount = userRoomRepository.countByRoomId_IdAndTeamStatus(roomId, changeTeamStatus);
+        Long changeTeamMemberCount = userRoomRepository.countByRoomId_IdAndTeamStatus(roomId, changeTeamStatus);
 
-        if (changeTeamMemberCount.orElse(0L) >= maxTeamStatusChangeCount)
+        if (changeTeamMemberCount >= maxTeamStatusChangeCount)
             throw new BussinessException(BAD_REQUEST);
     }
 }
