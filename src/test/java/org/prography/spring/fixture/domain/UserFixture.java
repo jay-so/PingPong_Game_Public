@@ -1,4 +1,4 @@
-package org.prography.spring.fixture;
+package org.prography.spring.fixture.domain;
 
 import org.prography.spring.domain.User;
 
