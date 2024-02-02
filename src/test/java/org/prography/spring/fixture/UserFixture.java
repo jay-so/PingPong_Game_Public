@@ -25,7 +25,7 @@ public class UserFixture {
         IntStream.range(0, count).forEach(i -> {
             users.add(
                     User.builder()
-                            .fakerId(Long.valueOf(i))
+                            .fakerId((long) i)
                             .name(String.format("testUser%d", i))
                             .email(String.format("testUser%d@naver.com)", i))
                             .status(WAIT)
