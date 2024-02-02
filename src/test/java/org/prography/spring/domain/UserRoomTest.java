@@ -4,9 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.prography.spring.fixture.RoomFixture;
-import org.prography.spring.fixture.UserFixture;
-import org.prography.spring.fixture.UserRoomFixture;
+import org.prography.spring.fixture.domain.RoomFixture;
+import org.prography.spring.fixture.domain.UserFixture;
+import org.prography.spring.fixture.domain.UserRoomFixture;
 
 import java.util.List;
 

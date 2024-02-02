@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true)
     private Long id;
 
     @NotNull
@@ -45,15 +45,22 @@ public class User {
 
     @Builder
     private User(
+            Long id,
             Long fakerId,
             String name,
             String email,
-            UserStatus status
+            UserStatus status,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+
     ) {
+        this.id = id;
         this.fakerId = fakerId;
         this.name = name;
         this.email = email;
         this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     @PrePersist

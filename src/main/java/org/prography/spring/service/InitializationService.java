@@ -53,11 +53,11 @@ public class InitializationService {
                 initializationRequest.getQuantity());
 
         try {
-            HttpResponse<String> faksrApiResponse = httpClient.send(HttpRequest.newBuilder()
+            HttpResponse<String> fakerApiResponse = httpClient.send(HttpRequest.newBuilder()
                     .uri(URI.create(fakerApiUrl))
                     .build(), HttpResponse.BodyHandlers.ofString());
 
-            List<User> userList = convertResponseToUsers(faksrApiResponse.body());
+            List<User> userList = convertResponseToUsers(fakerApiResponse.body());
             userList.sort(Comparator.comparing(User::getFakerId));
 
             return userList;
@@ -88,6 +88,7 @@ public class InitializationService {
         UserStatus status = userStatusBasedOnFakeId(fakerId);
 
         return User.builder()
+                .id(fakerId)
                 .fakerId(fakerId)
                 .name(name)
                 .email(email)
