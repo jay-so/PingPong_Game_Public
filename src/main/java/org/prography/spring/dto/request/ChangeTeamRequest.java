@@ -1,4 +1,4 @@
-package org.prography.spring.dto.requestDto;
+package org.prography.spring.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -7,10 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Schema(description = "게임 시작 요청")
+@Schema(description = "팀 변경 요청")
 @AllArgsConstructor(staticName = "from")
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
-public class StartGameRequest {
+public class ChangeTeamRequest {
 
     @Schema(description = "유저 아이디(userId)")
     @NotNull(message = "유저 아이디(userId)는 필수입니다.")

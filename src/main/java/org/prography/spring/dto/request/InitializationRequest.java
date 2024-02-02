@@ -1,4 +1,4 @@
-package org.prography.spring.dto.requestDto;
+package org.prography.spring.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;

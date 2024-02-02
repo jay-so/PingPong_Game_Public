@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.prography.spring.common.ApiResponse;
-import org.prography.spring.dto.requestDto.InitializationRequest;
+import org.prography.spring.dto.request.InitializationRequest;
 import org.prography.spring.service.InitializationService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

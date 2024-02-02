@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.prography.spring.common.ApiResponse;
-import org.prography.spring.dto.requestDto.ChangeTeamRequest;
+import org.prography.spring.dto.request.ChangeTeamRequest;
 import org.prography.spring.service.TeamService;
 import org.springframework.web.bind.annotation.*;
 
