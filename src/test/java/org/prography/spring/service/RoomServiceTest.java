@@ -11,6 +11,8 @@ import org.prography.spring.domain.User;
 import org.prography.spring.domain.UserRoom;
 import org.prography.spring.dto.request.CreateRoomRequest;
 import org.prography.spring.dto.response.RoomDetailResponse;
+import org.prography.spring.dto.response.RoomListResponse;
+import org.prography.spring.dto.response.RoomResponse;
 import org.prography.spring.fixture.domain.RoomFixture;
 import org.prography.spring.fixture.domain.UserFixture;
 import org.prography.spring.fixture.dto.RoomDtoFixture;
@@ -18,6 +20,9 @@ import org.prography.spring.repository.RoomRepository;
 import org.prography.spring.repository.UserRepository;
 import org.prography.spring.repository.UserRoomRepository;
 import org.prography.spring.service.validation.ValidateRoomService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.Arrays;
 import java.util.List;
@@ -106,5 +111,52 @@ public class RoomServiceTest {
         IntStream.range(0, expectedRoomDetailFields.size())
                 .forEach(i -> assertThat(actualRoomDetailFields.get(i))
                         .isEqualTo(expectedRoomDetailFields.get(i)));
+    }
+
+    @Test
+    @DisplayName("생성된 모든 방에 대해서 조회를 할 수 있다.")
+    void findAll_Room_Success() {
+        // given
+        User host = UserFixture.userBuild(1L);
+        List<Room> rooms = RoomFixture.roomsBuilder(Arrays.asList(host, host));
+
+        int totalElements = rooms.size();
+        int pageSize = 1;
+
+        PageRequest pageRequest = PageRequest.of(0, pageSize);
+        Page<Room> pagedRooms = new PageImpl<>(rooms, pageRequest, totalElements);
+
+        given(roomRepository.findAll(pageRequest)).willReturn(pagedRooms);
+
+        List<RoomResponse> roomResponses = rooms.stream()
+                .map(room -> RoomResponse.builder()
+                        .id(room.getId())
+                        .title(room.getTitle())
+                        .hostId(room.getHost().getId())
+                        .roomType(room.getRoomType())
+                        .build())
+                .toList();
+
+        RoomListResponse expectedRoomListResponse = RoomDtoFixture.roomListResponse(totalElements, pageSize, roomResponses);
+
+        //when
+        RoomListResponse actualRoomListResponse = roomService.findAllRooms(pageRequest);
+
+        // then
+        then(roomRepository).should().findAll(pageRequest);
+        assertThat(actualRoomListResponse.getTotalElements()).isEqualTo(expectedRoomListResponse.getTotalElements());
+        assertThat(actualRoomListResponse.getTotalPages()).isEqualTo(expectedRoomListResponse.getTotalPages());
+        assertThat(actualRoomListResponse.getRooms()).hasSize(expectedRoomListResponse.getRooms().size());
+
+        IntStream.range(0, actualRoomListResponse.getRooms().size())
+                .forEach(i -> {
+                    RoomResponse actualRoomResponse = actualRoomListResponse.getRooms().get(i);
+                    RoomResponse expectedRoomResponse = expectedRoomListResponse.getRooms().get(i);
+
+                    assertThat(actualRoomResponse.getId()).isEqualTo(expectedRoomResponse.getId());
+                    assertThat(actualRoomResponse.getTitle()).isEqualTo(expectedRoomResponse.getTitle());
+                    assertThat(actualRoomResponse.getHostId()).isEqualTo(expectedRoomResponse.getHostId());
+                    assertThat(actualRoomResponse.getRoomType()).isEqualTo(expectedRoomResponse.getRoomType());
+                });
     }
 }
