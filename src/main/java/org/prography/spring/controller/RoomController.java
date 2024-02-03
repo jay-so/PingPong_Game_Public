@@ -85,7 +85,7 @@ public class RoomController {
             @PathVariable Long roomId,
             @Valid @RequestBody AttentionUserRequest attentionUserRequest
     ) {
-        roomService.attentionRoomById(roomId, attentionUserRequest.getUserId());
+        roomService.attentionRoomById(roomId, attentionUserRequest);
 
         return new ApiResponse<>(
                 SUCCESS.getCode(),
@@ -103,7 +103,7 @@ public class RoomController {
             @PathVariable Long roomId,
             @Valid @RequestBody StartGameRequest startGameRequest
     ) {
-        roomService.startGameById(roomId, startGameRequest.getUserId());
+        roomService.startGameById(roomId, startGameRequest);
 
         return new ApiResponse<>(
                 SUCCESS.getCode(),
@@ -121,7 +121,7 @@ public class RoomController {
             @PathVariable Long roomId,
             @Valid @RequestBody ExitRoomRequest exitRoomRequest
     ) {
-        roomService.exitRoomById(roomId, exitRoomRequest.getUserId());
+        roomService.exitRoomById(roomId, exitRoomRequest);
 
         return new ApiResponse<>(
                 SUCCESS.getCode(),

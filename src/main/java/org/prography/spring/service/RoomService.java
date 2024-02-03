@@ -8,7 +8,10 @@ import org.prography.spring.domain.User;
 import org.prography.spring.domain.UserRoom;
 import org.prography.spring.domain.enums.RoomType;
 import org.prography.spring.domain.enums.TeamStatus;
+import org.prography.spring.dto.request.AttentionUserRequest;
 import org.prography.spring.dto.request.CreateRoomRequest;
+import org.prography.spring.dto.request.ExitRoomRequest;
+import org.prography.spring.dto.request.StartGameRequest;
 import org.prography.spring.dto.response.RoomDetailResponse;
 import org.prography.spring.dto.response.RoomListResponse;
 import org.prography.spring.dto.response.RoomResponse;
@@ -87,7 +90,9 @@ public class RoomService {
     }
 
     @Transactional
-    public void attentionRoomById(Long roomId, Long userId) {
+    public void attentionRoomById(Long roomId, AttentionUserRequest attentionUserRequest) {
+        Long userId = attentionUserRequest.getUserId();
+
         validateRoomService.validateRoomIsExist(roomId);
         validateRoomService.validateRoomStatusIsWait(roomId);
         validateRoomService.validateUserStatusIsActive(userId);
@@ -112,7 +117,9 @@ public class RoomService {
     }
 
     @Transactional
-    public void exitRoomById(Long roomId, Long userId) {
+    public void exitRoomById(Long roomId, ExitRoomRequest exitRoomRequest) {
+        Long userId = exitRoomRequest.getUserId();
+
         validateRoomService.validateRoomIsExist(roomId);
         validateRoomService.validateUserIsInRoom(roomId, userId);
         validateRoomService.validateRoomStatusIsWait(roomId);
@@ -136,7 +143,9 @@ public class RoomService {
     }
 
     @Transactional
-    public void startGameById(Long roomId, Long userId) {
+    public void startGameById(Long roomId, StartGameRequest startGameRequest) {
+        Long userId = startGameRequest.getUserId();
+
         validateRoomService.validateRoomIsExist(roomId);
         validateRoomService.validateRoomStatusIsWait(roomId);
         validateRoomService.validateHostOfRoom(roomId, userId);

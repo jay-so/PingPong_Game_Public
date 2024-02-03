@@ -28,7 +28,7 @@ public class TeamController {
             @PathVariable Long roomId,
             @Valid @RequestBody ChangeTeamRequest changeTeamRequest
     ) {
-        teamService.changeTeamById(roomId, changeTeamRequest.getUserId());
+        teamService.changeTeamById(roomId, changeTeamRequest);
 
         return new ApiResponse<>(
                 SUCCESS.getCode(),
