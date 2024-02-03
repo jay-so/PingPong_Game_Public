@@ -52,7 +52,6 @@ public class User {
             UserStatus status,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
-
     ) {
         this.id = id;
         this.fakerId = fakerId;
