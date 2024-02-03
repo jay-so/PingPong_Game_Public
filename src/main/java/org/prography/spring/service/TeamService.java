@@ -6,6 +6,7 @@ import org.prography.spring.common.BussinessException;
 import org.prography.spring.domain.Room;
 import org.prography.spring.domain.UserRoom;
 import org.prography.spring.domain.enums.TeamStatus;
+import org.prography.spring.dto.request.ChangeTeamRequest;
 import org.prography.spring.repository.RoomRepository;
 import org.prography.spring.repository.UserRoomRepository;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,9 @@ public class TeamService {
     private final UserRoomRepository userRoomRepository;
 
     @Transactional
-    public void changeTeamById(Long roomId, Long userId) {
+    public void changeTeamById(Long roomId, ChangeTeamRequest changeTeamRequest) {
+        Long userId = changeTeamRequest.getUserId();
+
         validateRoomIsExist(roomId);
         validateRoomStatusIsWait(roomId);
         validateUserParticipationInRoom(roomId, userId);

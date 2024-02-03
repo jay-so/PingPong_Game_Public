@@ -9,7 +9,7 @@ import org.prography.spring.domain.enums.RoomType;
 
 @Getter
 @Builder
-@Schema(description = "Room 응답")
+@Schema(description = "Room 정보 응답")
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class RoomResponse {
 

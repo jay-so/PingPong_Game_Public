@@ -1,17 +1,15 @@
 package org.prography.spring.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.prography.spring.domain.User;
 import org.prography.spring.dto.response.UserListResponse;
 import org.prography.spring.fixture.domain.UserFixture;
-import org.prography.spring.fixture.setUp.UserSetUp;
 import org.prography.spring.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -23,25 +21,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
 
-    @Autowired
-    private UserSetUp userSetUp;
-
     @InjectMocks
     private UserService userService;
-
-    @BeforeEach
-    void setUp() {
-        // given
-        List<User> userList = userSetUp.setUp();
-
-        given(userRepository.findAll(any(Pageable.class))).willReturn(new PageImpl<>(userList));
-    }
 
     @Test
     @DisplayName("모든 사용자를 조회하면, 사용자 목록이 반환된다.")

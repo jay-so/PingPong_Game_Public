@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 
 @Getter
 @Builder
-@Schema(description = "유저 응답")
+@Schema(description = "유저 정보 응답")
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class UserResponse {
 

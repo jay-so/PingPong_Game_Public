@@ -13,6 +13,5 @@ import lombok.NoArgsConstructor;
 public class StartGameRequest {
 
     @Schema(description = "유저 아이디(userId)")
-    @NotNull(message = "유저 아이디(userId)는 필수입니다.")
     private Long userId;
 }
