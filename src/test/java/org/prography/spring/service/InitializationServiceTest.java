@@ -37,7 +37,7 @@ public class InitializationServiceTest {
     private InitializationService initializationService;
 
     @Test
-    @DisplayName("정상적으로 초기화 API가 호출되면, 기존의 사용자와 방 정보가 삭제되고 fakerApi에서 사용자 정보를 받아온다")
+    @DisplayName("정상적으로 초기화 API가 호출되면, 기존의 사용자와 방 정보가 삭제되고 외부 Api에서 받아온 정보를 저장한다.")
     void init_ValidInitRequest_Success() throws IOException, InterruptedException {
         // given
         InitializationRequest request = InitializationRequest.builder()
