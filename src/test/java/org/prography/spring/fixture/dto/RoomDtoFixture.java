@@ -41,7 +41,7 @@ public class RoomDtoFixture {
     public static RoomListResponse roomListResponse(long totalElements, long pageSize, List<RoomResponse> rooms) {
         long totalPages = totalElements / pageSize;
 
-        if(totalElements % pageSize > 0)
+        if (totalElements % pageSize > 0)
             totalPages++;
 
         List<RoomResponse> roomResponse = rooms.stream()

@@ -158,17 +158,17 @@ public class RoomServiceTest {
 
     @Test
     @DisplayName("유저는 생성된 방에 참가 요청을 보낼 수 있다.")
-    void AttentionUserRequest_Room_Success() {
+    void AttentionRoom_User_Success() {
         //given
         User user = UserFixture.userBuild(1L);
         Room room = RoomFixture.roomBuild(user);
-        AttentionUserRequest request = UserDtoFixture.attentionUserRequestBuild(user.getId());
+        AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(user.getId());
 
         given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
         given(userRepository.findById(user.getId())).willReturn(Optional.of(user));
 
         //when
-        roomService.attentionRoomById(room.getId(),request);
+        roomService.attentionRoomById(room.getId(), attentionUserRequest);
 
         //then
         verify(validateRoomService).validateRoomIsExist(room.getId());

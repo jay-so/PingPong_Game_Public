@@ -4,7 +4,7 @@ import org.prography.spring.dto.request.AttentionUserRequest;
 
 public class UserDtoFixture {
 
-    public static AttentionUserRequest attentionUserRequestBuild(Long userId) {
+    public static AttentionUserRequest attentionUserRequest(Long userId) {
         return AttentionUserRequest.from(userId);
     }
 }
