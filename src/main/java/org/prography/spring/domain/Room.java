@@ -49,15 +49,21 @@ public class Room {
 
     @Builder
     private Room(
+            Long id,
             String title,
             User host,
             RoomType roomType,
-            RoomStatus roomStatus
+            RoomStatus roomStatus,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
     ) {
+        this.id = id;
         this.title = title;
         this.host = host;
         this.roomType = roomType;
         this.roomStatus = roomStatus;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     @PrePersist

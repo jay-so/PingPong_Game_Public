@@ -7,17 +7,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static java.time.LocalDateTime.now;
 import static org.prography.spring.domain.enums.RoomStatus.WAIT;
 import static org.prography.spring.domain.enums.RoomType.SINGLE;
+import static org.prography.spring.fixture.domain.UserFixture.*;
 
 public class RoomFixture {
 
     public static Room roomBuild(User host) {
         return Room.builder()
-                .title("testRoom")
+                .id(1L)
+                .title("테스트 방")
                 .host(host)
                 .roomType(SINGLE)
                 .roomStatus(WAIT)
+                .createdAt(now())
+                .updatedAt(now())
                 .build();
     }
 
@@ -27,10 +32,13 @@ public class RoomFixture {
         IntStream.range(0, users.size()).forEach(i -> {
             rooms.add(
                     Room.builder()
+                            .id((long) i)
                             .title(String.format("testRoom%d", i))
-                            .host(UserFixture.userBuild((long) i))
+                            .host(userBuild((long) i))
                             .roomType(SINGLE)
                             .roomStatus(WAIT)
+                            .createdAt(now())
+                            .updatedAt(now())
                             .build()
             );
         });
