@@ -31,10 +31,9 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class RoomServiceTest {
@@ -58,26 +57,21 @@ public class RoomServiceTest {
     @DisplayName("방 요청이 정상적으로 처리되면, 방이 생성된다.")
     void create_Room_Success() {
         // given
-        User user = mock(User.class);
-        Room room = mock(Room.class);
-        UserRoom userRoom = mock(UserRoom.class);
-
+        User user = UserFixture.userBuild(1L);
         CreateRoomRequest createRoomRequest = RoomDtoFixture.createRoomRequest();
 
-        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
-        given(roomRepository.save(any(Room.class))).willReturn(room);
-        given(userRoomRepository.save(any(UserRoom.class))).willReturn(userRoom);
+        given(userRepository.findById(createRoomRequest.getUserId())).willReturn(Optional.of(user));
 
         // when
         roomService.createRoom(createRoomRequest);
 
         // then
-        then(validateRoomService).should().validateUserStatusIsActive(anyLong());
-        then(validateRoomService).should().validateUserIsParticipate(anyLong());
-        then(validateRoomService).should().validateUserIsHost(anyLong());
-        then(userRepository).should().findById(anyLong());
-        then(roomRepository).should().save(any(Room.class));
-        then(userRoomRepository).should().save(any(UserRoom.class));
+        verify(validateRoomService).validateUserStatusIsActive(createRoomRequest.getUserId());
+        verify(validateRoomService).validateUserIsParticipate(createRoomRequest.getUserId());
+        verify(validateRoomService).validateUserIsHost(createRoomRequest.getUserId());
+        verify(userRepository).findById(createRoomRequest.getUserId());
+        verify(roomRepository).save(any(Room.class));
+        verify(userRoomRepository).save(any(UserRoom.class));
     }
 
     @Test
