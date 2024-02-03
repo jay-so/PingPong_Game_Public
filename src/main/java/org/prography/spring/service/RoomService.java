@@ -128,8 +128,9 @@ public class RoomService {
 
         if (validateRoomService.validateUserIsRoomHost(room, userId)) {
             hostExitRoom(room);
+        } else {
+            userExitRoom(userId, roomId);
         }
-        userExitRoom(userId, roomId);
     }
 
     private void hostExitRoom(Room room) {
