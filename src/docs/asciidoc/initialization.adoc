@@ -1,0 +1,33 @@
+[[resources]]
+== Resources
+
+[[resources-server-status-check]]
+=== initialization(초기화 API)
+
+==== Success
+
+===== HTTP request
+
+include::{snippets}/InitializationControllerTest/initialization_Success/http-request.adoc[]
+
+===== Response fields
+
+include::{snippets}/InitializationControllerTest/initialization_Success/response-fields.adoc[]
+
+===== HTTP response
+
+include::{snippets}/InitializationControllerTest/initialization_Success/http-response.adoc[]
+
+==== Fail
+
+===== HTTP request
+
+include::{snippets}/InitializationControllerTest/initialization_Fail/http-request.adoc[]
+
+===== Response fields
+
+include::{snippets}/InitializationControllerTest/initialization_Fail/response-body.adoc[]
+
+===== HTTP response
+
+include::{snippets}/InitializationControllerTest/initialization_Fail/http-response.adoc[]
