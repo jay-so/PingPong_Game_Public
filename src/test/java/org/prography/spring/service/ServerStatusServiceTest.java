@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.prography.spring.common.ApiResponse;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthEndpoint;
+import org.springframework.boot.actuate.jdbc.DataSourceHealthIndicator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
@@ -16,6 +17,9 @@ import static org.prography.spring.common.ApiResponseCode.SUCCESS;
 
 @ExtendWith(MockitoExtension.class)
 public class ServerStatusServiceTest {
+
+    @Mock
+    private DataSourceHealthIndicator dataSourceHealthIndicator;
 
     @Mock
     private HealthEndpoint healthEndpoint;
@@ -29,6 +33,7 @@ public class ServerStatusServiceTest {
         // given
         Health health = Health.up().build();
         given(healthEndpoint.health()).willReturn(health);
+        given(dataSourceHealthIndicator.health()).willReturn(health);
 
         // when
         ApiResponse<Void> response = serverStatusService.serverStatusCheck();
