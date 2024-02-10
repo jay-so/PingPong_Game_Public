@@ -12,6 +12,7 @@ import org.prography.spring.domain.UserRoom;
 import org.prography.spring.dto.request.AttentionUserRequest;
 import org.prography.spring.dto.request.CreateRoomRequest;
 import org.prography.spring.dto.request.ExitRoomRequest;
+import org.prography.spring.dto.request.StartGameRequest;
 import org.prography.spring.dto.response.RoomDetailResponse;
 import org.prography.spring.dto.response.RoomListResponse;
 import org.prography.spring.dto.response.RoomResponse;
@@ -27,6 +28,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -167,6 +169,8 @@ public class RoomServiceTest {
 
         given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
         given(userRepository.findById(user.getId())).willReturn(Optional.of(user));
+        given(userRoomRepository.findByRoomId_Id(room.getId())).willReturn(new ArrayList<>());
+
 
         //when
         roomService.attentionRoomById(room.getId(), attentionUserRequest);
@@ -223,5 +227,26 @@ public class RoomServiceTest {
         verify(validateRoomService).validateUserIsInRoom(room.getId(), user.getId());
         verify(validateRoomService).validateRoomStatusIsWait(room.getId());
         verify(userRoomRepository).deleteByUserId_IdAndRoomId_Id(user.getId(), room.getId());
+    }
+
+    @Test
+    @DisplayName("호스트는 게임을 시작할 수 있다.")
+    void StartGame_Host_Success() {
+        //given
+        User user = UserFixture.userBuild(1L);
+        Room room = RoomFixture.roomBuild(user);
+        StartGameRequest gameRequest = UserDtoFixture.startGameRequest(user.getId());
+
+        given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
+
+        //when
+        roomService.startGameById(room.getId(), gameRequest);
+
+        //then
+        verify(validateRoomService).validateRoomIsExist(room.getId());
+        verify(validateRoomService).validateRoomStatusIsWait(room.getId());
+        verify(validateRoomService).validateHostOfRoom(room.getId(), user.getId());
+        verify(validateRoomService).validateRoomIsFull(room.getId());
+        verify(roomRepository).save(room);
     }
 }
