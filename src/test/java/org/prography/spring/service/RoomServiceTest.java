@@ -11,6 +11,7 @@ import org.prography.spring.domain.User;
 import org.prography.spring.domain.UserRoom;
 import org.prography.spring.dto.request.AttentionUserRequest;
 import org.prography.spring.dto.request.CreateRoomRequest;
+import org.prography.spring.dto.request.ExitRoomRequest;
 import org.prography.spring.dto.response.RoomDetailResponse;
 import org.prography.spring.dto.response.RoomListResponse;
 import org.prography.spring.dto.response.RoomResponse;
@@ -179,5 +180,48 @@ public class RoomServiceTest {
         verify(roomRepository).findById(room.getId());
         verify(userRepository).findById(user.getId());
         verify(userRoomRepository).save(any(UserRoom.class));
+    }
+
+    @Test
+    @DisplayName("호스트는 생성된 방에서 나갈 수 있다.")
+    void ExitRoom_Host_Success() {
+        //given
+        User user = UserFixture.userBuild(1L);
+        Room room = RoomFixture.roomBuild(user);
+        ExitRoomRequest exitRoomRequest = UserDtoFixture.exitRoomRequest(user.getId());
+
+        given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
+        given(validateRoomService.validateUserIsRoomHost(room, user.getId())).willReturn(true);
+
+        //when
+        roomService.exitRoomById(room.getId(), exitRoomRequest);
+
+        //then
+        verify(validateRoomService).validateRoomIsExist(room.getId());
+        verify(validateRoomService).validateUserIsInRoom(room.getId(), user.getId());
+        verify(validateRoomService).validateRoomStatusIsWait(room.getId());
+        verify(roomRepository).save(room);
+        verify(userRoomRepository).deleteByRoomId_Id(room.getId());
+    }
+
+    @Test
+    @DisplayName("일반 사용자는 생성된 방에서 나갈 수 있다.")
+    void ExitRoom_User_Success() {
+        //given
+        User user = UserFixture.userBuild(1L);
+        Room room = RoomFixture.roomBuild(user);
+        ExitRoomRequest exitRoomRequest = UserDtoFixture.exitRoomRequest(user.getId());
+
+        given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
+        given(validateRoomService.validateUserIsRoomHost(room, user.getId())).willReturn(false);
+
+        //when
+        roomService.exitRoomById(room.getId(), exitRoomRequest);
+
+        //then
+        verify(validateRoomService).validateRoomIsExist(room.getId());
+        verify(validateRoomService).validateUserIsInRoom(room.getId(), user.getId());
+        verify(validateRoomService).validateRoomStatusIsWait(room.getId());
+        verify(userRoomRepository).deleteByUserId_IdAndRoomId_Id(user.getId(), room.getId());
     }
 }
