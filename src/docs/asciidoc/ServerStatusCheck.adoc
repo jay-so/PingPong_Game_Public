@@ -7,7 +7,7 @@
 == Resources
 
 [[resources-server-status-check]]
-=== Server Status Check(헬스 체크)
+=== Server Status Check(헬스 체크 API)
 
 ==== Success
 
