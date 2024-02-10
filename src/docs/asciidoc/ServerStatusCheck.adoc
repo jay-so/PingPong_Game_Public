@@ -1,0 +1,38 @@
+= API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+
+[[resources]]
+== Resources
+
+[[resources-server-status-check]]
+=== Server Status Check(헬스 체크)
+
+==== Success
+
+===== HTTP request
+
+include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Success/http-request.adoc[]
+
+===== Response fields
+
+include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Success/response-fields.adoc[]
+
+===== HTTP response
+
+include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Success/http-response.adoc[]
+
+==== Fail
+
+===== HTTP request
+
+include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Fail/http-request.adoc[]
+
+===== Response fields
+
+include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Fail/response-fields.adoc[]
+
+===== HTTP response
+
+include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Fail/http-response.adoc[]
