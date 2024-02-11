@@ -1,6 +1,7 @@
 package org.prography.spring.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.prography.spring.common.ApiResponse;
@@ -40,21 +41,27 @@ public class InitializationControllerTest {
     @MockBean
     private InitializationService initializationService;
 
-    @Test
-    @DisplayName("정상적으로 초기화 요청을 처리를 성공하면, 성공 응답이 반환된다")
-    void initialization_Success() throws Exception {
-        // given
-        InitializationRequest initializationRequest = InitializationRequest.builder()
+    private InitializationRequest initializationRequest;
+    private ApiResponse<String> successResponse;
+
+    @BeforeEach
+    void setUp() {
+        initializationRequest = InitializationRequest.builder()
                 .seed(1L)
                 .quantity(10L)
                 .build();
 
-        ApiResponse<String> apiResponse = new ApiResponse<>(
+        successResponse = new ApiResponse<>(
                 SUCCESS.getCode(),
                 SUCCESS.getMessage(),
                 null
         );
+    }
 
+    @Test
+    @DisplayName("정상적으로 초기화 요청을 처리를 성공하면, 성공 응답이 반환된다")
+    void initialization_Success() throws Exception {
+        // given
         doNothing()
                 .when(initializationService)
                 .init(any(InitializationRequest.class));
@@ -86,11 +93,6 @@ public class InitializationControllerTest {
     @DisplayName("초기화 요청이 정상적으로 이루어지지 않으면, 실패 응답이 반환된다")
     void initialization_Fail() throws Exception {
         //given
-        InitializationRequest initializationRequest = InitializationRequest.builder()
-                .seed(1L)
-                .quantity(10L)
-                .build();
-
         doThrow(new BussinessException(SEVER_ERROR))
                 .when(initializationService)
                 .init(any(InitializationRequest.class));

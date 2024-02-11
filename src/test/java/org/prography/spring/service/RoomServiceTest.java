@@ -38,6 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -83,7 +84,9 @@ public class RoomServiceTest {
     @DisplayName("생성된 방에 대해서 상세 조회를 할 수 있다.")
     void findDetail_Room_Success() {
         // given
-        User host = UserFixture.userBuild(1L);
+        User host = mock(User.class);
+        given(host.getId()).willReturn(1L);
+
         Room room = RoomFixture.roomBuild(host);
         RoomDetailResponse expectRoomDetailResponse = RoomDtoFixture.roomDetailResponse();
 
@@ -145,12 +148,12 @@ public class RoomServiceTest {
         then(roomRepository).should().findAll(pageRequest);
         assertThat(actualRoomListResponse.getTotalElements()).isEqualTo(expectedRoomListResponse.getTotalElements());
         assertThat(actualRoomListResponse.getTotalPages()).isEqualTo(expectedRoomListResponse.getTotalPages());
-        assertThat(actualRoomListResponse.getRooms()).hasSize(expectedRoomListResponse.getRooms().size());
+        assertThat(actualRoomListResponse.getRoomList()).hasSize(expectedRoomListResponse.getRoomList().size());
 
-        IntStream.range(0, actualRoomListResponse.getRooms().size())
+        IntStream.range(0, actualRoomListResponse.getRoomList().size())
                 .forEach(i -> {
-                    RoomResponse actualRoomResponse = actualRoomListResponse.getRooms().get(i);
-                    RoomResponse expectedRoomResponse = expectedRoomListResponse.getRooms().get(i);
+                    RoomResponse actualRoomResponse = actualRoomListResponse.getRoomList().get(i);
+                    RoomResponse expectedRoomResponse = expectedRoomListResponse.getRoomList().get(i);
 
                     assertThat(actualRoomResponse.getId()).isEqualTo(expectedRoomResponse.getId());
                     assertThat(actualRoomResponse.getTitle()).isEqualTo(expectedRoomResponse.getTitle());

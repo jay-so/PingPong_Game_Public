@@ -56,7 +56,7 @@ public class RoomDtoFixture {
         return RoomListResponse.builder()
                 .totalElements(totalElements)
                 .totalPages(totalPages)
-                .rooms(roomResponse)
+                .roomList(roomResponse)
                 .build();
     }
 }

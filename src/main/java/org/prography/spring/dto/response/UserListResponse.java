@@ -21,13 +21,13 @@ public class UserListResponse {
     private Long totalPages;
 
     @Schema(description = "유저 리스트(유저 목록)")
-    private List<UserResponse> users;
+    private List<UserResponse> userList;
 
     public static UserListResponse of(Long totalElements, Long totalPages, List<UserResponse> users) {
         return UserListResponse.builder()
                 .totalElements(totalElements)
                 .totalPages(totalPages)
-                .users(users)
+                .userList(users)
                 .build();
     }
 }
