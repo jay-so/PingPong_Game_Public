@@ -13,7 +13,6 @@ public class UserFixture {
 
     public static User userBuild(Long fakerId) {
         return User.builder()
-                .id(fakerId)
                 .fakerId(fakerId)
                 .name("testUser")
                 .email("testUser@naver.com")
@@ -27,13 +26,12 @@ public class UserFixture {
         List<User> users = new ArrayList<>();
 
         IntStream.range(0, count).forEach(i -> {
-
+            long fakerId = System.currentTimeMillis() + i;
             users.add(
                     User.builder()
-                            .id((long) i)
-                            .fakerId((long) i)
+                            .fakerId((fakerId))
                             .name(String.format("testUser%d", i))
-                            .email(String.format("testUser%d@naver.com)", i))
+                            .email(String.format("testUser%d@naver.com", i))
                             .status(WAIT)
                             .createdAt(now())
                             .updatedAt(now())

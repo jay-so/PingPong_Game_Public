@@ -46,6 +46,6 @@ public class UserServiceTest {
         // then
         assertEquals(10, userListResponse.getTotalElements());
         assertEquals(1, userListResponse.getTotalPages());
-        assertEquals(10, userListResponse.getUsers().size());
+        assertEquals(10, userListResponse.getUserList().size());
     }
 }
