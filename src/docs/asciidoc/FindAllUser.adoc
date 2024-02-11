@@ -1,0 +1,35 @@
+[[resources]]
+== Resources
+
+[[resources-user]]
+=== User API
+
+==== Before Initialization (초기화 API 호출 전)
+
+===== HTTP request
+
+include::{snippets}/UserControllerTest/findAllUsers_BeforeInitialization/http-request.adoc[]
+
+===== Response fields
+
+include::{snippets}/UserControllerTest/findAllUsers_BeforeInitialization/response-fields.adoc[]
+
+===== HTTP response
+
+include::{snippets}/UserControllerTest/findAllUsers_BeforeInitialization/http-response.adoc[]
+
+==== After Initialization (초기화 API 호출 후)
+
+===== Success
+
+====== HTTP request
+
+include::{snippets}/UserControllerTest/findAllUsers_AfterInitialization_Success/http-request.adoc[]
+
+====== Response fields
+
+include::{snippets}/UserControllerTest/findAllUsers_AfterInitialization_Success/response-fields.adoc[]
+
+====== HTTP response
+
+include::{snippets}/UserControllerTest/findAllUsers_AfterInitialization_Success/http-response.adoc[]
