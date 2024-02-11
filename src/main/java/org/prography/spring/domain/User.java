@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true)
     private Long id;
 
@@ -45,7 +46,6 @@ public class User {
 
     @Builder
     private User(
-            Long id,
             Long fakerId,
             String name,
             String email,
@@ -53,7 +53,6 @@ public class User {
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
-        this.id = id;
         this.fakerId = fakerId;
         this.name = name;
         this.email = email;

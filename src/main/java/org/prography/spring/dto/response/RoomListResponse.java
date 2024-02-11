@@ -20,13 +20,13 @@ public class RoomListResponse {
     private Long totalPages;
 
     @Schema(description = "방 리스트(방 목록)")
-    private List<RoomResponse> rooms;
+    private List<RoomResponse> roomList;
 
     public static RoomListResponse of(Long totalElements, Long totalPages, List<RoomResponse> rooms) {
         return RoomListResponse.builder()
                 .totalElements(totalElements)
                 .totalPages(totalPages)
-                .rooms(rooms)
+                .roomList(rooms)
                 .build();
     }
 }

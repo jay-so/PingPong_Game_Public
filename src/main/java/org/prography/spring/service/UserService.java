@@ -25,7 +25,7 @@ public class UserService {
         List<UserResponse> userResponses = users.stream()
                 .filter(Objects::nonNull)
                 .map(UserResponse::from)
-                .sorted(Comparator.comparing(UserResponse::getId))
+                .sorted(Comparator.comparing(UserResponse::getFakerId))
                 .toList();
 
         return UserListResponse.of(

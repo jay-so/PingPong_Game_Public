@@ -88,7 +88,6 @@ public class InitializationService {
         UserStatus status = userStatusBasedOnFakeId(fakerId);
 
         return User.builder()
-                .id(fakerId)
                 .fakerId(fakerId)
                 .name(name)
                 .email(email)
