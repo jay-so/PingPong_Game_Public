@@ -8,6 +8,7 @@ import java.util.stream.IntStream;
 
 import static java.time.LocalDateTime.now;
 import static org.prography.spring.domain.enums.UserStatus.ACTIVE;
+import static org.prography.spring.domain.enums.UserStatus.NON_ACTIVE;
 
 public class UserFixture {
 
@@ -17,6 +18,17 @@ public class UserFixture {
                 .name("testUser")
                 .email("testUser@naver.com")
                 .status(ACTIVE)
+                .createdAt(now())
+                .updatedAt(now())
+                .build();
+    }
+
+    public static User notActiveUser(Long fakerId) {
+        return User.builder()
+                .fakerId(fakerId)
+                .name("testUser")
+                .email("testUser@naver.com")
+                .status(NON_ACTIVE)
                 .createdAt(now())
                 .updatedAt(now())
                 .build();
