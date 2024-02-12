@@ -424,7 +424,7 @@ curl -X GET http://localhost:8080/user?size=100&page=0
   "message" : "API 요청이 성공했습니다.",
   "result" : {
 		"totalElements" : 0,
-		"totalPages" : 0,
+		"totalPages" : 1,
 		"userList" : []
 	}
 }
