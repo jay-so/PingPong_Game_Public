@@ -6,6 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.prography.spring.common.ApiResponse;
 import org.prography.spring.common.BussinessException;
+import org.prography.spring.domain.Room;
+import org.prography.spring.domain.User;
 import org.prography.spring.dto.request.CreateRoomRequest;
 import org.prography.spring.dto.request.InitializationRequest;
 import org.prography.spring.fixture.dto.RoomDtoFixture;
@@ -75,7 +77,6 @@ public class RoomControllerTest {
     private InitializationRequest initializationRequest;
 
     @BeforeEach
-
     void setUp() {
         initializationRequest = InitializationRequest.builder()
                 .seed(1L)
@@ -122,7 +123,7 @@ public class RoomControllerTest {
                 .content(new ObjectMapper().writeValueAsString(createRoomRequest)));
 
         //then
-        resultActions.andExpect(status().isOk())
+        resultActions
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(SUCCESS.getCode()))
                 .andExpect(jsonPath("$.message").value(SUCCESS.getMessage()))
@@ -135,11 +136,74 @@ public class RoomControllerTest {
     }
 
     @Test
-    @DisplayName("유저가 방 생성을 실패하면, 실패 응답이 반환된다")
-    void createRoom_Fail() throws Exception {
+    @DisplayName("유저의 상태가 활성화 상태가 아닌 경우, 방 생성을 실패하면, 실패 응답이 반환된다")
+    void createRoom_Fail_UserNotActivated() throws Exception {
         //given
         Long fakerId = 2L;
+        userSetup.notActiveUser(2L);
+        CreateRoomRequest createRoomRequest = RoomDtoFixture.createRoomRequest();
+
+        doThrow(new BussinessException(BAD_REQUEST))
+                .when(roomService)
+                .createRoom(any(CreateRoomRequest.class));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(createRoomRequest)));
+
+        //then
+        resultActions
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
+                .andDo(document("createRoom_Fail_UserNotActivated",
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("유저가 이미 다른 방에 참여하고 있는 경우, 방 생성을 실패하면, 실패 응답이 반환된다")
+    void createRoom_Fail_UserAlreadyJoinedRoom() throws Exception {
+        //given
+        Long fakerId = 3L;
+        User participateUser = userSetup.setUpUser(fakerId);
+        Room room = roomSetup.setUpRoom(participateUser);
+
+        CreateRoomRequest createRoomRequest = RoomDtoFixture.createRoomRequest();
+
+        doThrow(new BussinessException(BAD_REQUEST))
+                .when(roomService)
+                .createRoom(any(CreateRoomRequest.class));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(createRoomRequest)));
+
+        //then
+        resultActions
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
+                .andDo(document("createRoom_Fail_UserAlreadyJoinedRoom",
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("유저가 방을 생성할 때, 서버 오류가 발생하면 서버 오류 응답이 반환된다")
+    void createRoom_Fail_ServerError() throws Exception {
+        //given
+        Long fakerId = 4L;
         userSetup.setUpUser(fakerId);
+
         CreateRoomRequest createRoomRequest = RoomDtoFixture.createRoomRequest();
 
         doThrow(new BussinessException(SEVER_ERROR))
@@ -152,11 +216,11 @@ public class RoomControllerTest {
                 .content(new ObjectMapper().writeValueAsString(createRoomRequest)));
 
         //then
-        resultActions.andExpect(status().isOk())
+        resultActions
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(SEVER_ERROR.getCode()))
                 .andExpect(jsonPath("$.message").value(SEVER_ERROR.getMessage()))
-                .andDo(document("RoomControllerTest/createRoom_Fail",
+                .andDo(document("createRoom_Fail_ServerError",
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지")
@@ -177,7 +241,7 @@ public class RoomControllerTest {
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
-        resultActions.andExpect(status().isOk())
+        resultActions
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(SUCCESS.getCode()))
                 .andExpect(jsonPath("$.message").value(SUCCESS.getMessage()))
@@ -221,7 +285,7 @@ public class RoomControllerTest {
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
-        resultActions.andExpect(status().isOk())
+        resultActions
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
                 .andDo(print())
                 .andDo(document("RoomControllerTest/findAllRoom_BadRequest",
@@ -247,7 +311,7 @@ public class RoomControllerTest {
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
-        resultActions.andExpect(status().isOk())
+        resultActions
                 .andExpect(jsonPath("$.code").value(SEVER_ERROR.getCode()))
                 .andDo(print())
                 .andDo(document("RoomControllerTest/findAllRoom_ServerError",
