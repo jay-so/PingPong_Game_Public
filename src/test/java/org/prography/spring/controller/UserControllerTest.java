@@ -49,7 +49,6 @@ public class UserControllerTest {
     @SpyBean
     private UserService userService;
 
-
     @Test
     @DisplayName("초기화 API 호출 전에는 유저 정보를 전체 조회하면 비어있다.")
     void findAllUsers_BeforeInitialization() throws Exception {
