@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static java.time.LocalDateTime.now;
-import static org.prography.spring.domain.enums.UserStatus.WAIT;
+import static org.prography.spring.domain.enums.UserStatus.ACTIVE;
 
 public class UserFixture {
 
@@ -16,7 +16,7 @@ public class UserFixture {
                 .fakerId(fakerId)
                 .name("testUser")
                 .email("testUser@naver.com")
-                .status(WAIT)
+                .status(ACTIVE)
                 .createdAt(now())
                 .updatedAt(now())
                 .build();
@@ -32,7 +32,7 @@ public class UserFixture {
                             .fakerId((fakerId))
                             .name(String.format("testUser%d", i))
                             .email(String.format("testUser%d@naver.com", i))
-                            .status(WAIT)
+                            .status(ACTIVE)
                             .createdAt(now())
                             .updatedAt(now())
                             .build()

@@ -10,7 +10,6 @@ import java.util.stream.IntStream;
 import static java.time.LocalDateTime.now;
 import static org.prography.spring.domain.enums.RoomStatus.WAIT;
 import static org.prography.spring.domain.enums.RoomType.SINGLE;
-import static org.prography.spring.fixture.domain.UserFixture.*;
 
 public class RoomFixture {
 
@@ -20,7 +19,7 @@ public class RoomFixture {
                 .title("테스트 방")
                 .host(host)
                 .roomType(SINGLE)
-                .roomStatus(WAIT)
+                .status(WAIT)
                 .createdAt(now())
                 .updatedAt(now())
                 .build();
@@ -34,9 +33,9 @@ public class RoomFixture {
                     Room.builder()
                             .id((long) i)
                             .title(String.format("testRoom%d", i))
-                            .host(userBuild((long) i))
+                            .host(users.get(i))
                             .roomType(SINGLE)
-                            .roomStatus(WAIT)
+                            .status(WAIT)
                             .createdAt(now())
                             .updatedAt(now())
                             .build()

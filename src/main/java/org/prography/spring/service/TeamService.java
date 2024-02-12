@@ -46,7 +46,7 @@ public class TeamService {
     }
 
     private void validateRoomStatusIsWait(Long roomId) {
-        Optional<Room> checkRoomStatusIsWait = roomRepository.findByIdAndRoomStatus(roomId, WAIT);
+        Optional<Room> checkRoomStatusIsWait = roomRepository.findByIdAndStatus(roomId, WAIT);
 
         if (!checkRoomStatusIsWait.isPresent()) {
             throw new BussinessException(BAD_REQUEST);

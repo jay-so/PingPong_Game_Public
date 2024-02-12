@@ -25,12 +25,16 @@ public class RoomResponse {
     @Schema(description = "방 유형(roomType)")
     private RoomType roomType;
 
+    @Schema(description = "방 상태(status)")
+    private String status;
+
     public static RoomResponse from(Room room) {
         return RoomResponse.builder()
                 .id(room.getId())
                 .title(room.getTitle())
                 .hostId(room.getHost().getId())
                 .roomType(room.getRoomType())
+                .status(room.getStatus().name())
                 .build();
     }
 }
