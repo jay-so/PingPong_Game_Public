@@ -1,35 +1,79 @@
-[[resources]]
-== Resources
+= 유저 전체 조회 API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
 
-[[resources-user]]
-=== User API
+=== 유저 전체 조회 API
 
-==== Before Initialization (초기화 API 호출 전)
+- 모든 유저 정보를 조회하는 API입니다.
+- id를 기준으로 하여, 오름차순으로 정렬해서 반환합니다.
+- 페이징 처리를 위한 `size` , `page` 값을 파라미터로 받아서 처리합니다.
+- `totalElements` 필드는 모든 페이지의 유저 수를 의미합니다.
+- `totalPages` 필드는 전체 페이지 수를 의미합니다.
+- `totalPages` 필드는 `totalElements` 필드를 `size`로 나눈 값입니다.
+
+=== 초기화 API 호출 전, 유저 전체 조회 시
+
+- 초기화 API 호출 전 프로그램 내 유저 정보가 없으므로, 유저 전체 조회 시 빈 리스트를 반환합니다.
+
+==== `GET /user?size={size}&page={page}`
+
+요청 파라미터:
+
+- page: 페이지 번호
+- size: 한 페이지에 반환될 유저의 개수
 
 ===== HTTP request
 
 include::{snippets}/UserControllerTest/findAllUsers_BeforeInitialization/http-request.adoc[]
 
-===== Response fields
-
-include::{snippets}/UserControllerTest/findAllUsers_BeforeInitialization/response-fields.adoc[]
-
 ===== HTTP response
 
 include::{snippets}/UserControllerTest/findAllUsers_BeforeInitialization/http-response.adoc[]
 
-==== After Initialization (초기화 API 호출 후)
+===== Response fields
 
-===== Success
+include::{snippets}/UserControllerTest/findAllUsers_BeforeInitialization/response-fields.adoc[]
+
+
+=== 초기화 API 호출 후, 유저 전체 조회 시
+
+==== `GET /user?size={size}&page={page}`
+
+요청 파라미터:
+
+- page: 페이지 번호
+- size: 한 페이지에 반환될 유저의 개수
 
 ====== HTTP request
 
 include::{snippets}/UserControllerTest/findAllUsers_AfterInitialization_Success/http-request.adoc[]
 
+===== HTTP response
+
+include::{snippets}/UserControllerTest/findAllUsers_AfterInitialization_Success/http-response.adoc[]
+
 ====== Response fields
 
 include::{snippets}/UserControllerTest/findAllUsers_AfterInitialization_Success/response-fields.adoc[]
 
-====== HTTP response
+=== 유저 전체 조회 실패(서버 에러가 발생한 경우)
 
-include::{snippets}/UserControllerTest/findAllUsers_AfterInitialization_Success/http-response.adoc[]
+==== `GET /user?size={size}&page={page}`
+
+요청 파라미터:
+
+- page: 페이지 번호
+- size: 한 페이지에 반환될 유저의 개수
+
+===== HTTP request
+
+include::{snippets}/UserControllerTest/findAllUsers_fail_ServerError/http-request.adoc[]
+
+===== HTTP response
+
+include::{snippets}/UserControllerTest/findAllUsers_fail_ServerError/http-response.adoc[]
+
+===== Response fields
+
+include::{snippets}/UserControllerTest/findAllUsers_fail_ServerError/response-fields.adoc[]

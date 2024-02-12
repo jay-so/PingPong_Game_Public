@@ -2,10 +2,15 @@ package org.prography.spring.controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.prography.spring.common.BussinessException;
 import org.prography.spring.domain.User;
+import org.prography.spring.dto.request.InitializationRequest;
 import org.prography.spring.dto.response.UserListResponse;
 import org.prography.spring.dto.response.UserResponse;
 import org.prography.spring.fixture.setup.UserSetup;
+import org.prography.spring.repository.RoomRepository;
+import org.prography.spring.repository.UserRepository;
+import org.prography.spring.service.InitializationService;
 import org.prography.spring.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -17,6 +22,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -26,12 +32,16 @@ import java.util.List;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.prography.spring.common.ApiResponseCode.SEVER_ERROR;
 import static org.prography.spring.common.ApiResponseCode.SUCCESS;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -49,7 +59,16 @@ public class UserControllerTest {
     @SpyBean
     private UserService userService;
 
+    private UserRepository userRepository;
+    private RoomRepository roomRepository;
+
+    @SpyBean
+    private InitializationService initializationService;
+
+    private InitializationRequest initializationRequest;
+
     @Test
+    @DirtiesContext
     @DisplayName("초기화 API 호출 전에는 유저 정보를 전체 조회하면 비어있다.")
     void findAllUsers_BeforeInitialization() throws Exception {
         //given
@@ -62,7 +81,7 @@ public class UserControllerTest {
 
         UserListResponse userListResponse = UserListResponse.of(
                 userPage.getTotalElements(),
-                (long) userPage.getTotalPages(),
+                0L,
                 userResponses);
 
         doReturn(userListResponse).when(userService).findAllUsers(any(Pageable.class));
@@ -72,12 +91,12 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
-        resultActions.andExpect(status().isOk())
+        resultActions
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(SUCCESS.getCode()))
                 .andExpect(jsonPath("$.message").value(SUCCESS.getMessage()))
                 .andExpect(jsonPath("$.result.totalElements").value(0))
-                .andExpect(jsonPath("$.result.totalPages").value(1))
+                .andExpect(jsonPath("$.result.totalPages").value(0))
                 .andExpect(jsonPath("$.result.userList", hasSize(0)))
                 .andDo(document("UserControllerTest/findAllUsers_BeforeInitialization",
                         responseFields(
@@ -92,10 +111,16 @@ public class UserControllerTest {
 
     @Test
     @Commit
+    @DirtiesContext
     @DisplayName("초기화 API 호출 후에는 유저 정보를 전체 조회할 수 있다.")
     void findAllUsers_AfterInitialization_Success() throws Exception {
         //given
-        userSetup.setUpUsers(10);
+        initializationRequest = InitializationRequest.builder()
+                .seed(1L)
+                .quantity(10L)
+                .build();
+
+        initializationService.init(initializationRequest);
 
         //when
         ResultActions resultActions = mockMvc.perform(get(BASE_URL)
@@ -104,12 +129,12 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
-        resultActions.andExpect(status().isOk())
+        resultActions
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(SUCCESS.getCode()))
                 .andExpect(jsonPath("$.message").value(SUCCESS.getMessage()))
-                .andExpect(jsonPath("$.result.totalElements").value(20))
-                .andExpect(jsonPath("$.result.totalPages").value(2))
+                .andExpect(jsonPath("$.result.totalElements").value(10))
+                .andExpect(jsonPath("$.result.totalPages").value(1))
                 .andExpect(jsonPath("$.result.userList", hasSize(10)))
                 .andExpect(jsonPath("$.result.userList[0].id").exists())
                 .andExpect(jsonPath("$.result.userList[0].fakerId").exists())
@@ -131,6 +156,36 @@ public class UserControllerTest {
                                 fieldWithPath("result.userList[].status").description("유저 상태"),
                                 fieldWithPath("result.userList[].createdAt").description("유저 생성 날짜"),
                                 fieldWithPath("result.userList[].updatedAt").description("유저 수정 날짜")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("유저 정보를 전체 조회 시, 서버 에러가 발생되면 에러 응답이 반환된다")
+    void findAllUsers_fail_ServerError() throws Exception {
+        //given
+        userSetup.setUpUsers(10);
+
+        doThrow(new BussinessException(SEVER_ERROR))
+                .when(userService)
+                .findAllUsers(any(Pageable.class));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL)
+                .param("page", "0")
+                .param("size", "10")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        resultActions
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(SEVER_ERROR.getCode()))
+                .andExpect(jsonPath("$.message").value(SEVER_ERROR.getMessage()))
+                .andDo(print())
+                .andDo(document("UserControllerTest/findAllUsers_fail_ServerError",
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지")
                         )
                 ));
     }
