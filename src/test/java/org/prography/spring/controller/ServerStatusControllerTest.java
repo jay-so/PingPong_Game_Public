@@ -42,8 +42,16 @@ public class ServerStatusControllerTest {
 
     @BeforeEach
     void setUp() {
-        successResponse = new ApiResponse<>(SUCCESS.getCode(), SUCCESS.getMessage(), null);
-        errorResponse = new ApiResponse<>(SEVER_ERROR.getCode(), SEVER_ERROR.getMessage(), null);
+        successResponse = new ApiResponse<>(
+                SUCCESS.getCode(),
+                SUCCESS.getMessage(),
+                null
+        );
+        errorResponse = new ApiResponse<>(
+                SEVER_ERROR.getCode(),
+                SEVER_ERROR.getMessage(),
+                null
+        );
     }
 
     @Test
