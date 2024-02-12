@@ -7,14 +7,19 @@ import org.junit.jupiter.api.Test;
 import org.prography.spring.common.ApiResponse;
 import org.prography.spring.common.BussinessException;
 import org.prography.spring.dto.request.CreateRoomRequest;
+import org.prography.spring.dto.request.InitializationRequest;
 import org.prography.spring.fixture.dto.RoomDtoFixture;
 import org.prography.spring.fixture.setup.RoomSetup;
 import org.prography.spring.fixture.setup.UserSetup;
+import org.prography.spring.repository.RoomRepository;
+import org.prography.spring.repository.UserRepository;
+import org.prography.spring.service.InitializationService;
 import org.prography.spring.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -52,14 +57,33 @@ public class RoomControllerTest {
     @Autowired
     private RoomSetup roomSetup;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RoomRepository roomRepository;
+
     private ApiResponse<Object> successResponse;
 
     private ApiResponse<Object> errorResponse;
 
     private ApiResponse<Object> ServerErrorResponse;
 
+    @MockBean
+    private InitializationService initializationService;
+
+    private InitializationRequest initializationRequest;
+
     @BeforeEach
+
     void setUp() {
+        initializationRequest = InitializationRequest.builder()
+                .seed(1L)
+                .quantity(10L)
+                .build();
+
+        initializationService.init(initializationRequest);
+
         successResponse = new ApiResponse<>(
                 SUCCESS.getCode(),
                 SUCCESS.getMessage(),
@@ -114,7 +138,7 @@ public class RoomControllerTest {
     @DisplayName("유저가 방 생성을 실패하면, 실패 응답이 반환된다")
     void createRoom_Fail() throws Exception {
         //given
-        Long fakerId = 1L;
+        Long fakerId = 2L;
         userSetup.setUpUser(fakerId);
         CreateRoomRequest createRoomRequest = RoomDtoFixture.createRoomRequest();
 
