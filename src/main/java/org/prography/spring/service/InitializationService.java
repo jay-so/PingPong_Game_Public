@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
 import static org.prography.spring.common.ApiResponseCode.SEVER_ERROR;
 import static org.prography.spring.domain.enums.UserStatus.*;
 
@@ -36,6 +37,10 @@ public class InitializationService {
 
     @Transactional
     public void init(InitializationRequest initializationRequest) {
+        if(!initializationRequest.validateInitializationRequest()){
+            throw new BussinessException(BAD_REQUEST);
+        }
+
         userRepository.deleteAll();
         roomRepository.deleteAll();
 
