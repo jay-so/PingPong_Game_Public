@@ -43,7 +43,7 @@ public class RoomDetailResponse {
                 .title(room.getTitle())
                 .hostId(room.getHost().getId())
                 .roomType(room.getRoomType())
-                .roomStatus(room.getRoomStatus())
+                .roomStatus(room.getStatus())
                 .createdAt(room.getCreatedAt().format(dateTimeFormatter))
                 .updatedAt(room.getUpdatedAt().format(dateTimeFormatter))
                 .build();

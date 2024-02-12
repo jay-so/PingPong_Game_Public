@@ -35,7 +35,7 @@ public class CreateRoomRequest {
                 .title(title)
                 .host(host)
                 .roomType(roomType)
-                .roomStatus(WAIT)
+                .status(WAIT)
                 .build();
     }
 }

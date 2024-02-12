@@ -39,7 +39,7 @@ public class Room {
     @NotNull
     @Column(length = 25)
     @Enumerated(EnumType.STRING)
-    private RoomStatus roomStatus;
+    private RoomStatus status;
 
     @NotNull
     private LocalDateTime createdAt;
@@ -53,7 +53,7 @@ public class Room {
             String title,
             User host,
             RoomType roomType,
-            RoomStatus roomStatus,
+            RoomStatus status,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
@@ -61,7 +61,7 @@ public class Room {
         this.title = title;
         this.host = host;
         this.roomType = roomType;
-        this.roomStatus = roomStatus;
+        this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -78,14 +78,14 @@ public class Room {
     }
 
     public void startGame() {
-        this.roomStatus = PROGRESS;
+        this.status = PROGRESS;
     }
 
     public void finishGame() {
-        this.roomStatus = FINISH;
+        this.status = FINISH;
     }
 
     public void exitRoom() {
-        this.roomStatus = FINISH;
+        this.status = FINISH;
     }
 }

@@ -1,38 +1,40 @@
-= API 문서
+= 헬스 체크 API(서버 상태 체크 API) 문서
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
 
-[[resources]]
-== Resources
+== 헬스 체크 API(서버 상태 체크 API)
+- 서버의 상태를 체크하는 API입니다.
+- 프로그램 내 모든 API 호출 시, 최초 1회 호출됩니다.
 
-[[resources-server-status-check]]
-=== Server Status Check(헬스 체크 API)
+=== 헬스 체크 API 호출 성공 시
 
-==== Success
+==== `GET /health`
 
 ===== HTTP request
 
 include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Success/http-request.adoc[]
 
-===== Response fields
-
-include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Success/response-fields.adoc[]
-
 ===== HTTP response
 
 include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Success/http-response.adoc[]
 
-==== Fail
+===== Response fields
+
+include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Success/response-fields.adoc[]
+
+=== 헬스 체크 API 호출 실패 시
+
+==== `GET /health`
 
 ===== HTTP request
 
 include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Fail/http-request.adoc[]
 
-===== Response fields
-
-include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Fail/response-fields.adoc[]
-
 ===== HTTP response
 
 include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Fail/http-response.adoc[]
+
+===== Response fields
+
+include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Fail/response-fields.adoc[]

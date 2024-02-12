@@ -47,7 +47,7 @@ public class TeamServiceTest {
         ChangeTeamRequest changeTeamRequest = UserDtoFixture.changeTeamRequest(user.getId());
 
         given(roomRepository.existsById(room.getId())).willReturn(true);
-        given(roomRepository.findByIdAndRoomStatus(room.getId(), WAIT)).willReturn(Optional.of(room));
+        given(roomRepository.findByIdAndStatus(room.getId(), WAIT)).willReturn(Optional.of(room));
         given(userRoomRepository.findByUserId_IdAndRoomId_Id(user.getId(), room.getId())).willReturn(Optional.of(userRoom));
         given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
         given(userRoomRepository.countByRoomId_IdAndTeamStatus(room.getId(), BLUE)).willReturn(0L);

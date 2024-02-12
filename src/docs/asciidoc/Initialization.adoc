@@ -1,33 +1,109 @@
-[[resources]]
-== Resources
+= 초기화 API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
 
-[[resources-server-status-check]]
-=== initialization(초기화 API)
+== 초기화 API
 
-==== Success
+- 초기화 API는 기존에 있던 모든 회원 정보 및 방 정보를 삭제하는 API입니다.
+- 해당 API는 프로그램의 모든 테이블의 모든 데이터를 삭제하며, 요청 본문으로 전달받은 `seed` 와 `quantity` 정보를 통해 fakerapi를 호출하여 프로그램에 필요한 회원 정보를 저장합니다.
+
+`POST /init` 요청을 통해 초기화 API를 호출할 수 있습니다.
+
+=== Request Body
+- seed: 초기화 API를 호출할 때 fakerAPI에 전달할 난수 값
+- quantity: 생성할 가짜 데이터 수
+
+[source,json]
+----
+{
+   "seed" : int,
+   "quantity" : int,
+}
+----
+
+
+=== faker API 호출
+
+```bash
+
+https://fakerapi.it/api/v1/users?_seed=%7Bseed%7D&_quantity=%7Bquantity%7D&_locale=ko_KR
+
+```
+
+fakerapi의 응답 결과는 프로그램 내 다음과 같이 데이터를 세팅하는 데 사용됩니다:
+
+* 응답 값의 `id` 필드 = `fakerId` 로 저장
+* 응답 값의 `id` 필드(`fakerId`)를 오름차순으로 정렬하여 데이터를 저장
+* 응답 값의 `name` 필드 = `username` 으로 저장
+* 응답 값의 `email` 필드 = 그대로 저장
+
+회원의 상태(`status`)는 응답 값의 `id`(`fakerId`)를 기반하여 다음의 규칙에 따라 저장됩니다
+
+* 응답 값의 `id`(`fakerId`) 값 ≤ 30 (30이하)
+- 회원 = 활성상태(`ACTIVATE`) 상태로 세팅
+* 31(31 이상) ≤ 응답 값의 `id`(`fakerId`) 값 ≤ 60(60 이하)
+- 회원 상태 = 대기(`WAIT`) 상태로 세팅
+* 61(61 이상)≤ 응답 값의 `id`(`fakerId`) 값
+- 회원 상태 = 비활성(`NON_ACTIVATE`) 상태로 세팅
+* 데이터가 저장되는 시점에 따라 `createdAt` 과 `updatedAt` 을 저장
+
+=== 초기화 API 호출 성공 시
+
+==== `POST /init`
 
 ===== HTTP request
 
 include::{snippets}/InitializationControllerTest/initialization_Success/http-request.adoc[]
 
-===== Response fields
-
-include::{snippets}/InitializationControllerTest/initialization_Success/response-fields.adoc[]
+===== Request fields
+include::{snippets}/InitializationControllerTest/initialization_Success/request-fields.adoc[]
 
 ===== HTTP response
 
 include::{snippets}/InitializationControllerTest/initialization_Success/http-response.adoc[]
 
-==== Fail
+===== Response fields
+include::{snippets}/InitializationControllerTest/initialization_Success/response-fields.adoc[]
+
+=== 초기화 API 호출 실패 시(요청 본문에 seed, quantity의 값이 잘못 입력된 경우)
+- Seed 값은 0보다 큰 정수여야 합니다.
+- Qunaitity 값은 0보다 큰 정수여야 합니다.
+
+
+==== `POST /init`
 
 ===== HTTP request
 
-include::{snippets}/InitializationControllerTest/initialization_Fail/http-request.adoc[]
+include::{snippets}/InitializationControllerTest/initialization_Fail_BadRequest/http-request.adoc[]
 
-===== Response fields
-
-include::{snippets}/InitializationControllerTest/initialization_Fail/response-body.adoc[]
+===== Request fields
+include::{snippets}/InitializationControllerTest/initialization_Fail_BadRequest/request-fields.adoc[]
 
 ===== HTTP response
 
-include::{snippets}/InitializationControllerTest/initialization_Fail/http-response.adoc[]
+include::{snippets}/InitializationControllerTest/initialization_Fail_BadRequest/http-response.adoc[]
+
+===== Response fields
+
+include::{snippets}/InitializationControllerTest/initialization_Fail_BadRequest/response-fields.adoc[]
+
+=== 초기화 API 호출 실패 시(서버 에러 발생 시)
+
+==== `POST /init`
+
+===== HTTP request
+
+include::{snippets}/InitializationControllerTest/initialization_Fail_ServerError/http-request.adoc[]
+
+===== Request fields
+
+include::{snippets}/InitializationControllerTest/initialization_Fail_ServerError/request-fields.adoc[]
+
+===== HTTP response
+
+include::{snippets}/InitializationControllerTest/initialization_Fail_ServerError/http-response.adoc[]
+
+===== Response fields
+
+include::{snippets}/InitializationControllerTest/initialization_Fail_ServerError/response-fields.adoc[]

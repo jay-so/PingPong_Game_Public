@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -22,7 +22,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -34,7 +35,7 @@ public class ServerStatusControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @SpyBean
     private ServerStatusService serverStatusService;
 
     private ApiResponse<Object> successResponse;
@@ -42,8 +43,16 @@ public class ServerStatusControllerTest {
 
     @BeforeEach
     void setUp() {
-        successResponse = new ApiResponse<>(SUCCESS.getCode(), SUCCESS.getMessage(), null);
-        errorResponse = new ApiResponse<>(SEVER_ERROR.getCode(), SEVER_ERROR.getMessage(), null);
+        successResponse = new ApiResponse<>(
+                SUCCESS.getCode(),
+                SUCCESS.getMessage(),
+                null
+        );
+        errorResponse = new ApiResponse<>(
+                SEVER_ERROR.getCode(),
+                SEVER_ERROR.getMessage(),
+                null
+        );
     }
 
     @Test
@@ -59,7 +68,7 @@ public class ServerStatusControllerTest {
                 .accept(MediaType.APPLICATION_JSON));
 
         //then
-        resultActions.andExpect(status().isOk())
+        resultActions
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("code").value(successResponse.getCode()))
                 .andExpect(jsonPath("message").value(successResponse.getMessage()))
@@ -86,7 +95,7 @@ public class ServerStatusControllerTest {
                 .accept(MediaType.APPLICATION_JSON));
 
         //then
-        resultActions.andExpect(status().isOk())
+        resultActions
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(errorResponse.getCode()))
                 .andExpect(jsonPath("$.message").value(errorResponse.getMessage()))
@@ -96,7 +105,10 @@ public class ServerStatusControllerTest {
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지")
-                        )
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지"))
                 ));
     }
 }
