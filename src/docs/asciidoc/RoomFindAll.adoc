@@ -1,0 +1,66 @@
+= 방 전체 조회 API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+
+== 방 전체 조회 API
+
+* 생성된 모든 방에 대해서 조회하는 API입니다.
+* id를 기준으로, 오름차순으로 정렬하여 반환합니다.
+* 페이징 처리를 위한 `size` , `page` 값을 파라미터로 받아서 처리합니다.
+* `totalElements` 필드는 모든 페이지의 유저 수를 의미합니다.
+* `totalPages` 필드는 전체 페이지 수를 의미합니다.
+* `totalPages` 필드는 `totalElements` 필드를 `size`로 나눈 값입니다.
+
+=== 방 전체 조회 API 성공 시
+
+요청 파라미터:
+
+- page: 페이지 번호
+- size: 한 페이지에 반환될 유저의 개수
+
+=== `GET /rooms`
+
+==== HTTP request
+
+include::{snippets}/RoomControllerTest/findAllRoom_Success/http-request.adoc[]
+
+==== Http response
+
+include::{snippets}/RoomControllerTest/findAllRoom_Success/http-response.adoc[]
+
+==== Response fields
+
+include::{snippets}/RoomControllerTest/findAllRoom_Success/response-fields.adoc[]
+
+==== 방 전체 조회 API 실패 시 (잘못된 페이지 및 사이즈 요청 시)
+
+=== `GET /rooms`
+
+==== HTTP request
+
+include::{snippets}/RoomControllerTest/findAllRoom_BadRequest/http-request.adoc[]
+
+=== Http response
+
+include::{snippets}/RoomControllerTest/findAllRoom_BadRequest/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/RoomControllerTest/findAllRoom_BadRequest/response-fields.adoc[]
+
+=== 방 전체 조회 API 실패 시 (서버 에러)
+
+=== `GET /rooms`
+
+==== HTTP request
+
+include::{snippets}/RoomControllerTest/findAllRoom_ServerError/http-request.adoc[]
+
+==== Http response
+
+include::{snippets}/RoomControllerTest/findAllRoom_ServerError/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/RoomControllerTest/findAllRoom_ServerError/response-fields.adoc[]
