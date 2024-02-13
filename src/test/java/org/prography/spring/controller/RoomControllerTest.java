@@ -1,14 +1,19 @@
 package org.prography.spring.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.prography.spring.common.BussinessException;
 import org.prography.spring.domain.Room;
 import org.prography.spring.domain.User;
+import org.prography.spring.domain.UserRoom;
+import org.prography.spring.dto.request.AttentionUserRequest;
 import org.prography.spring.dto.request.CreateRoomRequest;
 import org.prography.spring.fixture.dto.RoomDtoFixture;
+import org.prography.spring.fixture.dto.UserDtoFixture;
 import org.prography.spring.fixture.setup.RoomSetup;
+import org.prography.spring.fixture.setup.UserRoomSetUp;
 import org.prography.spring.fixture.setup.UserSetup;
 import org.prography.spring.repository.RoomRepository;
 import org.prography.spring.repository.UserRepository;
@@ -54,6 +59,9 @@ public class RoomControllerTest {
 
     @Autowired
     private UserSetup userSetup;
+
+    @Autowired
+    private UserRoomSetUp userRoomSetUp;
 
     @Autowired
     private RoomSetup roomSetup;
@@ -219,9 +227,9 @@ public class RoomControllerTest {
                                 fieldWithPath("message").description("응답 메시지"),
                                 fieldWithPath("result.totalElements").description("전체 항목 수"),
                                 fieldWithPath("result.totalPages").description("전체 페이지 수"),
-                                fieldWithPath("result.roomList[].id").description("방 아이디"),
+                                fieldWithPath("result.roomList[].id").description("방 ID"),
                                 fieldWithPath("result.roomList[].title").description("방 제목"),
-                                fieldWithPath("result.roomList[].hostId").description("호스트 아이디"),
+                                fieldWithPath("result.roomList[].hostId").description("호스트 ID"),
                                 fieldWithPath("result.roomList[].roomType").description("방 타입"),
                                 fieldWithPath("result.roomList[].status").description("방 상태")
                         )
@@ -309,14 +317,14 @@ public class RoomControllerTest {
                 .andDo(print())
                 .andDo(document("RoomControllerTest/findRoomDetail_Success",
                         pathParameters(
-                                parameterWithName("roomId").description("방 아이디")
+                                parameterWithName("roomId").description("방 ID")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지"),
-                                fieldWithPath("result.id").description("방 아이디"),
+                                fieldWithPath("result.id").description("방 ID"),
                                 fieldWithPath("result.title").description("방 제목"),
-                                fieldWithPath("result.hostId").description("호스트 아이디"),
+                                fieldWithPath("result.hostId").description("호스트 ID"),
                                 fieldWithPath("result.roomType").description("방 유형"),
                                 fieldWithPath("result.roomStatus").description("방 상태"),
                                 fieldWithPath("result.createdAt").description("방 생성일자"),
@@ -345,6 +353,9 @@ public class RoomControllerTest {
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
                 .andDo(print())
                 .andDo(document("RoomControllerTest/findRoomDetail_Fail_BadRequest",
+                        pathParameters(
+                                parameterWithName("roomId").description("방 ID")
+                        ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지")
@@ -371,6 +382,9 @@ public class RoomControllerTest {
                 .andExpect(jsonPath("$.code").value(SEVER_ERROR.getCode()))
                 .andDo(print())
                 .andDo(document("RoomControllerTest/findRoomDetail_Fail_ServerError",
+                        pathParameters(
+                                parameterWithName("roomId").description("방 ID")
+                        ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지")
@@ -382,21 +396,229 @@ public class RoomControllerTest {
     @DisplayName("정상적으로 유저가 생성된 방에 참여하면, 성공 응답이 반환된다")
     void attentionUser_Success() throws Exception {
         //given
+        Long fakerId = 12L;
+        roomSetup.setUpRooms(userSetup.setUpUsers(11));
+        User user = userSetup.setUpUser(fakerId);
+        Room room = roomRepository.findAll().get(2);
+        System.out.println(user.getFakerId());
+        System.out.println(room.getId());
+
+        AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(user.getFakerId());
 
         //when
+        ResultActions resultActions = mockMvc.perform(
+                post("/room/attention/{roomId}", room.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(attentionUserRequest))
+        );
 
         //then
+        resultActions
+                .andExpect(jsonPath("$.code").value(SUCCESS.getCode()))
+                .andDo(print())
+                .andDo(document("RoomControllerTest/attentionUser_Success",
+                        pathParameters(
+                                parameterWithName("roomId").description("방 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )));
     }
 
     @Test
-    @DisplayName("유저가 생성된 방에 참여를 실패하면, 실패 응답이 반환된다")
-    void attentionUser_Fail() throws Exception {
+    @DisplayName("존재하지 않는 방에 유저가 참여하려고 하면, 실패 응답이 반환된다")
+    void attentionUser_Fail_RoomNotExist() throws Exception {
         //given
+        Long fakerId = 13L;
+        roomSetup.setUpRooms(userSetup.setUpUsers(11));
+        User user = userSetup.setUpUser(fakerId);
+        Long notExistRoomId = 100L;
+
+        AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(user.getFakerId());
+
+        doThrow(new BussinessException(BAD_REQUEST))
+                .when(roomService)
+                .attentionRoomById(notExistRoomId, attentionUserRequest);
 
         //when
+        ResultActions resultActions = mockMvc.perform(
+                post("/room/attention/{roomId}", notExistRoomId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(attentionUserRequest))
+        );
 
         //then
+        resultActions
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andDo(print())
+                .andDo(document("RoomControllerTest/attentionUser_Fail_RoomNotExist",
+                        pathParameters(
+                                parameterWithName("roomId").description("방 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )));
     }
+
+    @Test
+    @DisplayName("대기 상태가 아닌 방에 유저가 참여하려고 하면, 실패 응답이 반환된다")
+    void attentionUser_Fail_RoomStatusIsNotWait() throws Exception {
+        //given
+        Long fakerId = 14L;
+        Long hostFakerId = 15L;
+        User roomHost = userSetup.setUpUser(hostFakerId);
+        Room room = roomSetup.notWaitStatusRoom(roomHost);
+        User user = userSetup.setUpUser(fakerId);
+
+        AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(user.getFakerId());
+
+        doThrow(new BussinessException(BAD_REQUEST))
+                .when(roomService)
+                .attentionRoomById(room.getId(), attentionUserRequest);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                post("/room/attention/{roomId}", room.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(attentionUserRequest))
+        );
+
+        //then
+        resultActions
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andDo(print())
+                .andDo(document("RoomControllerTest/attentionUser_Fail_RoomStatusIsNotWait",
+                        pathParameters(
+                                parameterWithName("roomId").description("방 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )));
+    }
+
+    @Test
+    @DisplayName("방에 참여하려는 유저 수가 방의 최대 인원 수를 초과하면, 실패 응답이 반환된다")
+    void attentionUser_Fail_RoomOverCapacity() throws Exception {
+        //given
+        Long fakerId = 16L;
+        Long guestFakerId = 17L;
+        Long overCapacityFakerId = 18L;
+
+        Room room = roomSetup.setUpRoom(userSetup.setUpUser(fakerId));
+        User user = userSetup.setUpUser(guestFakerId);
+        UserDtoFixture.attentionUserRequest(user.getFakerId());
+
+        User overCapacityUser = userSetup.setUpUser(overCapacityFakerId);
+
+        AttentionUserRequest overCapacityAttentionUserRequest = UserDtoFixture.attentionUserRequest(overCapacityUser.getFakerId());
+
+        doThrow(new BussinessException(BAD_REQUEST))
+                .when(roomService)
+                .attentionRoomById(room.getId(), overCapacityAttentionUserRequest);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                post("/room/attention/{roomId}", room.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(overCapacityAttentionUserRequest))
+        );
+
+        //then
+        resultActions
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andDo(print())
+                .andDo(document("RoomControllerTest/attentionUser_Fail_RoomOverCapacity",
+                        pathParameters(
+                                parameterWithName("roomId").description("방 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )));
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("활성 상태가 아닌 유저가 방에 참여하려고 하면, 실패 응답이 반환된다.")
+    void attentionUser_Fail_UserNotActive() throws Exception {
+        //given
+        Long fakerId = 19L;
+        Long hostFakerId = 20L;
+        User user = userSetup.notActiveUser(fakerId);
+        User host = userSetup.setUpUser(hostFakerId);
+        Room room = roomSetup.setUpRoom(host);
+
+        AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(user.getId());
+
+        doThrow(new BussinessException(BAD_REQUEST))
+                .when(roomService)
+                .attentionRoomById(room.getId(), attentionUserRequest);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                post("/room/attention/{roomId}", room.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(attentionUserRequest))
+        );
+
+        //then
+        resultActions
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andDo(print())
+                .andDo(document("RoomControllerTest/attentionUser_Fail_UserNotActive",
+                        pathParameters(
+                                parameterWithName("roomId").description("방 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )));
+    }
+
+    @Test
+    @DisplayName("이미 방에 참여하고 있는 유저가 방에 참여하려고 하면, 실패 응답이 반환된다")
+    void attentionUser_Fail_UserAlreadyJoinedRoom() throws Exception {
+        //given
+        Long fakerId = 21L;
+        Long hostFakerId = 22L;
+        User guest = userSetup.setUpUser(fakerId);
+        User host = userSetup.setUpUser(hostFakerId);
+        Room room = roomSetup.setUpRoom(host);
+        Room joinedRoom = roomSetup.setUpRoom(guest);
+
+        UserRoom userRoom = userRoomSetUp.setUpUserRoom(guest, joinedRoom);
+
+        AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(guest.getId());
+
+        doThrow(new BussinessException(BAD_REQUEST))
+                .when(roomService)
+                .attentionRoomById(room.getId(), attentionUserRequest);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                post("/room/attention/{roomId}", room.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(attentionUserRequest))
+        );
+
+        //then
+        resultActions
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andDo(print())
+                .andDo(document("RoomControllerTest/attentionUser_Fail_UserAlreadyJoinedRoom",
+                        pathParameters(
+                                parameterWithName("roomId").description("방 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )));
+    }
+
+
 
     @Test
     @DisplayName("정상적으로 유저가 생성된 방에서 나가면, 성공 응답이 반환된다")
@@ -437,6 +659,4 @@ public class RoomControllerTest {
 
         //then
     }
-
-
 }
