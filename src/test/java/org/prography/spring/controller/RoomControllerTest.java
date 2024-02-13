@@ -255,6 +255,7 @@ public class RoomControllerTest {
         //then
         resultActions
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
                 .andDo(print())
                 .andDo(document("RoomControllerTest/findAllRoom_BadRequest",
                         responseFields(
@@ -281,6 +282,7 @@ public class RoomControllerTest {
         //then
         resultActions
                 .andExpect(jsonPath("$.code").value(SEVER_ERROR.getCode()))
+                .andExpect(jsonPath("$.message").value(SEVER_ERROR.getMessage()))
                 .andDo(print())
                 .andDo(document("RoomControllerTest/findAllRoom_ServerError",
                         responseFields(
@@ -338,23 +340,24 @@ public class RoomControllerTest {
     void findRoomDetail_Fail_BadRequest() throws Exception {
         //given
         roomSetup.setUpRooms(userSetup.setUpUsers(11));
-        Long roomId = 100L;
+        Long notExistRoomId = 100L;
 
         doThrow(new BussinessException(BAD_REQUEST))
                 .when(roomService)
                 .findRoomById(any());
 
         //when
-        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.get(BASE_URL + "/{roomId}", roomId)
+        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.get(BASE_URL + "/{notExistRoomId}", notExistRoomId)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
         resultActions
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
                 .andDo(print())
                 .andDo(document("RoomControllerTest/findRoomDetail_Fail_BadRequest",
                         pathParameters(
-                                parameterWithName("roomId").description("방 ID")
+                                parameterWithName("notExistRoomId").description("방 ID")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -380,6 +383,7 @@ public class RoomControllerTest {
         //then
         resultActions
                 .andExpect(jsonPath("$.code").value(SEVER_ERROR.getCode()))
+                .andExpect(jsonPath("$.message").value(SEVER_ERROR.getMessage()))
                 .andDo(print())
                 .andDo(document("RoomControllerTest/findRoomDetail_Fail_ServerError",
                         pathParameters(
@@ -415,6 +419,7 @@ public class RoomControllerTest {
         //then
         resultActions
                 .andExpect(jsonPath("$.code").value(SUCCESS.getCode()))
+                .andExpect(jsonPath("$.message").value(SUCCESS.getMessage()))
                 .andDo(print())
                 .andDo(document("RoomControllerTest/attentionUser_Success",
                         pathParameters(
@@ -451,6 +456,7 @@ public class RoomControllerTest {
         //then
         resultActions
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
                 .andDo(print())
                 .andDo(document("RoomControllerTest/attentionUser_Fail_RoomNotExist",
                         pathParameters(
@@ -488,6 +494,7 @@ public class RoomControllerTest {
         //then
         resultActions
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
                 .andDo(print())
                 .andDo(document("RoomControllerTest/attentionUser_Fail_RoomStatusIsNotWait",
                         pathParameters(
@@ -529,6 +536,7 @@ public class RoomControllerTest {
         //then
         resultActions
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
                 .andDo(print())
                 .andDo(document("RoomControllerTest/attentionUser_Fail_RoomOverCapacity",
                         pathParameters(
@@ -567,6 +575,7 @@ public class RoomControllerTest {
         //then
         resultActions
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
                 .andDo(print())
                 .andDo(document("RoomControllerTest/attentionUser_Fail_UserNotActive",
                         pathParameters(
@@ -607,6 +616,7 @@ public class RoomControllerTest {
         //then
         resultActions
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
                 .andDo(print())
                 .andDo(document("RoomControllerTest/attentionUser_Fail_UserAlreadyJoinedRoom",
                         pathParameters(
