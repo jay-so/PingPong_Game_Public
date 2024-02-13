@@ -1,29 +1,25 @@
 package org.prography.spring.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.prography.spring.common.ApiResponse;
 import org.prography.spring.common.BussinessException;
 import org.prography.spring.domain.Room;
 import org.prography.spring.domain.User;
 import org.prography.spring.dto.request.CreateRoomRequest;
-import org.prography.spring.dto.request.InitializationRequest;
 import org.prography.spring.fixture.dto.RoomDtoFixture;
 import org.prography.spring.fixture.setup.RoomSetup;
 import org.prography.spring.fixture.setup.UserSetup;
 import org.prography.spring.repository.RoomRepository;
 import org.prography.spring.repository.UserRepository;
-import org.prography.spring.service.InitializationService;
 import org.prography.spring.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -36,9 +32,12 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -64,45 +63,6 @@ public class RoomControllerTest {
 
     @Autowired
     private RoomRepository roomRepository;
-
-    private ApiResponse<Object> successResponse;
-
-    private ApiResponse<Object> errorResponse;
-
-    private ApiResponse<Object> ServerErrorResponse;
-
-    @MockBean
-    private InitializationService initializationService;
-
-    private InitializationRequest initializationRequest;
-
-    @BeforeEach
-    void setUp() {
-        initializationRequest = InitializationRequest.builder()
-                .seed(1L)
-                .quantity(10L)
-                .build();
-
-        initializationService.init(initializationRequest);
-
-        successResponse = new ApiResponse<>(
-                SUCCESS.getCode(),
-                SUCCESS.getMessage(),
-                null
-        );
-
-        errorResponse = new ApiResponse<>(
-                BAD_REQUEST.getCode(),
-                BAD_REQUEST.getMessage(),
-                null
-        );
-
-        ServerErrorResponse = new ApiResponse<>(
-                SEVER_ERROR.getCode(),
-                SEVER_ERROR.getMessage(),
-                null
-        );
-    }
 
     @Test
     @DisplayName("정상적으로 유저가 방을 생성하면, 성공 응답이 반환된다")
@@ -326,21 +286,97 @@ public class RoomControllerTest {
     @DisplayName("정상적으로 유저가 방 상세 정보를 조회하면, 성공 응답이 반환된다")
     void findRoomDetail_Success() throws Exception {
         //given
+        roomSetup.setUpRooms(userSetup.setUpUsers(11));
+        Long roomId = 1L;
+        Room room = roomRepository.findById(roomId).get();
 
         //when
+        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.get(BASE_URL + "/{roomId}", roomId)
+                .contentType(MediaType.APPLICATION_JSON));
 
         //then
+        resultActions
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(SUCCESS.getCode()))
+                .andExpect(jsonPath("$.message").value(SUCCESS.getMessage()))
+                .andExpect(jsonPath("$.result.id").value(roomId))
+                .andExpect(jsonPath("$.result.title").value(room.getTitle()))
+                .andExpect(jsonPath("$.result.hostId").value(room.getHost().getId()))
+                .andExpect(jsonPath("$.result.roomType").value(room.getRoomType().toString()))
+                .andExpect(jsonPath("$.result.roomStatus").value(room.getStatus().toString()))
+                .andExpect(jsonPath("$.result.createdAt").exists())
+                .andExpect(jsonPath("$.result.updatedAt").exists())
+                .andDo(print())
+                .andDo(document("RoomControllerTest/findRoomDetail_Success",
+                        pathParameters(
+                                parameterWithName("roomId").description("방 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지"),
+                                fieldWithPath("result.id").description("방 아이디"),
+                                fieldWithPath("result.title").description("방 제목"),
+                                fieldWithPath("result.hostId").description("호스트 아이디"),
+                                fieldWithPath("result.roomType").description("방 유형"),
+                                fieldWithPath("result.roomStatus").description("방 상태"),
+                                fieldWithPath("result.createdAt").description("방 생성일자"),
+                                fieldWithPath("result.updatedAt").description("방 수정일자")
+                        )
+                ));
     }
 
     @Test
-    @DisplayName("유저가 방 상세 정보 조회를 실패하면, 실패 응답이 반환된다")
-    void findRoomDetail_Fail() throws Exception {
+    @DisplayName("유저가 방 상세 정보 조회 시 존재하지 않은 방 id로 요청으로 실패하면, 잘못된 요청 응답이 반환된다")
+    void findRoomDetail_Fail_BadRequest() throws Exception {
         //given
+        roomSetup.setUpRooms(userSetup.setUpUsers(11));
+        Long roomId = 100L;
+
+        doThrow(new BussinessException(BAD_REQUEST))
+                .when(roomService)
+                .findRoomById(any());
 
         //when
+        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.get(BASE_URL + "/{roomId}", roomId)
+                .contentType(MediaType.APPLICATION_JSON));
 
         //then
+        resultActions
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andDo(print())
+                .andDo(document("RoomControllerTest/findRoomDetail_Fail_BadRequest",
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )));
     }
+
+    @Test
+    @DisplayName("유저가 방 상세 정보 조회 시 서버 내부 오류로 실패하면, 서버 응답 에러가 반환된다")
+    void findRoomDetail_Fail_ServerError() throws Exception {
+        //given
+        roomSetup.setUpRooms(userSetup.setUpUsers(11));
+        Long roomId = 1L;
+
+        doThrow(new BussinessException(SEVER_ERROR))
+                .when(roomService)
+                .findRoomById(any());
+
+        //when
+        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.get(BASE_URL + "/{roomId}", roomId)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        resultActions
+                .andExpect(jsonPath("$.code").value(SEVER_ERROR.getCode()))
+                .andDo(print())
+                .andDo(document("RoomControllerTest/findRoomDetail_Fail_ServerError",
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )));
+    }
+
 
     @Test
     @DisplayName("정상적으로 유저가 생성된 방에 참여하면, 성공 응답이 반환된다")
