@@ -104,10 +104,6 @@ public class ServerStatusControllerTest {
                 .andDo(document("ServerStatusControllerTest/serverStatusCheck_Fail",
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
-                                fieldWithPath("message").description("응답 메시지")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지"))
                 ));
     }
