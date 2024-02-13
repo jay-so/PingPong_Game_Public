@@ -20,6 +20,11 @@ public class RoomSetup {
         return roomRepository.save(room);
     }
 
+    public Room notWaitStatusRoom(User host) {
+        Room room = RoomFixture.notWaitStatusRoom(host);
+        return roomRepository.save(room);
+    }
+
     public List<Room> setUpRooms(List<User> hosts) {
         List<Room> rooms = RoomFixture.roomsBuilder(hosts);
         return roomRepository.saveAll(rooms);
