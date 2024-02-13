@@ -1,0 +1,73 @@
+= 방 상세 조회 API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+
+== 방 상세 조회 API
+* 방 id(`roomId`)를 통해 방 상세 정보를 조회합니다.
+* 생성일(`createdAt`)과 수정일(`updatedAt`)을 함께 반환합니다.
+* 만약, 존재하지 않는 방 id(`roomId`)를 요청하면, `BAD_REQUEST` 를 반환합니다.
+
+=== 방 상세 조회 API 성공 시
+
+=== `GET /rooms/{roomId}`
+
+=== Path parameters
+
+include::{snippets}/RoomControllerTest/findRoomDetail_Success/path-parameters.adoc[]
+
+==== HTTP request
+
+include::{snippets}/RoomControllerTest/findRoomDetail_Success/http-request.adoc[]
+
+==== Http response
+
+include::{snippets}/RoomControllerTest/findRoomDetail_Success/http-response.adoc[]
+
+==== Response fields
+
+include::{snippets}/RoomControllerTest/findRoomDetail_Success/response-fields.adoc[]
+
+=== 방 상세 조회 API 실패 시 (존재하지 않는 방 조회 시)
+
+=== `GET /rooms/{roomId}`
+
+* 존재하지 않는 방을 조회하려고 하는 경우, 잘못된 요청 처리(`BAD_REQUEST`) 처리를 합니다.
+
+==== Path parameters
+
+include::{snippets}/RoomControllerTest/findRoomDetail_Fail_BadRequest/path-parameters.adoc[]
+
+=== HTTP request
+
+include::{snippets}/RoomControllerTest/findRoomDetail_Fail_BadRequest/http-request.adoc[]
+
+=== Http response
+
+include::{snippets}/RoomControllerTest/findRoomDetail_Fail_BadRequest/http-request.adoc[]
+
+=== Response fields
+
+include::{snippets}/RoomControllerTest/findRoomDetail_Fail_BadRequest/response-fields.adoc[]
+
+=== 방 상세 조회 API 실패 시 (서버 에러)
+
+=== `GET /rooms/{roomId}`
+
+=== Path parameters
+
+include::{snippets}/RoomControllerTest/findRoomDetail_Fail_ServerError/path-parameters.adoc[]
+
+=== HTTP request
+
+include::{snippets}/RoomControllerTest/findRoomDetail_Fail_ServerError/http-request.adoc[]
+
+=== Http response
+
+include::{snippets}/RoomControllerTest/findRoomDetail_Fail_ServerError/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/RoomControllerTest/findRoomDetail_Fail_ServerError/response-fields.adoc[]
+
+
