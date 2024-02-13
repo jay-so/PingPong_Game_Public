@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.prography.spring.common.ApiResponseCode.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -48,6 +49,10 @@ public class InitializationControllerTest {
                 .seed(1L)
                 .quantity(10L)
                 .build();
+
+        doNothing()
+                .when(initializationService)
+                .init(initializationRequest);
 
         // when
         ResultActions resultActions = mockMvc.perform(post(BASE_URL)
@@ -111,12 +116,12 @@ public class InitializationControllerTest {
     @Test
     @DisplayName("초기화 요청이 서버에서 정상적으로 이루어지지 않으면, 실패 응답이 반환된다")
     void initialization_Fail_ServerError() throws Exception {
+        //given
         initializationRequest = InitializationRequest.builder()
                 .seed(1L)
                 .quantity(10L)
                 .build();
 
-        //given
         doThrow(new BussinessException(SEVER_ERROR))
                 .when(initializationService)
                 .init(any(InitializationRequest.class));
