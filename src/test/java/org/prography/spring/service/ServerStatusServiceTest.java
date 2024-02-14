@@ -37,9 +37,11 @@ public class ServerStatusServiceTest {
         @DisplayName("서버 상태가 정상이면 성공 응답이 반환된다")
         void serverStatus_Check_Success() {
             // given
-            Health health = Health.up().build();
-            given(healthEndpoint.health()).willReturn(health);
-            given(dataSourceHealthIndicator.health()).willReturn(health);
+            Health serverHealth = Health.up().build();
+            Health dbHealth = Health.up().build();
+
+            given(healthEndpoint.health()).willReturn(serverHealth);
+            given(dataSourceHealthIndicator.health()).willReturn(dbHealth);
 
             // when
             ApiResponse<Void> response = serverStatusService.serverStatusCheck();
@@ -53,10 +55,11 @@ public class ServerStatusServiceTest {
         @DisplayName("서버 상태가 에러 상태이면 실패 응답이 반환된다")
         void serverStatus_Check_Fail() {
             //given
-            Health dbHealth = Health.down().build();
             Health serverHealth = Health.up().build();
-            given(dataSourceHealthIndicator.health()).willReturn(dbHealth);
+            Health dbHealth = Health.down().build();
+
             given(healthEndpoint.health()).willReturn(serverHealth);
+            given(dataSourceHealthIndicator.health()).willReturn(dbHealth);
 
             //when
             ApiResponse<Void> response = serverStatusService.serverStatusCheck();
