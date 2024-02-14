@@ -104,7 +104,7 @@ class RoomFindAllControllerTest {
 
     @Test
     @DisplayName("유저가 방 전체 목록 조회를 잘못된 요청으로 조회 시, 잘못된 요청 응답이 반환된다")
-    void findAllRoom_BadRequest() throws Exception {
+    void findAllRoom_Fail_BadRequest() throws Exception {
         //given
         roomSetup.setUpRooms(userSetup.setUpUsers(11));
 
@@ -123,7 +123,7 @@ class RoomFindAllControllerTest {
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
                 .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
                 .andDo(print())
-                .andDo(document("RoomControllerTest/findAllRoom_BadRequest",
+                .andDo(document("RoomControllerTest/findAllRoom_Fail_BadRequest",
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지")
@@ -133,8 +133,10 @@ class RoomFindAllControllerTest {
 
     @Test
     @DisplayName("유저가 방 전체 목록 조회가 서버 내부 오류로 실패하면, 서버 응답 에러가 반환된다")
-    void findAllRoom_ServerError() throws Exception {
+    void findAllRoom_Fail_ServerError() throws Exception {
         //given
+        roomSetup.setUpRooms(userSetup.setUpUsers(11));
+
         doThrow(new BussinessException(SEVER_ERROR))
                 .when(roomService)
                 .findAllRooms(any());
@@ -150,7 +152,7 @@ class RoomFindAllControllerTest {
                 .andExpect(jsonPath("$.code").value(SEVER_ERROR.getCode()))
                 .andExpect(jsonPath("$.message").value(SEVER_ERROR.getMessage()))
                 .andDo(print())
-                .andDo(document("RoomControllerTest/findAllRoom_ServerError",
+                .andDo(document("RoomControllerTest/findAllRoom_Fail_ServerError",
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지")
