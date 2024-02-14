@@ -1,0 +1,200 @@
+= 팀 변경 API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:snippets: build/generated-snippets
+
+=== 팀 변경 API
+
+- 유저가 팀을 변경할 때, 사용하는 API 입니다.
+- 팀을 변경하고 싶은 유저의 ID를 body에 담아서 요청합니다.
+
+* 유저는 현재 속한 방의 팀 기준으로, 반대 팀으로 변경됩니다.
+- `RED` 팀 → `BLUE` 팀
+- `BLUE` 팀 → `RED` 팀
+
+=== ⚠️  제한 조건
+
+* 유저(userId)가 현재 해당 방에 참가한 상태에서만 팀 변경이 가능합니다.
+- 팀을 변경하려는 유저가 해당 방에 참가하지 않은 상태라면,잘못된 요청 처리(`BAD_REQUEST`) 처리를 합니다.
+
+* 현재 방의 상태가 대기(`WAIT`) 상태일 때만, 팀을 변경할 수 있습니다.
+- 방의 상태가 진행중(`PROGRESS`) 또는 완료(`FINISH`) 상태라면, 잘못된 요청 처리(`BAD_REQUEST`) 처리를 합니다.
+
+* 팀 변경 요청의 방이 존재하지 않는 방일 경우, 잘못된 요청 처리(`BAD_REQUEST`) 처리를 합니다.
+
+* 팀 변경을 요청 시, 해당 방의 타 팀의 인원이 이미 해당 방 정원의 절반과 같다면, 팀이 변경되지 않고 잘못된 요청 처리(`BAD_REQUEST`) 처리를 합니다.
+
+=== 팀 변경 API 성공 시
+
+=== `PUT /team/{roomId}`
+
+=== Path Parameters
+
+include::{snippets}/TeamControllerTest/changeTeam_Success/path-parameters.adoc[]
+
+=== Http request
+
+include::{snippets}/TeamControllerTest/changeTeam_Success/http-request.adoc[]
+
+=== Request body
+
+include::{snippets}/TeamControllerTest/changeTeam_Success/request-body.adoc[]
+
+=== Request fields
+
+include::{snippets}/TeamControllerTest/changeTeam_Success/request-fields.adoc[]
+
+=== Http response
+
+include::{snippets}/TeamControllerTest/changeTeam_Success/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/TeamControllerTest/changeTeam_Success/response-fields.adoc[]
+
+=== 팀 변경 API 실패 시(방이 존재하지 않는 경우)
+
+=== `PUT /team/{roomId}`
+
+* 존재하지 않는 방에 대한 팀 변경 요청 시, 잘못된 요청 처리(`BAD_REQUEST`) 처리를 합니다.
+
+=== Path Parameters
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotExistRoom/path-parameters.adoc[]
+
+=== Http request
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotExistRoom/http-request.adoc[]
+
+=== Request body
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotExistRoom/request-body.adoc[]
+
+=== Request fields
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotExistRoom/request-fields.adoc[]
+
+=== Http response
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotExistRoom/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotExistRoom/response-fields.adoc[]
+
+=== 팀 변경 API 실패 시(유저가 해당 방에 참가하지 않은 상태)
+
+* 유저가 해당 방에 참가하지 않은 상태에서 팀 변경 요청 시, 잘못된 요청 처리(`BAD_REQUEST`) 처리를 합니다.
+
+=== Path Parameters
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotParticipatedUser/path-parameters.adoc[]
+
+=== Http request
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotParticipatedUser/http-request.adoc[]
+
+=== Request body
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotParticipatedUser/request-body.adoc[]
+
+=== Request fields
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotParticipatedUser/request-fields.adoc[]
+
+=== Http response
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotParticipatedUser/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotParticipatedUser/response-fields.adoc[]
+
+=== 팀 변경 API 실패 시(방의 상태가 대기 상태가 아닐 때)
+
+* 방의 상태가 대기 상태가 아닌 상태에서 팀 변경 요청 시, 잘못된 요청 처리(`BAD_REQUEST`) 처리를 합니다.
+
+=== Path Parameters
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotWaitRoomStatus/path-parameters.adoc[]
+
+=== Http request
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotWaitRoomStatus/http-request.adoc[]
+
+=== Request body
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotWaitRoomStatus/request-body.adoc[]
+
+=== Request fields
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotWaitRoomStatus/request-fields.adoc[]
+
+=== Request body
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotWaitRoomStatus/request-body.adoc[]
+
+=== Http response
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotWaitRoomStatus/http-response.adoc[]
+
+=== request fields
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_NotWaitRoomStatus/response-fields.adoc[]
+
+=== 팀 변경 API 실패 시(방의 타 팀의 인원이 이미 해당 방 정원의 절반과 같을 때)
+
+* 팀 변경 요청 시, 해당 방의 타 팀의 인원이 이미 해당 방 정원의 절반과 같다면, 팀이 변경되지 않고 잘못된 요청 처리(`BAD_REQUEST`) 처리를 합니다.
+
+=== Path Parameters
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_FullTeamStatus/path-parameters.adoc[]
+
+=== Http request
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_FullTeamStatus/http-request.adoc[]
+
+=== Request body
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_FullTeamStatus/request-body.adoc[]
+
+=== Request fields
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_FullTeamStatus/request-fields.adoc[]
+
+=== Http response
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_FullTeamStatus/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_FullTeamStatus/response-fields.adoc[]
+
+=== 팀 변경 API 실패 시(서버 에러)
+
+* 서버 에러가 발생했을 때, 서버 에러 처리(`SERVER_ERROR`)를 합니다.
+
+=== Path Parameters
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_ServerError/path-parameters.adoc[]
+
+=== Http request
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_ServerError/http-request.adoc[]
+
+=== Request body
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_ServerError/request-body.adoc[]
+
+=== Request fields
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_ServerError/request-fields.adoc[]
+
+=== Http response
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_ServerError/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_ServerError/response-fields.adoc[]

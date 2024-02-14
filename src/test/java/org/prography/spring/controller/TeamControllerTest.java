@@ -28,8 +28,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.prography.spring.common.ApiResponseCode.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -74,7 +73,7 @@ public class TeamControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(
-                put(BASE_URL+ "/{roomId}", room.getId())
+                put(BASE_URL + "/{roomId}", room.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(changeTeamRequest))
         );
@@ -87,6 +86,9 @@ public class TeamControllerTest {
                 .andDo(document("TeamControllerTest/changeTeam_Success",
                         pathParameters(
                                 parameterWithName("roomId").description("방 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("userId").description("유저 ID")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -112,7 +114,7 @@ public class TeamControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(
-                put(BASE_URL+ "/{roomId}", notExistRoomId)
+                put(BASE_URL + "/{roomId}", notExistRoomId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(changeTeamRequest))
         );
@@ -123,6 +125,12 @@ public class TeamControllerTest {
                 .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
                 .andDo(print())
                 .andDo(document("TeamControllerTest/changeTeam_Fail_NotExistRoom",
+                        pathParameters(
+                                parameterWithName("roomId").description("방 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("userId").description("유저 ID")
+                        ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지")
@@ -147,7 +155,7 @@ public class TeamControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(
-                put(BASE_URL+ "/{roomId}", room.getId())
+                put(BASE_URL + "/{roomId}", room.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(changeTeamRequest))
         );
@@ -158,6 +166,12 @@ public class TeamControllerTest {
                 .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
                 .andDo(print())
                 .andDo(document("TeamControllerTest/changeTeam_Fail_NotParticipatedUser",
+                        pathParameters(
+                                parameterWithName("roomId").description("방 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("userId").description("유저 ID")
+                        ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지")
@@ -182,7 +196,7 @@ public class TeamControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(
-                put(BASE_URL+ "/{roomId}", room.getId())
+                put(BASE_URL + "/{roomId}", room.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(changeTeamRequest))
         );
@@ -193,6 +207,12 @@ public class TeamControllerTest {
                 .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
                 .andDo(print())
                 .andDo(document("TeamControllerTest/changeTeam_Fail_NotWaitRoomStatus",
+                        pathParameters(
+                                parameterWithName("roomId").description("방 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("userId").description("유저 ID")
+                        ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지")
@@ -222,7 +242,7 @@ public class TeamControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(
-                put(BASE_URL+ "/{roomId}", room.getId())
+                put(BASE_URL + "/{roomId}", room.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(changeTeamRequest))
         );
@@ -233,6 +253,12 @@ public class TeamControllerTest {
                 .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
                 .andDo(print())
                 .andDo(document("TeamControllerTest/changeTeam_Fail_FullTeamStatus",
+                        pathParameters(
+                                parameterWithName("roomId").description("방 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("userId").description("유저 ID")
+                        ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지")
@@ -258,7 +284,7 @@ public class TeamControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(
-                put(BASE_URL+ "/{roomId}", room.getId())
+                put(BASE_URL + "/{roomId}", room.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(changeTeamRequest))
         );
@@ -269,6 +295,12 @@ public class TeamControllerTest {
                 .andExpect(jsonPath("$.message").value(SEVER_ERROR.getMessage()))
                 .andDo(print())
                 .andDo(document("TeamControllerTest/changeTeam_Fail_ServerError",
+                        pathParameters(
+                                parameterWithName("roomId").description("방 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("userId").description("유저 ID")
+                        ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지")
