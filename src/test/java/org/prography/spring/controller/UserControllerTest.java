@@ -59,7 +59,7 @@ public class UserControllerTest {
 
     @Test
     @DisplayName("초기화 API 호출 전에는 유저 정보를 전체 조회하면 비어있다.")
-    void findAllUsers_BeforeInitialization_Success() throws Exception {
+    void findAll_Users_BeforeInitialization_Success() throws Exception {
         //given
         List<User> userList = Collections.emptyList();
         Page<User> userPage = new PageImpl<>(userList);
@@ -87,7 +87,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.result.totalElements").value(0))
                 .andExpect(jsonPath("$.result.totalPages").value(0))
                 .andExpect(jsonPath("$.result.userList", hasSize(0)))
-                .andDo(document("UserControllerTest/findAllUsers_BeforeInitialization_Success",
+                .andDo(document("UserControllerTest/findAll_Users_BeforeInitialization_Success",
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지"),
@@ -100,7 +100,7 @@ public class UserControllerTest {
 
     @Test
     @DisplayName("초기화 API 호출 후에는 유저 정보를 전체 조회할 수 있다.")
-    void findAllUsers_AfterInitialization_Success() throws Exception {
+    void findAll_Users_AfterInitialization_Success() throws Exception {
         //given
         InitializationRequest initializationRequest = InitializationRequest.builder()
                 .seed(1L)
@@ -130,7 +130,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.result.userList[0].status").exists())
                 .andExpect(jsonPath("$.result.userList[0].createdAt").exists())
                 .andExpect(jsonPath("$.result.userList[0].updatedAt").exists())
-                .andDo(document("UserControllerTest/findAllUsers_AfterInitialization_Success",
+                .andDo(document("UserControllerTest/findAll_Users_AfterInitialization_Success",
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지"),
@@ -149,7 +149,7 @@ public class UserControllerTest {
 
     @Test
     @DisplayName("유저 정보를 전체 조회 시, 잘못된 입력값이 들어오면 실패 처리가 반환된다")
-    void findUsers_fail_BadRequest() throws Exception {
+    void findAll_Users_fail_BadRequest() throws Exception {
         //given
         userSetup.setUpUsers(10);
 
@@ -168,7 +168,7 @@ public class UserControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
                 .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage())).andDo(print())
-                .andDo(document("UserControllerTest/findAllUsers_fail_BadRequest",
+                .andDo(document("UserControllerTest/findAll_Users_fail_BadRequest",
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지")
@@ -179,7 +179,7 @@ public class UserControllerTest {
 
     @Test
     @DisplayName("유저 정보를 전체 조회 시, 서버 에러가 발생되면 에러 응답이 반환된다")
-    void findAllUsers_fail_ServerError() throws Exception {
+    void findAll_Users_fail_ServerError() throws Exception {
         //given
         userSetup.setUpUsers(10);
 
@@ -199,7 +199,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.code").value(SEVER_ERROR.getCode()))
                 .andExpect(jsonPath("$.message").value(SEVER_ERROR.getMessage()))
                 .andDo(print())
-                .andDo(document("UserControllerTest/findAllUsers_fail_ServerError",
+                .andDo(document("UserControllerTest/findAll_Users_fail_ServerError",
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지")

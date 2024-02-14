@@ -38,11 +38,11 @@ public class UserServiceTest {
 
     @Nested
     @DisplayName("사용자 전체 조회 요청을 처리한다.")
-    class findAllUsersCheck {
+    class findAll_Users_Check {
 
         @Test
         @DisplayName("초기화 전에는 유저 정보를 전체 조회하면 비어있다.")
-        void findAllUsers_BeforeInitialization_Success() {
+        void findAll_Users_BeforeInitialization_Success() {
             // given
             Pageable pageable = PageRequest.of(0, 10);
             List<User> userList = Collections.emptyList();
@@ -61,7 +61,7 @@ public class UserServiceTest {
 
         @Test
         @DisplayName("초기화 후에는 유저 정보를 전체 조회할 수 있다.")
-        void findAllUsers_AfterInitialization_Success() {
+        void findAll_Users_AfterInitialization_Success() {
             // given
             Pageable pageable = PageRequest.of(0, 10);
             List<User> userList = UserFixture.usersBuild(10);
@@ -80,7 +80,7 @@ public class UserServiceTest {
 
         @Test
         @DisplayName("유저 정보를 전체 조회 시, 서버 에러가 발생되면 예외가 발생한다.")
-        void findAllUsers_fail_ServerError() {
+        void findAll_Users_Fail_ServerError() {
             // given
             Pageable pageable = PageRequest.of(0, 10);
 
