@@ -32,6 +32,7 @@ public class ServerStatusServiceTest {
     @Nested
     @DisplayName("서버 상태 체크 요청을 처리한다.")
     class ServerStatusCheck {
+
         @Test
         @DisplayName("서버 상태가 정상이면 성공 응답이 반환된다")
         void serverStatus_Check_Success() {
