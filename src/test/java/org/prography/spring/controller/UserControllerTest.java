@@ -8,8 +8,6 @@ import org.prography.spring.dto.request.InitializationRequest;
 import org.prography.spring.dto.response.UserListResponse;
 import org.prography.spring.dto.response.UserResponse;
 import org.prography.spring.fixture.setup.UserSetup;
-import org.prography.spring.repository.RoomRepository;
-import org.prography.spring.repository.UserRepository;
 import org.prography.spring.service.InitializationService;
 import org.prography.spring.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.Commit;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -59,16 +55,10 @@ public class UserControllerTest {
     @SpyBean
     private UserService userService;
 
-    private UserRepository userRepository;
-    private RoomRepository roomRepository;
-
     @SpyBean
     private InitializationService initializationService;
 
-    private InitializationRequest initializationRequest;
-
     @Test
-    @DirtiesContext
     @DisplayName("초기화 API 호출 전에는 유저 정보를 전체 조회하면 비어있다.")
     void findAllUsers_BeforeInitialization() throws Exception {
         //given
@@ -110,12 +100,10 @@ public class UserControllerTest {
     }
 
     @Test
-    @Commit
-    @DirtiesContext
     @DisplayName("초기화 API 호출 후에는 유저 정보를 전체 조회할 수 있다.")
     void findAllUsers_AfterInitialization_Success() throws Exception {
         //given
-        initializationRequest = InitializationRequest.builder()
+        InitializationRequest initializationRequest = InitializationRequest.builder()
                 .seed(1L)
                 .quantity(10L)
                 .build();

@@ -1,0 +1,213 @@
+= 게임 시작 API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:snippets: build/generated-snippets
+
+=== 게임 시작 API
+
+* 사용자가 게임을 시작할 때 사용하는 API입니다.
+* 유저의 ID를 body에 담아서 요청합니다.
+
+* 해당 방의 상태는 대기(`WAIT`) 상태에서 진행중(`PROGRESS`) 상태로 변경됩니다.
+* 게임은 시작 후, 1분 후에 자동으로 종료 됩니다.
+- 게임이 종료되면, 해당 방의 상태는 진행 중(`PROGRESS`)에서 완료(`FINISH`)로 변경됩니다.
+
+=== ⭐️ 팀 배정 로직
+
+* 양쪽 팀에 모두 자리가 있는 경우, 먼저 `RED` 팀에 배정합니다.
+- 호스트가 방을 생성할 때는 양쪽 팀에 자리가 있으므로 `RED` 팀에 배정됩니다.
+- 한쪽 팀에 인원이 모두 찬 경우, 반대 팀으로 배정합니다.
+
+=== ⚠️  제한 조건
+
+* 해당 방을 만든 유저(호스트)만 게임을 시작할 수 있습니다.
+- 해당 방을 만든 유저가 아닌 다른 유저가 게임을 시작하려고 시도할 경우, 잘못된 요청 처리(`BAD_REQUEST`) 처리를 합니다.
+
+* 해당 방의 상태가 대기(`WAIT`) 상태일 때만, 게임을 시작할 수 있습니다.
+- 방의 상태가 진행중(`PROGRESS`) 또는 완료(`FINISH`) 상태라면, 잘못된 요청 처리(`BAD_REQUEST`) 처리를 합니다.
+
+* 게임 시작 요청의 방이 존재하지 않는 방일 경우, 잘못된 요청 처리(`BAD_REQUEST`) 처리를 합니다.
+
+* 방 안의 인원이 방의 타입에 맞게 모든 인원이 꽉 차있어야 게임을 시작할 수 있습니다.
+- `SINGLE` 타입의 방은 2명의 모든 유저가 참가해야 게임을 시작할 수 있습니다.
+- `DOUBLE` 타입의 방은 4명의 모든 유저가 참가해야 게임을 시작할 수 있습니다.
+- 방 안의 인원이 모두 꽉차지 않은 상태에서 게임을 시작하려고 시도할 경우, 잘못된 요청 처리(`BAD_REQUEST`) 처리를 합니다.
+
+=== 게임 시작 API 성공 시
+
+=== `PUT /room/start/{roomId}`
+
+=== Path parameters
+
+include::{snippets}/RoomControllerTest/startGame_Success/path-parameters.adoc[]
+
+=== Http request
+
+include::{snippets}/RoomControllerTest/startGame_Success/http-request.adoc[]
+
+=== Request body
+
+include::{snippets}/RoomControllerTest/startGame_Success/request-body.adoc[]
+
+=== Request fields
+
+include::{snippets}/RoomControllerTest/startGame_Success/request-fields.adoc[]
+
+=== Http response
+
+include::{snippets}/RoomControllerTest/startGame_Success/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/RoomControllerTest/startGame_Success/response-fields.adoc[]
+
+=== 게임 시작 API 실패 시(방이 존재하지 않는 경우)
+
+=== `PUT /room/start/{roomId}`
+
+* 해당 방이 존재하지 않는 경우, 잘못된 요청 처리(`BAD_REQUEST`) 처리를 합니다.
+
+=== Path parameters
+
+include::{snippets}/RoomControllerTest/startGame_Fail_RoomNotExist/path-parameters.adoc[]
+
+=== Http request
+
+include::{snippets}/RoomControllerTest/startGame_Fail_RoomNotExist/http-request.adoc[]
+
+=== Request body
+
+include::{snippets}/RoomControllerTest/startGame_Fail_RoomNotExist/request-body.adoc[]
+
+=== Request fields
+
+include::{snippets}/RoomControllerTest/startGame_Fail_RoomNotExist/request-fields.adoc[]
+
+=== Http response
+
+include::{snippets}/RoomControllerTest/startGame_Fail_RoomNotExist/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/RoomControllerTest/startGame_Fail_RoomNotExist/response-fields.adoc[]
+
+=== 게임 시작 API 실패 시 (방의 상태가 대기 상태가 아닌 경우)
+
+=== `PUT /room/start/{roomId}`
+
+* 해당 방의 상태가 대기(`WAIT`) 상태가 아닌 경우, 잘못된 요청 처리(`BAD_REQUEST`) 처리를 합니다.
+
+=== Path parameters
+
+include::{snippets}/RoomControllerTest/startGame_Fail_RoomStatusNotWait/path-parameters.adoc[]
+
+=== Http request
+
+include::{snippets}/RoomControllerTest/startGame_Fail_RoomStatusNotWait/http-request.adoc[]
+
+=== Request body
+
+include::{snippets}/RoomControllerTest/startGame_Fail_RoomStatusNotWait/request-body.adoc[]
+
+=== Request fields
+
+include::{snippets}/RoomControllerTest/startGame_Fail_RoomStatusNotWait/request-fields.adoc[]
+
+=== Http response
+
+include::{snippets}/RoomControllerTest/startGame_Fail_RoomStatusNotWait/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/RoomControllerTest/startGame_Fail_RoomStatusNotWait/response-fields.adoc[]
+
+=== 게임 시작 API 실패 시(해당 방을 만든 유저가 아닌 경우)
+
+=== `PUT /room/start/{roomId}`
+
+* 해당 방을 만든 유저가 아닌 다른 유저가 게임을 시작하려고 시도할 경우, 잘못된 요청 처리(`BAD_REQUEST`) 처리를 합니다.
+
+=== Path parameters
+
+include::{snippets}/RoomControllerTest/startGame_Fail_NotHost/path-parameters.adoc[]
+
+=== Http request
+
+include::{snippets}/RoomControllerTest/startGame_Fail_NotHost/http-request.adoc[]
+
+=== Request body
+
+include::{snippets}/RoomControllerTest/startGame_Fail_NotHost/request-body.adoc[]
+
+=== Request fields
+
+include::{snippets}/RoomControllerTest/startGame_Fail_NotHost/request-fields.adoc[]
+
+=== Http response
+
+include::{snippets}/RoomControllerTest/startGame_Fail_NotHost/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/RoomControllerTest/startGame_Fail_NotHost/response-fields.adoc[]
+
+=== 게임 시작 API 실패 시(방 안의 인원이 방의 타입에 맞게 모든 인원이 꽉 차있지 않은 경우)
+
+=== `PUT /room/start/{roomId}`
+
+* 방 안의 인원이 방의 타입에 맞게 모든 인원이 꽉차지 않은 상태에서 게임을 시작하려고 시도할 경우, 잘못된 요청 처리(`BAD_REQUEST`) 처리를 합니다.
+
+=== Path parameters
+
+include::{snippets}/RoomControllerTest/startGame_Fail_RoomNotFull/path-parameters.adoc[]
+
+=== Http request
+
+include::{snippets}/RoomControllerTest/startGame_Fail_RoomNotFull/http-request.adoc[]
+
+=== Request body
+
+include::{snippets}/RoomControllerTest/startGame_Fail_RoomNotFull/request-body.adoc[]
+
+=== Response fields
+
+include::{snippets}/RoomControllerTest/startGame_Fail_RoomNotFull/request-fields.adoc[]
+
+=== Http response
+
+include::{snippets}/RoomControllerTest/startGame_Fail_RoomNotFull/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/RoomControllerTest/startGame_Fail_RoomNotFull/response-fields.adoc[]
+
+=== 게임 시작 API 실패 시(서버 에러가 발생한 경우)
+
+=== `PUT /room/start/{roomId}`
+
+* 서버 에러가 발생한 경우, 서버 에러 처리(`SERVER_ERROR`)를 합니다.
+
+=== Path parameters
+
+include::{snippets}/RoomControllerTest/startGame_Fail_ServerError/path-parameters.adoc[]
+
+=== Http request
+
+include::{snippets}/RoomControllerTest/startGame_Fail_ServerError/http-request.adoc[]
+
+=== Request body
+
+include::{snippets}/RoomControllerTest/startGame_Fail_ServerError/request-body.adoc[]
+
+=== Request fields
+
+include::{snippets}/RoomControllerTest/startGame_Fail_ServerError/request-fields.adoc[]
+
+=== Http response
+
+include::{snippets}/RoomControllerTest/startGame_Fail_ServerError/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/RoomControllerTest/startGame_Fail_ServerError/response-fields.adoc[]

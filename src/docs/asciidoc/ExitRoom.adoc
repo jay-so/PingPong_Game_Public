@@ -1,0 +1,207 @@
+= 방 나가기 API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:snippets: build/generated-snippets
+
+=== 방 나가기 API
+
+- 유저가 참가한 방을 나갈 때, 사용하는 API입니다.
+
+=== ⭐️ 방 나가기 로직
+
+* 방을 생성하는 사람을 호스트(host)라고 명칭하고, 호스트가 방을 나가면 해당 방은 `FINISH` (완료) 상태로 변경됩니다.
+* 호스트가 방을 나가면 해당 방에 참가한 모든 유저들도 해당 방에서 나가게 됩니다.
+- 해당 방의 상태는 `FINISH` (완료) 상태로 변경됩니다.
+
+* 일반 사용자가 방을 나갈경우, 해당 사용자만 방에서 나가게 됩니다.
+
+=== ⚠️  제한 조건
+
+* 유저(userId)가 현재 해당 방(`roomId`)에 참가한 상태일때만, 나가기가 가능합니다.
+- 만약 참가한 상태가 아니라면 잘못된 요청(`BAD_REQUEST`) 처리를 합니다.
+
+* 해당 방이 이미 시작(`PROGRESS`) 상태이나, 끝난 경우(`FINISH`) 나가기가 불가능합니다.
+- 만약 나갈려고 할 경우, 잘못된 요청(`BAD_REQUEST`) 처리를 합니다.
+
+* 존재하지 않는 방에 대한 나가기 요청이라면 잘못된 요청(`BAD_REQUEST`) 처리를 합니다.
+
+=== 방 나가기 API 성공 시(일반 유저)
+
+=== `POST /room/out/{roomId}`
+
+- 일반 사용자가 방을 나가는 API입니다.
+
+=== Path Parameters
+
+include::{snippets}/RoomControllerTest/exitRoom_Success/path-parameters.adoc[]
+
+=== Http request
+
+include::{snippets}/RoomControllerTest/exitRoom_Success/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/RoomControllerTest/exitRoom_Success/request-body.adoc[]
+
+=== Request fields
+
+include::{snippets}/RoomControllerTest/exitRoom_Success/request-fields.adoc[]
+
+=== Http response
+
+include::{snippets}/RoomControllerTest/exitRoom_Success/http-response.adoc[]
+
+=== Response field
+
+include::{snippets}/RoomControllerTest/exitRoom_Success/response-fields.adoc[]
+
+=== 방 나가기 API 성공 시(호스트)
+
+=== `POST /room/out/{roomId}`
+
+- 방을 생성한 호스트가 방을 나가는 API입니다.
+
+=== Path Parameters
+
+include::{snippets}/RoomControllerTest/exitRoom_Success_HostExit/path-parameters.adoc[]
+
+=== Http request
+
+include::{snippets}/RoomControllerTest/exitRoom_Success_HostExit/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/RoomControllerTest/exitRoom_Success_HostExit/request-body.adoc[]
+
+=== Request fields
+
+include::{snippets}/RoomControllerTest/exitRoom_Success_HostExit/request-fields.adoc[]
+
+=== Http response
+
+include::{snippets}/RoomControllerTest/exitRoom_Success_HostExit/http-response.adoc[]
+
+=== Response field
+
+include::{snippets}/RoomControllerTest/exitRoom_Success_HostExit/response-fields.adoc[]
+
+=== 방 나가기 API 실패 시(해당 유저가 방에 참가하지 않은 경우)
+
+=== `POST /room/out/{roomId}`
+
+- 해당 유저가 방에 참가하지 않은 상태에서 방을 나가려고 할 때, 잘못된 요청(`BAD_REQUEST`) 처리를 합니다.
+
+=== Path Parameters
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_UserNotJoinedRoom/path-parameters.adoc[]
+
+=== Http request
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_UserNotJoinedRoom/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_UserNotJoinedRoom/request-body.adoc[]
+
+=== Request fields
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_UserNotJoinedRoom/request-fields.adoc[]
+
+=== Http response
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_UserNotJoinedRoom/http-response.adoc[]
+
+=== Response field
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_UserNotJoinedRoom/response-fields.adoc[]
+
+=== 방 나가기 API 실패 시(방의 상태가 대기가 아닌 경우)
+
+=== `POST /room/out/{roomId}`
+
+- 방의 상태가 대기가 아닌 경우, 방을 나가려고 할 때, 잘못된 요청(`BAD_REQUEST`) 처리를 합니다.
+
+=== Path Parameters
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_RoomStatusIsNotWait/path-parameters.adoc[]
+
+=== Http request
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_RoomStatusIsNotWait/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_RoomStatusIsNotWait/request-body.adoc[]
+
+=== Request fields
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_RoomStatusIsNotWait/request-fields.adoc[]
+
+=== Http response
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_RoomStatusIsNotWait/http-response.adoc[]
+
+=== Response field
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_RoomStatusIsNotWait/response-fields.adoc[]
+
+=== 방 나가기 API 실패 시(방이 존재하지 않는 경우)
+
+=== `POST /room/out/{roomId}`
+
+- 존재하지 않는 방에 대한 나가기 요청이라면 잘못된 요청(`BAD_REQUEST`) 처리를 합니다.
+
+=== Path Parameters
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_RoomNotExist/path-parameters.adoc[]
+
+=== Http request
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_RoomNotExist/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_RoomNotExist/request-body.adoc[]
+
+=== Request fields
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_RoomNotExist/request-fields.adoc[]
+
+=== Http response
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_RoomNotExist/http-response.adoc[]
+
+=== Response field
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_RoomNotExist/response-fields.adoc[]
+
+=== 방 나가기 API 실패 시(서버 에러)
+
+=== `POST /room/out/{roomId}`
+
+- 서버 에러가 발생했을 때, 서버 에러(`SERVER_ERROR`) 처리를 합니다.
+
+=== Path Parameters
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_ServerError/path-parameters.adoc[]
+
+=== Http request
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_ServerError/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_ServerError/request-body.adoc[]
+
+=== Request fields
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_ServerError/request-fields.adoc[]
+
+=== Http response
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_ServerError/http-response.adoc[]
+
+=== Response field
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_ServerError/response-fields.adoc[]

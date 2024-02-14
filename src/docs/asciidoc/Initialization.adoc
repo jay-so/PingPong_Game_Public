@@ -2,6 +2,7 @@
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
+:snippets: build/generated-snippets
 
 == 초기화 API
 
@@ -69,7 +70,6 @@ include::{snippets}/InitializationControllerTest/initialization_Success/response
 === 초기화 API 호출 실패 시(요청 본문에 seed, quantity의 값이 잘못 입력된 경우)
 - Seed 값은 0보다 큰 정수여야 합니다.
 - Qunaitity 값은 0보다 큰 정수여야 합니다.
-
 
 ==== `POST /init`
 

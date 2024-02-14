@@ -1,7 +1,8 @@
-= 방 도메인 API 문서
+= 방 생성 API 문서
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
+:snippets: build/generated-snippets
 
 == 방 생성 API
 
@@ -10,6 +11,13 @@
 - 방은 대기(`WAIT`) 상태로 생성됩니다.
 - 방의 데이터가 저장되는 시점에 따라 `createdAt` 과 `updatedAt` 을 저장합니다.
 - 방을 생성한 사람을 호스트(`HOST`)라고 합니다.
+
+=== ⭐️ 방 생성 로직
+* 처음 방을 생성하면 방의 상태는 대기(`WAIT`) 상태로 생성됩니다.
+* 방의 상태는 대기(`WAIT`), 진행중(`PROGRESS`), 종료(`FINISH`) 상태가 있습니다.
+* 방의 타입은 단식(`SINGLE`), 복식(`DOUBLE`) 있습니다.
+- 단식(`SINGLE`)은 1:1 매칭 방입니다.(총 인원: 2명)
+- 복식(`DOUBLE`)은 2:2 매칭 방입니다.(총 인원: 4명)
 
 === ⚠️  제한조건
 
@@ -22,9 +30,15 @@
 
 === `POST /rooms`
 
+- 유저가 방을 생성하는 로직입니다.
+
 ==== HTTP request
 
 include::{snippets}/RoomControllerTest/createRoom_Success/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/RoomControllerTest/createRoom_Success/request-body.adoc[]
 
 ==== Request fields
 
@@ -44,19 +58,23 @@ include::{snippets}/RoomControllerTest/createRoom_Success/response-fields.adoc[]
 
 ==== HTTP request
 
-include::{snippets}/RoomControllerTest/createRoom_Fail_UserNotActivate/http-request.adoc[]
+include::{snippets}/createRoom_Fail_UserNotActivated/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/createRoom_Fail_UserNotActivated/request-body.adoc[]
 
 ==== Request fields
 
-include::{snippets}/RoomControllerTest/createRoom_Fail_UserNotActivate/request-fields.adoc[]
+include::{snippets}/createRoom_Fail_UserNotActivated/request-fields.adoc[]
 
 ==== Http response
 
-include::{snippets}/RoomControllerTest/createRoom_Fail_UserNotActivate/http-response.adoc[]
+include::{snippets}/createRoom_Fail_UserNotActivated/http-response.adoc[]
 
 ==== Response fields
 
-include::{snippets}/RoomControllerTest/createRoom_Fail_UserNotActivate/response-fields.adoc[]
+include::{snippets}/createRoom_Fail_UserNotActivated/response-fields.adoc[]
 
 === 방 생성 API 실패 시(유저가 이미 참여한 방이 있는 경우)
 
@@ -64,19 +82,24 @@ include::{snippets}/RoomControllerTest/createRoom_Fail_UserNotActivate/response-
 
 ==== HTTP request
 
-include::{snippets}/RoomControllerTest/createRoom_Fail_UserAlreadyJoined/http-request.adoc[]
+include::{snippets}/createRoom_Fail_UserAlreadyJoinedRoom/http-request.adoc[]
+
+==== Request Body
+
+include::{snippets}/createRoom_Fail_UserAlreadyJoinedRoom/request-body.adoc[]
 
 ==== Request fields
 
-include::{snippets}/RoomControllerTest/createRoom_Fail_UserAlreadyJoined/request-fields.adoc[]
+include::{snippets}/createRoom_Fail_UserAlreadyJoinedRoom/request-fields.adoc[]
 
-==== HTTP request
+=== Http response
 
-include::{snippets}/RoomControllerTest/createRoom_Fail_UserAlreadyJoined/http-response.adoc[]
+include::{snippets}/createRoom_Fail_UserAlreadyJoinedRoom/http-response.adoc[]
 
-==== Request fields
 
-include::{snippets}/RoomControllerTest/createRoom_Fail_UserAlreadyJoined/response-fields.adoc[]
+==== Response fields
+
+include::{snippets}/createRoom_Fail_UserAlreadyJoinedRoom/response-fields.adoc[]
 
 === 방 생성 API 실패 시(서버 에러)
 
@@ -84,16 +107,20 @@ include::{snippets}/RoomControllerTest/createRoom_Fail_UserAlreadyJoined/respons
 
 ==== HTTP request
 
-include::{snippets}/RoomControllerTest/createRoom_Fail_ServerError/http-request.adoc[]
+include::{snippets}/createRoom_Fail_ServerError/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/createRoom_Fail_ServerError/request-body.adoc[]
 
 ==== Request fields
 
-include::{snippets}/RoomControllerTest/createRoom_Fail_ServerError/request-fields.adoc[]
+include::{snippets}/createRoom_Fail_ServerError/request-fields.adoc[]
 
 ==== Http response
 
-include::{snippets}/RoomControllerTest/createRoom_Fail/http-response.adoc[]
+include::{snippets}/createRoom_Fail_ServerError/http-response.adoc[]
 
 ==== Response fields
 
-include::{snippets}/RoomControllerTest/createRoom_Fail/response-fields.adoc[]
+include::{snippets}/createRoom_Fail_ServerError/response-fields.adoc[]

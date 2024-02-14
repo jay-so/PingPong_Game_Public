@@ -2,6 +2,7 @@
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
+:snippets: build/generated-snippets
 
 == 방 상세 조회 API
 * 방 id(`roomId`)를 통해 방 상세 정보를 조회합니다.
@@ -12,13 +13,13 @@
 
 === `GET /rooms/{roomId}`
 
-=== Path parameters
-
-include::{snippets}/RoomControllerTest/findRoomDetail_Success/path-parameters.adoc[]
-
 ==== HTTP request
 
 include::{snippets}/RoomControllerTest/findRoomDetail_Success/http-request.adoc[]
+
+=== Path parameters
+
+include::{snippets}/RoomControllerTest/findRoomDetail_Success/path-parameters.adoc[]
 
 ==== Http response
 
@@ -34,13 +35,13 @@ include::{snippets}/RoomControllerTest/findRoomDetail_Success/response-fields.ad
 
 * 존재하지 않는 방을 조회하려고 하는 경우, 잘못된 요청 처리(`BAD_REQUEST`) 처리를 합니다.
 
-==== Path parameters
-
-include::{snippets}/RoomControllerTest/findRoomDetail_Fail_BadRequest/path-parameters.adoc[]
-
 === HTTP request
 
 include::{snippets}/RoomControllerTest/findRoomDetail_Fail_BadRequest/http-request.adoc[]
+
+==== Path parameters
+
+include::{snippets}/RoomControllerTest/findRoomDetail_Fail_BadRequest/path-parameters.adoc[]
 
 === Http response
 
@@ -54,13 +55,13 @@ include::{snippets}/RoomControllerTest/findRoomDetail_Fail_BadRequest/response-f
 
 === `GET /rooms/{roomId}`
 
-=== Path parameters
-
-include::{snippets}/RoomControllerTest/findRoomDetail_Fail_ServerError/path-parameters.adoc[]
-
 === HTTP request
 
 include::{snippets}/RoomControllerTest/findRoomDetail_Fail_ServerError/http-request.adoc[]
+
+=== Path parameters
+
+include::{snippets}/RoomControllerTest/findRoomDetail_Fail_ServerError/path-parameters.adoc[]
 
 === Http response
 

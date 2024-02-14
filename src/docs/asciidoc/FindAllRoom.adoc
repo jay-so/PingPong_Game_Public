@@ -2,6 +2,7 @@
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
+:snippets: build/generated-snippets
 
 == 방 전체 조회 API
 
@@ -14,12 +15,12 @@
 
 === 방 전체 조회 API 성공 시
 
-요청 파라미터:
+=== `GET /rooms`
+
+=== Request parameters(요청 파라미터)
 
 - page: 페이지 번호
 - size: 한 페이지에 반환될 유저의 개수
-
-=== `GET /rooms`
 
 ==== HTTP request
 
@@ -37,6 +38,11 @@ include::{snippets}/RoomControllerTest/findAllRoom_Success/response-fields.adoc[
 
 === `GET /rooms`
 
+=== Request parameters(요청 파라미터)
+
+- page: 페이지 번호
+- size: 한 페이지에 반환될 유저의 개수
+
 ==== HTTP request
 
 include::{snippets}/RoomControllerTest/findAllRoom_BadRequest/http-request.adoc[]
@@ -52,6 +58,11 @@ include::{snippets}/RoomControllerTest/findAllRoom_BadRequest/response-fields.ad
 === 방 전체 조회 API 실패 시 (서버 에러)
 
 === `GET /rooms`
+
+=== Request parameters(요청 파라미터)
+
+- page: 페이지 번호
+- size: 한 페이지에 반환될 유저의 개수
 
 ==== HTTP request
 

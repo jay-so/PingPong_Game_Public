@@ -12,7 +12,7 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 ext {
-    snippetsDir = file('build/generated-snippets')
+    snippetsDir = file("$buildDir/generated-snippets")
 }
 
 configurations {
@@ -20,7 +20,6 @@ configurations {
         extendsFrom annotationProcessor
     }
 }
-
 
 
 repositories {
@@ -45,6 +44,7 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    outputs.dir snippetsDir
 }
 
 sonar {
@@ -58,13 +58,11 @@ sonar {
 
 bootJar {
     dependsOn asciidoctor
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    mainClass = 'org.prography.spring.Application'
-    dependsOn asciidoctor
-    copy {
-        from "${asciidoctor.outputDir}"
+    from ("${asciidoctor.outputDir}") {
         into 'BOOT-INF/classes/static/docs'
     }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    mainClass = 'org.prography.spring.Application'
 }
 
 jacoco {
@@ -97,17 +95,16 @@ jacocoTestCoverageVerification {
 }
 
 asciidoctor {
+    doFirst {
+        delete file("src/main/resources/static/docs")
+    }
     dependsOn test
     inputs.dir snippetsDir
 }
 
-asciidoctor.doFirst {
-    delete file('src/main/resources/static/docs')
-}
-
 task copyDocument(type: Copy) {
     dependsOn asciidoctor
-    from file("build/docs/asciidoc")
+    from file("${asciidoctor.outputDir}")
     into file("src/main/resources/static/docs")
 }
 
