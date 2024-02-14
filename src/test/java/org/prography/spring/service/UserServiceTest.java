@@ -38,7 +38,7 @@ public class UserServiceTest {
 
     @Nested
     @DisplayName("사용자 전체 조회 요청을 처리한다.")
-    class findAll_Users_Check {
+    class FindAll_Users_Check {
 
         @Test
         @DisplayName("초기화 전에는 유저 정보를 전체 조회하면 비어있다.")
