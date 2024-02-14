@@ -43,7 +43,7 @@ public class TeamServiceTest {
 
     @Nested
     @DisplayName("팀 변경 요청을 처리한다.")
-    class changeTeamById_Check {
+    class ChangeTeamById_Check {
 
         @Test
         @DisplayName("유저는 팀을 변경할 수 있다.")
