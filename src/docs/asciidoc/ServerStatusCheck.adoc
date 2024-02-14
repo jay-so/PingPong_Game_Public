@@ -2,6 +2,7 @@
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
+:snippets: build/generated-snippets
 
 == 헬스 체크 API(서버 상태 체크 API)
 - 서버의 상태를 체크하는 API입니다.
@@ -10,6 +11,9 @@
 === 헬스 체크 API 호출 성공 시
 
 ==== `GET /health`
+
+- 서버 상태 체크 API 호출 성공 시, 아래와 같은 응답을 받습니다.
+
 
 ===== HTTP request
 
@@ -23,9 +27,11 @@ include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Success/http-re
 
 include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Success/response-fields.adoc[]
 
-=== 헬스 체크 API 호출 실패 시
+=== 헬스 체크 API 호출 실패 시(서버 에러)
 
 ==== `GET /health`
+
+- 서버 상태 체크 API 호출 실패 시, 아래와 같은 응답을 받습니다.
 
 ===== HTTP request
 
