@@ -31,7 +31,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
-import static org.prography.spring.common.ApiResponseCode.SEVER_ERROR;
 import static org.prography.spring.domain.enums.RoomType.SINGLE;
 import static org.prography.spring.domain.enums.RoomType.from;
 import static org.prography.spring.domain.enums.TeamStatus.BLUE;
@@ -52,18 +51,19 @@ public class RoomService {
         validateRoomService.validateUserIsParticipate(createRoomRequest.getUserId());
         validateRoomService.validateUserIsHost(createRoomRequest.getUserId());
 
-        User host = userRepository.findById(createRoomRequest.getUserId())
-                .orElseThrow(() -> new BussinessException(SEVER_ERROR));
+        User user = userRepository.findById(createRoomRequest.getUserId())
+                .orElseThrow(() -> new BussinessException(BAD_REQUEST));
 
         RoomType roomType = from(createRoomRequest.getRoomType());
-        Room room = createRoomRequest.toEntity(host, roomType);
+        Room room = createRoomRequest.toEntity(user, roomType);
         roomRepository.save(room);
 
         UserRoom userRoom = UserRoom.builder()
                 .roomId(room)
-                .userId(host)
+                .userId(user)
                 .teamStatus(RED)
                 .build();
+
         userRoomRepository.save(userRoom);
     }
 
