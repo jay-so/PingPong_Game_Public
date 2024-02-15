@@ -45,15 +45,15 @@ include::{snippets}/RoomControllerTest/findAllRoom_Success/response-fields.adoc[
 
 ==== HTTP request
 
-include::{snippets}/RoomControllerTest/findAllRoom_BadRequest/http-request.adoc[]
+include::{snippets}/RoomControllerTest/findAllRoom_Fail_BadRequest/http-request.adoc[]
 
 === Http response
 
-include::{snippets}/RoomControllerTest/findAllRoom_BadRequest/http-response.adoc[]
+include::{snippets}/RoomControllerTest/findAllRoom_Fail_BadRequest/http-response.adoc[]
 
 === Response fields
 
-include::{snippets}/RoomControllerTest/findAllRoom_BadRequest/response-fields.adoc[]
+include::{snippets}/RoomControllerTest/findAllRoom_Fail_BadRequest/response-fields.adoc[]
 
 === 방 전체 조회 API 실패 시 (서버 에러)
 
@@ -66,12 +66,12 @@ include::{snippets}/RoomControllerTest/findAllRoom_BadRequest/response-fields.ad
 
 ==== HTTP request
 
-include::{snippets}/RoomControllerTest/findAllRoom_ServerError/http-request.adoc[]
+include::{snippets}/RoomControllerTest/findAllRoom_Fail_ServerError/http-request.adoc[]
 
 ==== Http response
 
-include::{snippets}/RoomControllerTest/findAllRoom_ServerError/http-response.adoc[]
+include::{snippets}/RoomControllerTest/findAllRoom_Fail_ServerError/http-response.adoc[]
 
 === Response fields
 
-include::{snippets}/RoomControllerTest/findAllRoom_ServerError/response-fields.adoc[]
+include::{snippets}/RoomControllerTest/findAllRoom_Fail_ServerError/response-fields.adoc[]

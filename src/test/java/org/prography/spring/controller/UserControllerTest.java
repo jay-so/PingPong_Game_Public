@@ -149,7 +149,7 @@ public class UserControllerTest {
 
     @Test
     @DisplayName("유저 정보를 전체 조회 시, 잘못된 입력값이 들어오면 실패 처리가 반환된다")
-    void findAll_Users_fail_BadRequest() throws Exception {
+    void findAll_Users_Fail_BadRequest() throws Exception {
         //given
         userSetup.setUpUsers(10);
 
@@ -168,7 +168,7 @@ public class UserControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
                 .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage())).andDo(print())
-                .andDo(document("UserControllerTest/findAll_Users_fail_BadRequest",
+                .andDo(document("UserControllerTest/findAll_Users_Fail_BadRequest",
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지")
@@ -179,7 +179,7 @@ public class UserControllerTest {
 
     @Test
     @DisplayName("유저 정보를 전체 조회 시, 서버 에러가 발생되면 에러 응답이 반환된다")
-    void findAll_Users_fail_ServerError() throws Exception {
+    void findAll_Users_Fail_ServerError() throws Exception {
         //given
         userSetup.setUpUsers(10);
 
@@ -199,7 +199,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.code").value(SEVER_ERROR.getCode()))
                 .andExpect(jsonPath("$.message").value(SEVER_ERROR.getMessage()))
                 .andDo(print())
-                .andDo(document("UserControllerTest/findAll_Users_fail_ServerError",
+                .andDo(document("UserControllerTest/findAll_Users_Fail_ServerError",
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지")

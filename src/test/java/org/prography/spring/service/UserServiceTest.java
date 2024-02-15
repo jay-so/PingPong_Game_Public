@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
 import static org.prography.spring.common.ApiResponseCode.SEVER_ERROR;
 
 @ExtendWith(MockitoExtension.class)
@@ -65,8 +64,8 @@ public class UserServiceTest {
             // given
             Pageable pageable = PageRequest.of(0, 10);
             List<User> userList = UserFixture.usersBuild(10);
-
             Page<User> users = new PageImpl<>(userList, pageable, userList.size());
+
             given(userRepository.findAll(any(Pageable.class))).willReturn(users);
 
             // when
@@ -83,10 +82,11 @@ public class UserServiceTest {
         void findAll_Users_Fail_ServerError() {
             // given
             Pageable pageable = PageRequest.of(0, 10);
+            List<User> userList = UserFixture.usersBuild(10);
+            new PageImpl<>(userList, pageable, userList.size());
 
-            doThrow(new BussinessException(SEVER_ERROR))
-                    .when(userRepository)
-                    .findAll(any(Pageable.class));
+            given(userRepository.findAll(pageable))
+                    .willThrow(new BussinessException(SEVER_ERROR));
 
             // when & then
             assertThrows(BussinessException.class, () -> userService.findAllUsers(pageable));

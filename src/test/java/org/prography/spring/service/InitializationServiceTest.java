@@ -45,7 +45,7 @@ public class InitializationServiceTest {
 
         @Test
         @DisplayName("정상적으로 초기화 API가 호출되면, 기존의 사용자와 방 정보가 삭제되고 외부 Api에서 받아온 정보를 저장한다.")
-        void init_ValidInitRequest_Success() throws IOException, InterruptedException {
+        void initialization_Success() throws IOException, InterruptedException {
             // given
             InitializationRequest request = InitializationRequest.builder()
                     .seed(1L)
@@ -85,7 +85,7 @@ public class InitializationServiceTest {
 
         @Test
         @DisplayName("초기화 요청에 잘못된 값이 들어오면, 예외가 발생한다.")
-        void init_InvalidInitRequest_ThrowsException() {
+        void initialization_Fail_BadRequest() {
             //given
             InitializationRequest invalidRequest = InitializationRequest.builder()
                     .seed(-1L)
@@ -98,7 +98,7 @@ public class InitializationServiceTest {
 
         @Test
         @DisplayName("초기화 요청이 서버에서 정상적으로 이루어지지 않으면, 예외가 발생한다.")
-        void init_ServerError_ThrowsException() throws IOException, InterruptedException {
+        void initialization_Fail_ServerError() throws IOException, InterruptedException {
             //given
             InitializationRequest request = InitializationRequest.builder()
                     .seed(1L)

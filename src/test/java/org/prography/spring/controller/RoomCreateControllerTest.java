@@ -85,7 +85,7 @@ class RoomCreateControllerTest {
     }
 
     @Test
-    @DisplayName("유저의 상태가 활성화 상태가 아닌 경우, 방 생성을 실패하면, 실패 응답이 반환된다")
+    @DisplayName("유저의 상태가 활성 상태가 아닌 경우, 방 생성을 실패하면, 실패 응답이 반환된다")
     void createRoom_Fail_UserNotActivated() throws Exception {
         //given
         Long fakerId = 2L;

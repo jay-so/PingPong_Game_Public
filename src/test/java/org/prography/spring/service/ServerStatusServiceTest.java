@@ -53,8 +53,8 @@ public class ServerStatusServiceTest {
 
         @Test
         @DisplayName("서버 상태가 에러 상태이면 실패 응답이 반환된다")
-        void serverStatus_Check_Fail() {
-            //given
+        void serverStatus_Check_Fail_ServerError() {
+            // given
             Health serverHealth = Health.up().build();
             Health dbHealth = Health.down().build();
 

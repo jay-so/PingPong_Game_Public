@@ -26,15 +26,15 @@
 
 ===== HTTP request
 
-include::{snippets}/UserControllerTest/findAllUsers_BeforeInitialization_Success/http-request.adoc[]
+include::{snippets}/UserControllerTest/findAll_Users_BeforeInitialization_Success/http-request.adoc[]
 
 ===== HTTP response
 
-include::{snippets}/UserControllerTest/findAllUsers_BeforeInitialization_Success/http-response.adoc[]
+include::{snippets}/UserControllerTest/findAll_Users_BeforeInitialization_Success/http-response.adoc[]
 
 ===== Response fields
 
-include::{snippets}/UserControllerTest/findAllUsers_BeforeInitialization_Success/response-fields.adoc[]
+include::{snippets}/UserControllerTest/findAll_Users_BeforeInitialization_Success/response-fields.adoc[]
 
 === 초기화 API 호출 후, 유저 전체 조회 시
 
@@ -49,15 +49,15 @@ include::{snippets}/UserControllerTest/findAllUsers_BeforeInitialization_Success
 
 ====== HTTP request
 
-include::{snippets}/UserControllerTest/findAllUsers_AfterInitialization_Success/http-request.adoc[]
+include::{snippets}/UserControllerTest/findAll_Users_AfterInitialization_Success/http-request.adoc[]
 
 ===== HTTP response
 
-include::{snippets}/UserControllerTest/findAllUsers_AfterInitialization_Success/http-response.adoc[]
+include::{snippets}/UserControllerTest/findAll_Users_AfterInitialization_Success/http-response.adoc[]
 
 ====== Response fields
 
-include::{snippets}/UserControllerTest/findAllUsers_AfterInitialization_Success/response-fields.adoc[]
+include::{snippets}/UserControllerTest/findAll_Users_AfterInitialization_Success/response-fields.adoc[]
 
 === 유저 전체 조회 실패(페이지 번호가 0 이하인 경우)
 
@@ -70,15 +70,15 @@ include::{snippets}/UserControllerTest/findAllUsers_AfterInitialization_Success/
 
 ===== HTTP request
 
-include::{snippets}/UserControllerTest/findAllUsers_fail_BadRequest/http-request.adoc[]
+include::{snippets}/UserControllerTest/findAll_Users_Fail_BadRequest/http-request.adoc[]
 
 ===== HTTP response
 
-include::{snippets}/UserControllerTest/findAllUsers_fail_BadRequest/http-response.adoc[]
+include::{snippets}/UserControllerTest/findAll_Users_Fail_BadRequest/http-response.adoc[]
 
 ===== Response fields
 
-include::{snippets}/UserControllerTest/findAllUsers_fail_BadRequest/response-fields.adoc[]
+include::{snippets}/UserControllerTest/findAll_Users_Fail_BadRequest/response-fields.adoc[]
 
 === 유저 전체 조회 실패(서버 에러가 발생한 경우)
 
@@ -91,12 +91,12 @@ include::{snippets}/UserControllerTest/findAllUsers_fail_BadRequest/response-fie
 
 ===== HTTP request
 
-include::{snippets}/UserControllerTest/findAllUsers_fail_ServerError/http-request.adoc[]
+include::{snippets}/UserControllerTest/findAll_Users_Fail_ServerError/http-request.adoc[]
 
 ===== HTTP response
 
-include::{snippets}/UserControllerTest/findAllUsers_fail_ServerError/http-response.adoc[]
+include::{snippets}/UserControllerTest/findAll_Users_Fail_ServerError/http-response.adoc[]
 
 ===== Response fields
 
-include::{snippets}/UserControllerTest/findAllUsers_fail_ServerError/response-fields.adoc[]
+include::{snippets}/UserControllerTest/findAll_Users_Fail_ServerError/response-fields.adoc[]
