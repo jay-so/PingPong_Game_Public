@@ -57,7 +57,7 @@ public class ServerStatusControllerTest {
 
     @Test
     @DisplayName("정상적으로 서버 상태 체크 요청을 처리를 성공하면 성공 응답이 반환된다")
-    void serverStatusCheck_Success() throws Exception {
+    void serverStatus_Check_Success() throws Exception {
         //given
         doReturn(successResponse)
                 .when(serverStatusService)
@@ -74,7 +74,7 @@ public class ServerStatusControllerTest {
                 .andExpect(jsonPath("message").value(successResponse.getMessage()))
                 .andExpect(jsonPath("result").doesNotExist())
                 .andDo(print())
-                .andDo(document("ServerStatusControllerTest/serverStatusCheck_Success",
+                .andDo(document("ServerStatusControllerTest/serverStatus_Check_Success",
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지")
@@ -84,7 +84,7 @@ public class ServerStatusControllerTest {
 
     @Test
     @DisplayName("서버 상태 체크 요청 시 서버가 정상적이지 않으면 실패 응답이 반환된다")
-    void serverStatusCheck_Fail() throws Exception {
+    void serverStatus_Check_Fail_ServerError() throws Exception {
         //given
         doReturn(errorResponse)
                 .when(serverStatusService)
@@ -101,7 +101,7 @@ public class ServerStatusControllerTest {
                 .andExpect(jsonPath("$.message").value(errorResponse.getMessage()))
                 .andExpect(jsonPath("$.result").doesNotExist())
                 .andDo(print())
-                .andDo(document("ServerStatusControllerTest/serverStatusCheck_Fail",
+                .andDo(document("ServerStatusControllerTest/serverStatus_Check_Fail_ServerError",
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지"))

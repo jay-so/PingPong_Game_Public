@@ -17,15 +17,15 @@
 
 ===== HTTP request
 
-include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Success/http-request.adoc[]
+include::{snippets}/ServerStatusControllerTest/serverStatus_Check_Success/http-request.adoc[]
 
 ===== HTTP response
 
-include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Success/http-response.adoc[]
+include::{snippets}/ServerStatusControllerTest/serverStatus_Check_Success/http-response.adoc[]
 
 ===== Response fields
 
-include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Success/response-fields.adoc[]
+include::{snippets}/ServerStatusControllerTest/serverStatus_Check_Success/response-fields.adoc[]
 
 === 헬스 체크 API 호출 실패 시(서버 에러)
 
@@ -35,12 +35,12 @@ include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Success/respons
 
 ===== HTTP request
 
-include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Fail/http-request.adoc[]
+include::{snippets}/ServerStatusControllerTest/serverStatus_Check_Fail_ServerError/http-request.adoc[]
 
 ===== HTTP response
 
-include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Fail/http-response.adoc[]
+include::{snippets}/ServerStatusControllerTest/serverStatus_Check_Fail_ServerError/http-response.adoc[]
 
 ===== Response fields
 
-include::{snippets}/ServerStatusControllerTest/serverStatusCheck_Fail/response-fields.adoc[]
+include::{snippets}/ServerStatusControllerTest/serverStatus_Check_Fail_ServerError/response-fields.adoc[]
