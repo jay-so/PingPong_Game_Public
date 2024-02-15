@@ -1,5 +1,6 @@
 package org.prography.spring.service;
 
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.prography.spring.common.ApiResponse;
+import org.prography.spring.common.ApiResponseCode;
 import org.prography.spring.common.BussinessException;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthEndpoint;
@@ -103,7 +105,9 @@ public class ServerStatusServiceTest {
             // then
             assertThat(exception)
                     .isInstanceOf(BussinessException.class)
-                    .hasMessage(SEVER_ERROR.getMessage());
+                    .hasMessage(SEVER_ERROR.getMessage())
+                    .extracting("apiResponseCode", InstanceOfAssertFactories.type(ApiResponseCode.class))
+                    .isEqualTo(SEVER_ERROR);
         }
     }
 }
