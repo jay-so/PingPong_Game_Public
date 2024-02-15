@@ -76,6 +76,13 @@ jacocoTestReport {
         csv.required = false
     }
 
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: ['**/org/prography/spring/Application.class'])
+        }))
+    }
+
     finalizedBy jacocoTestCoverageVerification
 }
 
