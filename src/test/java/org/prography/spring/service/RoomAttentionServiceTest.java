@@ -59,6 +59,7 @@ public class RoomAttentionServiceTest {
             //given
             User user = UserFixture.userBuild(1L);
             Room room = RoomFixture.roomBuild(user);
+
             AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(user.getId());
 
             given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
@@ -83,14 +84,17 @@ public class RoomAttentionServiceTest {
         @Test
         @DisplayName("존재하지 않는 방에 유저가 참여하려고 하면, 실패 응답이 반환된다")
         void attentionUser_Fail_RoomNotExist() {
-            User user = UserFixture.userBuild(1L);
-            Room room = RoomFixture.roomBuild(user);
-            AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(user.getId());
+            User host = UserFixture.userBuild(1L);
+            User guest = UserFixture.userBuild(2L);
+            RoomFixture.roomBuild(host);
+            Long notExistRoomId = 100L;
 
-            given(roomRepository.findById(room.getId())).willReturn(Optional.empty());
+            AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(guest.getId());
+
+            given(roomRepository.findById(notExistRoomId)).willReturn(Optional.empty());
 
             //when & then
-            assertThrows(BussinessException.class, () -> roomService.attentionRoomById(room.getId(), attentionUserRequest));
+            assertThrows(BussinessException.class, () -> roomService.attentionRoomById(notExistRoomId, attentionUserRequest));
         }
 
         @Test
@@ -100,6 +104,7 @@ public class RoomAttentionServiceTest {
             User host = UserFixture.userBuild(1L);
             UserFixture.userBuild(2L);
             Room room = RoomFixture.notWaitStatusRoom(host);
+
             AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(host.getId());
 
             given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
@@ -115,6 +120,7 @@ public class RoomAttentionServiceTest {
             User host = UserFixture.userBuild(1L);
             User attendUser = UserFixture.userBuild(3L);
             Room room = RoomFixture.roomBuild(host);
+
             AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(attendUser.getId());
 
             willThrow(new BussinessException(ApiResponseCode.BAD_REQUEST))
@@ -130,10 +136,10 @@ public class RoomAttentionServiceTest {
         void attentionUser_Fail_UserNotActive() {
             //given
             User host = UserFixture.userBuild(1L);
-            UserFixture.notActiveUser(2L);
+            User notActiveUser = UserFixture.notActiveUser(2L);
             Room room = RoomFixture.roomBuild(host);
 
-            AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(host.getId());
+            AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(notActiveUser.getId());
 
             given(roomRepository.findById(room.getId())).willReturn(Optional.empty());
 
@@ -148,6 +154,7 @@ public class RoomAttentionServiceTest {
             //given
             User host = UserFixture.userBuild(1L);
             Room room = RoomFixture.roomBuild(host);
+
             AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(host.getId());
 
             willThrow(new BussinessException(ApiResponseCode.BAD_REQUEST))
@@ -156,20 +163,5 @@ public class RoomAttentionServiceTest {
             //when & then
             assertThrows(BussinessException.class, () -> roomService.attentionRoomById(room.getId(), attentionUserRequest));
         }
-    }
-
-    @Test
-    @DisplayName("유저가 방에 참가하려고 할때, 서버 에러가 발생하면 서버 에러 응답이 반환된다")
-    void attentionUser_Fail_ServerError() {
-        //given
-        User host = UserFixture.userBuild(1L);
-        User guest = UserFixture.userBuild(2L);
-        Room room = RoomFixture.roomBuild(host);
-        AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(guest.getId());
-
-        given(roomRepository.findById(room.getId())).willReturn(Optional.empty());
-
-        //when & then
-        assertThrows(BussinessException.class, () -> roomService.attentionRoomById(room.getId(), attentionUserRequest));
     }
 }
