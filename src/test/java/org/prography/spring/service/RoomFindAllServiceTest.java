@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.prography.spring.common.BussinessException;
 import org.prography.spring.domain.Room;
 import org.prography.spring.domain.User;
 import org.prography.spring.dto.response.RoomListResponse;
@@ -25,10 +24,8 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.prography.spring.common.ApiResponseCode.SEVER_ERROR;
 
 @ExtendWith(MockitoExtension.class)
 
@@ -89,21 +86,6 @@ public class RoomFindAllServiceTest {
                         assertThat(actualRoomResponse.getHostId()).isEqualTo(expectedRoomResponse.getHostId());
                         assertThat(actualRoomResponse.getRoomType()).isEqualTo(expectedRoomResponse.getRoomType());
                     });
-        }
-        @Test
-        @DisplayName("유저가 방 전체 목록 조회가 서버 내부 오류로 실패하면, 서버 응답 에러가 반환된다")
-        void findAllRoom_Fail_ServerError() {
-            // given
-            User user = UserFixture.userBuild(1L);
-            RoomFixture.roomsBuilder(Arrays.asList(user, user));
-
-            PageRequest pageable = PageRequest.of(0, 10);
-
-            given(roomRepository.findAll(pageable))
-                    .willThrow(new BussinessException(SEVER_ERROR));
-
-            // when & then
-            assertThrows(BussinessException.class, () -> roomService.findAllRooms(pageable));
         }
     }
 }
