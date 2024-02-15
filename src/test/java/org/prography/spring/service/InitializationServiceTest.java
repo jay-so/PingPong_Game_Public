@@ -1,5 +1,6 @@
 package org.prography.spring.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -39,6 +39,13 @@ public class InitializationServiceTest {
     @InjectMocks
     private InitializationService initializationService;
 
+    private HttpResponse<String> fakeResponse;
+
+    @BeforeEach
+    public void setup() {
+        fakeResponse = mock(HttpResponse.class);
+    }
+
     @Nested
     @DisplayName("초기화 요청을 처리한다.")
     class InitializationCheck {
@@ -51,8 +58,6 @@ public class InitializationServiceTest {
                     .seed(1L)
                     .quantity(10L)
                     .build();
-
-            HttpResponse<String> fakeResponse = mock(HttpResponse.class);
 
             String fakeResponseBody = "{"
                     + "\"status\":\"OK\","
@@ -72,7 +77,7 @@ public class InitializationServiceTest {
                     + "]}";
 
             given(fakeResponse.body()).willReturn(fakeResponseBody);
-            given(httpClient.send(any(HttpRequest.class), any(ofString().getClass()))).willReturn(fakeResponse);
+            given(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).willReturn(fakeResponse);
 
             // when
             initializationService.init(request);
@@ -81,6 +86,24 @@ public class InitializationServiceTest {
             then(userRepository).should(times(1)).deleteAll();
             then(roomRepository).should(times(1)).deleteAll();
             then(userRepository).should(times(1)).saveAll(anyList());
+        }
+
+        @Test
+        @DisplayName("faker API 응답이 잘못된 JSON 형식이면, 예외가 발생한다.")
+        void initialization_Fail_InvalidJson() throws IOException, InterruptedException {
+            // given
+            InitializationRequest request = InitializationRequest.builder()
+                    .seed(1L)
+                    .quantity(10L)
+                    .build();
+
+            String invalidJson = "{ invalid: json}";
+
+            given(fakeResponse.body()).willReturn(invalidJson);
+            given(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).willReturn(fakeResponse);
+
+            // when & then
+            assertThrows(BussinessException.class, () -> initializationService.init(request));
         }
 
         @Test
@@ -105,7 +128,7 @@ public class InitializationServiceTest {
                     .quantity(10L)
                     .build();
 
-            given(httpClient.send(any(HttpRequest.class), any(ofString().getClass())))
+            given(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
                     .willThrow(new IOException());
 
             //when & then
