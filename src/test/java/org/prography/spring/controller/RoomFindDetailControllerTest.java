@@ -58,7 +58,7 @@ class RoomFindDetailControllerTest {
     @DisplayName("정상적으로 유저가 방 상세 정보를 조회하면, 성공 응답이 반환된다")
     void findRoomDetail_Success() throws Exception {
         //given
-        roomSetup.setUpRooms(userSetup.setUpUsers(11));
+        roomSetup.setUpRooms(userSetup.setUpUsers(10));
         Long roomId = 1L;
         Room room = roomRepository.findById(roomId).get();
 
@@ -101,7 +101,7 @@ class RoomFindDetailControllerTest {
     @DisplayName("유저가 방 상세 정보 조회 시 존재하지 않은 방 id로 요청으로 실패하면, 잘못된 요청 응답이 반환된다")
     void findRoomDetail_Fail_BadRequest() throws Exception {
         //given
-        roomSetup.setUpRooms(userSetup.setUpUsers(11));
+        roomSetup.setUpRooms(userSetup.setUpUsers(10));
         Long notExistRoomId = 100L;
 
         doThrow(new BussinessException(BAD_REQUEST))
@@ -131,7 +131,7 @@ class RoomFindDetailControllerTest {
     @DisplayName("유저가 방 상세 정보 조회 시 서버 내부 오류로 실패하면, 서버 응답 에러가 반환된다")
     void findRoomDetail_Fail_ServerError() throws Exception {
         //given
-        roomSetup.setUpRooms(userSetup.setUpUsers(11));
+        roomSetup.setUpRooms(userSetup.setUpUsers(10));
         Long roomId = 1L;
 
         doThrow(new BussinessException(SEVER_ERROR))

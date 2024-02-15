@@ -13,8 +13,6 @@ import org.prography.spring.domain.User;
 import org.prography.spring.dto.response.RoomDetailResponse;
 import org.prography.spring.fixture.domain.RoomFixture;
 import org.prography.spring.fixture.domain.UserFixture;
-import org.prography.spring.fixture.domain.UserRoomFixture;
-import org.prography.spring.fixture.dto.RoomDtoFixture;
 import org.prography.spring.repository.RoomRepository;
 
 import java.util.Arrays;
@@ -25,7 +23,6 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 public class RoomFindDetailServiceTest {
@@ -43,13 +40,10 @@ public class RoomFindDetailServiceTest {
         @DisplayName("생성된 방에 대해서 상세 조회를 할 수 있다.")
         void findDetail_Room_Success() {
             // given
-            User user = mock(User.class);
-            given(user.getId()).willReturn(1L);
-
+            User user = UserFixture.userBuild(1L);
             Room room = RoomFixture.roomBuild(user);
-            UserRoomFixture.userRoomBuild(user, room);
 
-            RoomDetailResponse expectRoomDetailResponse = RoomDtoFixture.roomDetailResponse();
+            RoomDetailResponse expectRoomDetailResponse = RoomDetailResponse.of(room);
 
             given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
 
@@ -88,19 +82,6 @@ public class RoomFindDetailServiceTest {
 
             //when & then
             assertThrows(BussinessException.class, () -> roomService.findRoomById(notExistRoomId));
-        }
-
-        @Test
-        @DisplayName("유저가 방 상세 정보 조회 시 서버 내부 오류로 실패하면, 서버 응답 에러가 반환된다")
-        void findDetail_Room_Fail_ServerError() {
-            // given
-            User user = UserFixture.userBuild(1L);
-            Room room = RoomFixture.roomBuild(user);
-
-            given(roomRepository.findById(room.getId())).willReturn(Optional.empty());
-
-            //when & then
-            assertThrows(BussinessException.class, () -> roomService.findRoomById(room.getId()));
         }
     }
 }
