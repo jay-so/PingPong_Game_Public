@@ -2,7 +2,6 @@ package org.prography.spring.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -45,10 +44,6 @@ public class InitializationServiceTest {
     public void setup() {
         fakeResponse = mock(HttpResponse.class);
     }
-
-    @Nested
-    @DisplayName("초기화 요청을 처리한다.")
-    class InitializationCheck {
 
         @Test
         @DisplayName("정상적으로 초기화 API가 호출되면, 기존의 사용자와 방 정보가 삭제되고 외부 Api에서 받아온 정보를 저장한다.")
@@ -134,5 +129,4 @@ public class InitializationServiceTest {
             //when & then
             assertThrows(BussinessException.class, () -> initializationService.init(request));
         }
-    }
 }

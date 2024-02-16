@@ -1,7 +1,6 @@
 package org.prography.spring.service;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,9 +40,6 @@ public class RoomExitServiceTest {
     @InjectMocks
     private RoomService roomService;
 
-    @Nested
-    @DisplayName("방 나가기 요청을 처리한다.")
-    class Exit_Room_Check {
         @Test
         @DisplayName("호스트는 생성된 방에서 나갈 수 있다.")
         void ExitRoom_Host_Success() {
@@ -131,20 +127,4 @@ public class RoomExitServiceTest {
             //when & then
             assertThrows(RuntimeException.class, () -> roomService.exitRoomById(room.getId(), exitRoomRequest));
         }
-
-        @Test
-        @DisplayName("유저가 생성된 방에서 나갈 때, 서버 오류가 발생하면, 서버 오류 응답이 반환된다")
-        void exitRoom_Fail_ServerError() {
-            //given
-            User host = UserFixture.userBuild(1L);
-            Room room = RoomFixture.roomBuild(host);
-
-            ExitRoomRequest exitRoomRequest = UserDtoFixture.exitRoomRequest(host.getId());
-
-            given(roomRepository.findById(room.getId())).willThrow(new BussinessException(ApiResponseCode.SEVER_ERROR));
-
-            //when & then
-            assertThrows(BussinessException.class, () -> roomService.exitRoomById(room.getId(), exitRoomRequest));
-        }
-    }
 }

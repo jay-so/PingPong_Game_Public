@@ -1,7 +1,6 @@
 package org.prography.spring.service;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,10 +35,6 @@ public class RoomFindAllServiceTest {
 
     @InjectMocks
     private RoomService roomService;
-
-    @Nested
-    @DisplayName("방 전체 조회 요청을 처리한다.")
-    class FindAll_Rooms_Check {
 
         @Test
         @DisplayName("생성된 모든 방에 대해서 조회를 할 수 있다.")
@@ -87,5 +82,4 @@ public class RoomFindAllServiceTest {
                         assertThat(actualRoomResponse.getRoomType()).isEqualTo(expectedRoomResponse.getRoomType());
                     });
         }
-    }
 }

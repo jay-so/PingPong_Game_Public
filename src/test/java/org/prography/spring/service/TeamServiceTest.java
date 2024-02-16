@@ -25,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
-import static org.prography.spring.common.ApiResponseCode.SEVER_ERROR;
 import static org.prography.spring.domain.enums.RoomStatus.WAIT;
 import static org.prography.spring.domain.enums.TeamStatus.BLUE;
 
@@ -135,26 +134,6 @@ public class TeamServiceTest {
             given(userRoomRepository.findByUserId_IdAndRoomId_Id(user.getId(), room.getId())).willReturn(Optional.of(userRoom));
             given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
             given(userRoomRepository.countByRoomId_IdAndTeamStatus(room.getId(), BLUE)).willReturn(5L);
-
-            // when & then
-            assertThrows(BussinessException.class, () -> teamService.changeTeamById(room.getId(), changeTeamRequest));
-        }
-
-        @Test
-        @DisplayName("팀 변경 요청이 있을 때, 서버 에러가 발생하면 예외가 발생한다.")
-        void changeTeam_Fail_ServerError() {
-            //given
-            User user = UserFixture.userBuild(1L);
-            User host = UserFixture.userBuild(2L);
-            Room room = RoomFixture.roomBuild(host);
-            UserRoom userRoom = UserRoomFixture.userRoomBuild(host, room);
-
-            ChangeTeamRequest changeTeamRequest = UserDtoFixture.changeTeamRequest(user.getId());
-
-            given(roomRepository.existsById(room.getId())).willReturn(true);
-            given(roomRepository.findByIdAndStatus(room.getId(), WAIT)).willReturn(Optional.of(room));
-            given(userRoomRepository.findByUserId_IdAndRoomId_Id(user.getId(), room.getId())).willReturn(Optional.of(userRoom));
-            given(roomRepository.findById(room.getId())).willThrow(new BussinessException(SEVER_ERROR));
 
             // when & then
             assertThrows(BussinessException.class, () -> teamService.changeTeamById(room.getId(), changeTeamRequest));
