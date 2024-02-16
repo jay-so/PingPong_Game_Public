@@ -2,7 +2,6 @@ package org.prography.spring.service;
 
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,10 +32,6 @@ public class ServerStatusServiceTest {
 
     @InjectMocks
     private ServerStatusService serverStatusService;
-
-    @Nested
-    @DisplayName("서버 상태 체크 요청을 처리한다.")
-    class ServerStatusCheck {
 
         @Test
         @DisplayName("서버 상태가 정상이면 성공 응답이 반환된다")
@@ -109,5 +104,4 @@ public class ServerStatusServiceTest {
                     .extracting("apiResponseCode", InstanceOfAssertFactories.type(ApiResponseCode.class))
                     .isEqualTo(SEVER_ERROR);
         }
-    }
 }

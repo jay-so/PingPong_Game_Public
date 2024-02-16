@@ -1,7 +1,6 @@
 package org.prography.spring.service;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,8 +32,6 @@ public class RoomFindDetailServiceTest {
     @InjectMocks
     private RoomService roomService;
 
-    @Nested
-    class FindRoomDetail_Check {
 
         @Test
         @DisplayName("생성된 방에 대해서 상세 조회를 할 수 있다.")
@@ -83,5 +80,4 @@ public class RoomFindDetailServiceTest {
             //when & then
             assertThrows(BussinessException.class, () -> roomService.findRoomById(notExistRoomId));
         }
-    }
 }

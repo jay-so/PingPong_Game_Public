@@ -1,7 +1,6 @@
 package org.prography.spring.service;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -48,9 +47,6 @@ public class RoomCreateServiceTest {
     @InjectMocks
     private RoomService roomService;
 
-    @Nested
-    @DisplayName("방 생성 요청을 처리한다.")
-    class CreateRoom_Check {
         @Test
         @DisplayName("방 요청이 정상적으로 처리되면, 방이 생성된다.")
         void create_Room_Success() {
@@ -84,7 +80,6 @@ public class RoomCreateServiceTest {
             //when & then
             assertThrows(BussinessException.class, () -> validateRoomService.validateUserStatusIsActive(user.getId()));
         }
-    }
 
     @Test
     @DisplayName("유저가 이미 참가한 방이 있는 경우, 방 생성 요청은 실패 응답이 반환된다.")

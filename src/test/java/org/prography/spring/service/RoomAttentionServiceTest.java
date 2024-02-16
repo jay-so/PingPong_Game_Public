@@ -2,7 +2,6 @@ package org.prography.spring.service;
 
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -48,10 +47,6 @@ public class RoomAttentionServiceTest {
 
     @InjectMocks
     private RoomService roomService;
-
-    @Nested
-    @DisplayName("방 참가 요청을 처리한다.")
-    class Attention_Rooms_Check {
 
         @Test
         @DisplayName("유저는 생성된 방에 참가 요청을 보낼 수 있다.")
@@ -163,5 +158,4 @@ public class RoomAttentionServiceTest {
             //when & then
             assertThrows(BussinessException.class, () -> roomService.attentionRoomById(room.getId(), attentionUserRequest));
         }
-    }
 }
