@@ -66,9 +66,4 @@ public class User {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = this.createdAt;
     }
-
-    @PreUpdate
-    public void initUpdatedAt() {
-        this.updatedAt = LocalDateTime.now();
-    }
 }

@@ -15,7 +15,7 @@ class UserTest {
 
     @Test
     @DisplayName("정상적으로 유저를 생성 할 수 있다.")
-    void createUserSuccess() {
+    void createUser_Success_Test() {
         //given
         Long expectedFakerId = 1L;
         User testUser = UserFixture.userBuild(expectedFakerId);
@@ -28,7 +28,7 @@ class UserTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 2, 3, 4, 5})
     @DisplayName("정상적으로 여러 명의 유저를 생성할 수 있다.")
-    void createUsersSuccess(int count) {
+    void createUsers_Success_Test(int count) {
         //given
         List<User> users = UserFixture.usersBuild(count);
 
