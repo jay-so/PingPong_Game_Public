@@ -178,7 +178,7 @@ public class UserControllerTest {
 
 
     @Test
-    @DisplayName("유저 정보를 전체 조회 시, 서버 에러가 발생되면 에러 응답이 반환된다")
+    @DisplayName("유저 정보를 전체 조회 시, 서버 에러가 발생되면  서버 에러 응답이 반환된다")
     void findAll_Users_Fail_ServerError() throws Exception {
         //given
         userSetup.setUpUsers(10);

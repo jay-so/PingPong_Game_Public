@@ -103,10 +103,10 @@ class RoomFindAllControllerTest {
     }
 
     @Test
-    @DisplayName("유저가 방 전체 목록 조회를 잘못된 요청으로 조회 시, 잘못된 요청 응답이 반환된다")
+    @DisplayName("유저가 방 전체 목록 조회를 잘못된 값으로 요청으로 조회 시, 실패 처리가 반환된다")
     void findAllRoom_Fail_BadRequest() throws Exception {
         //given
-        roomSetup.setUpRooms(userSetup.setUpUsers(11));
+        roomSetup.setUpRooms(userSetup.setUpUsers(10));
 
         doThrow(new BussinessException(BAD_REQUEST))
                 .when(roomService)
@@ -135,7 +135,7 @@ class RoomFindAllControllerTest {
     @DisplayName("유저가 방 전체 목록 조회가 서버 내부 오류로 실패하면, 서버 응답 에러가 반환된다")
     void findAllRoom_Fail_ServerError() throws Exception {
         //given
-        roomSetup.setUpRooms(userSetup.setUpUsers(11));
+        roomSetup.setUpRooms(userSetup.setUpUsers(10));
 
         doThrow(new BussinessException(SEVER_ERROR))
                 .when(roomService)
