@@ -8,7 +8,7 @@ import org.prography.spring.domain.UserRoom;
 import org.prography.spring.repository.RoomRepository;
 import org.prography.spring.repository.UserRepository;
 import org.prography.spring.repository.UserRoomRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +18,7 @@ import static org.prography.spring.domain.enums.RoomStatus.WAIT;
 import static org.prography.spring.domain.enums.RoomType.SINGLE;
 import static org.prography.spring.domain.enums.UserStatus.ACTIVE;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class ValidateRoomService {
 
