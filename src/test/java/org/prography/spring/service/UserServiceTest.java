@@ -38,7 +38,7 @@ class UserServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         List<User> userList = Collections.emptyList();
 
-        Page<User> users = new PageImpl<>(userList, pageable, userList.size());
+        Page<User> users = new PageImpl<>(userList, pageable, 0);
         given(userRepository.findAll(any(Pageable.class))).willReturn(users);
 
         // when

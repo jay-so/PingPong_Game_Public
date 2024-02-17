@@ -60,7 +60,8 @@ class RoomFindDetailControllerTest {
         //given
         roomSetup.setUpRooms(userSetup.setUpUsers(10));
         Long roomId = 1L;
-        Room room = roomRepository.findById(roomId).get();
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new BussinessException(BAD_REQUEST));
 
         //when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.get(BASE_URL + "/{roomId}", roomId)

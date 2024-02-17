@@ -182,11 +182,11 @@ class RoomAttentionControllerTest {
     @DisplayName("방에 참여하려는 유저 수가 방의 최대 인원 수를 초과하면, 실패 응답이 반환된다")
     void attentionUser_Fail_RoomOverCapacity() throws Exception {
         //given
-        Long hostfakerId = 1L;
+        Long hostFakerId = 1L;
         Long guestFakerId = 2L;
         Long overCapacityFakerId = 3L;
 
-        User host = userSetup.setUpUser(hostfakerId);
+        User host = userSetup.setUpUser(hostFakerId);
         User guest = userSetup.setUpUser(guestFakerId);
         User overCapacityUser = userSetup.setUpUser(overCapacityFakerId);
 
