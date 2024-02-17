@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.prography.spring.common.ApiResponse;
 import org.prography.spring.common.ApiResponseCode;
 import org.prography.spring.common.BussinessException;
+import org.prography.spring.service.validation.ValidateServerStatusService;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthComponent;
 import org.springframework.boot.actuate.health.HealthEndpoint;
@@ -21,25 +22,36 @@ import static org.springframework.boot.actuate.health.Status.UP;
 @RequiredArgsConstructor
 public class ServerStatusService {
 
-    private final DataSourceHealthIndicator dataSourceHealthIndicator;
     private final HealthEndpoint healthEndpoint;
+    private final DataSourceHealthIndicator dataSourceHealthIndicator;
+    private final ValidateServerStatusService validateServerStatusService;
     private final Map<Status, ApiResponseCode> statusApiResponseCodeMap = Map.of(
             UP, SUCCESS
     );
 
     public ApiResponse<Void> serverStatusCheck() {
+        Health dbHealth = checkDbHealth();
+        HealthComponent healthComponent = checkServerHealth();
+        Status dbStatus = dbHealth.getStatus();
+        Status status = healthComponent.getStatus();
+
+        validateServerStatusService.validateServerStatus(dbStatus, status);
+
+        ApiResponseCode apiResponseCode = statusApiResponseCodeMap.getOrDefault(status, SEVER_ERROR);
+        return new ApiResponse<>(apiResponseCode.getCode(), apiResponseCode.getMessage(), null);
+    }
+
+    private Health checkDbHealth() {
         try {
-            Health dbHealth = dataSourceHealthIndicator.health();
-            HealthComponent healthComponent = healthEndpoint.health();
-            Status dbStatus = dbHealth.getStatus();
-            Status status = healthComponent.getStatus();
+            return dataSourceHealthIndicator.health();
+        } catch (RuntimeException e) {
+            throw new BussinessException(SEVER_ERROR);
+        }
+    }
 
-            if (dbStatus != UP || status != UP) {
-                return new ApiResponse<>(SEVER_ERROR.getCode(), SEVER_ERROR.getMessage(), null);
-            }
-
-            ApiResponseCode apiResponseCode = statusApiResponseCodeMap.getOrDefault(status, SEVER_ERROR);
-            return new ApiResponse<>(apiResponseCode.getCode(), apiResponseCode.getMessage(), null);
+    private HealthComponent checkServerHealth() {
+        try {
+            return healthEndpoint.health();
         } catch (RuntimeException e) {
             throw new BussinessException(SEVER_ERROR);
         }

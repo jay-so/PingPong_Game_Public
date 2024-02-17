@@ -11,6 +11,7 @@ import org.prography.spring.domain.enums.UserStatus;
 import org.prography.spring.dto.request.InitializationRequest;
 import org.prography.spring.repository.RoomRepository;
 import org.prography.spring.repository.UserRepository;
+import org.prography.spring.service.validation.ValidateInitService;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -18,12 +19,12 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
 import static org.prography.spring.common.ApiResponseCode.SEVER_ERROR;
 import static org.prography.spring.domain.enums.UserStatus.*;
 
@@ -31,15 +32,14 @@ import static org.prography.spring.domain.enums.UserStatus.*;
 @RequiredArgsConstructor
 public class InitializationService {
 
+    private final HttpClient httpClient;
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
-    private final HttpClient httpClient;
+    private final ValidateInitService validateInitService;
 
     @Transactional
     public void init(InitializationRequest initializationRequest) {
-        if(!initializationRequest.validateInitializationRequest()){
-            throw new BussinessException(BAD_REQUEST);
-        }
+        validateInitService.validateInitializationRequest(initializationRequest);
 
         userRepository.deleteAll();
         roomRepository.deleteAll();
@@ -64,9 +64,13 @@ public class InitializationService {
 
             List<User> userList = convertResponseToUsers(fakerApiResponse.body());
             userList.sort(Comparator.comparing(User::getFakerId));
-
             return userList;
-        } catch (IOException | InterruptedException e) {
+
+        } catch (IOException e) {
+            throw new BussinessException(SEVER_ERROR);
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new BussinessException(SEVER_ERROR);
         }
     }
@@ -79,7 +83,7 @@ public class InitializationService {
             return IntStream.range(0, dataArray.length())
                     .mapToObj(dataArray::getJSONObject)
                     .map(this::jsonToUser)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toCollection(ArrayList::new));
 
         } catch (JSONException e) {
             throw new BussinessException(SEVER_ERROR);

@@ -10,6 +10,8 @@ import org.prography.spring.domain.enums.UserStatus;
 
 import java.time.LocalDateTime;
 
+import static java.time.LocalDateTime.*;
+
 @Getter
 @Entity
 @Table(name = "users")
@@ -63,12 +65,12 @@ public class User {
 
     @PrePersist
     public void initCreatedAt() {
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = now();
         this.updatedAt = this.createdAt;
     }
 
     @PreUpdate
     public void initUpdatedAt() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = now();
     }
 }

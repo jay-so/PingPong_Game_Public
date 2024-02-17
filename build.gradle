@@ -82,7 +82,6 @@ jacocoTestReport {
                     exclude: ['**/org/prography/spring/Application.class',
                             '**/org/prography/spring/config/**',
                             '**/org/prography/spring/dto/**',
-                            '**/org/prography/spring/repository/**',
                             '**/org/prography/spring/domain/enums/**',
                             '**/org/prography/spring/common/**',
                     ])

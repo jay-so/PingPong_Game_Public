@@ -11,6 +11,7 @@ import org.prography.spring.domain.enums.RoomType;
 
 import java.time.LocalDateTime;
 
+import static java.time.LocalDateTime.*;
 import static org.prography.spring.domain.enums.RoomStatus.*;
 
 @Getter
@@ -68,13 +69,13 @@ public class Room {
 
     @PrePersist
     public void initCreatedAt() {
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = now();
         this.updatedAt = this.createdAt;
     }
 
     @PreUpdate
     public void initUpdatedAt() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = now();
     }
 
     public void startGame() {

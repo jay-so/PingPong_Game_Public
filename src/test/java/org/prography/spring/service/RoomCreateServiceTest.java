@@ -16,13 +16,11 @@ import org.prography.spring.fixture.domain.UserFixture;
 import org.prography.spring.fixture.domain.UserRoomFixture;
 import org.prography.spring.fixture.dto.RoomDtoFixture;
 import org.prography.spring.repository.RoomRepository;
-import org.prography.spring.repository.UserRepository;
 import org.prography.spring.repository.UserRoomRepository;
 import org.prography.spring.service.validation.ValidateRoomService;
+import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
@@ -30,13 +28,10 @@ import static org.mockito.Mockito.verify;
 import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
 
 @ExtendWith(MockitoExtension.class)
-public class RoomCreateServiceTest {
+class RoomCreateServiceTest {
 
     @Mock
     private RoomRepository roomRepository;
-
-    @Mock
-    private UserRepository userRepository;
 
     @Mock
     private UserRoomRepository userRoomRepository;
@@ -47,67 +42,82 @@ public class RoomCreateServiceTest {
     @InjectMocks
     private RoomService roomService;
 
-        @Test
-        @DisplayName("방 요청이 정상적으로 처리되면, 방이 생성된다.")
-        void create_Room_Success() {
-            // given
-            User user = UserFixture.userBuild(1L);
-            CreateRoomRequest createRoomRequest = RoomDtoFixture.createRoomRequest();
+    @Test
+    @DisplayName("방 요청이 정상적으로 처리되면, 방이 생성된다.")
+    void create_Room_Success() {
+        // given
+        User user = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(user, "id", 1L);
 
-            given(userRepository.findById(createRoomRequest.getUserId())).willReturn(Optional.of(user));
+        CreateRoomRequest createRoomRequest = RoomDtoFixture.createRoomRequest();
 
-            // when
-            roomService.createRoom(createRoomRequest);
+        given(validateRoomService.validateUserIsExist(createRoomRequest.getUserId())).willReturn(user);
 
-            // then
-            verify(validateRoomService).validateUserStatusIsActive(createRoomRequest.getUserId());
-            verify(validateRoomService).validateUserIsParticipate(createRoomRequest.getUserId());
-            verify(validateRoomService).validateUserIsHost(createRoomRequest.getUserId());
-            verify(userRepository).findById(createRoomRequest.getUserId());
-            verify(roomRepository).save(any(Room.class));
-            verify(userRoomRepository).save(any(UserRoom.class));
-        }
+        // when
+        roomService.createRoom(createRoomRequest);
 
-        @Test
-        @DisplayName("유저 상태가 활성 상태가 아닌 경우, 방 생성 요청은 실패 응답이 반환된다.")
-        void create_Room_Fail_UserStatusIsNotActive() {
-            //given
-            User user = UserFixture.notActiveUser(1L);
+        // then
+        verify(validateRoomService).validateUserStatusIsActive(createRoomRequest.getUserId());
+        verify(validateRoomService).validateUserIsParticipate(createRoomRequest.getUserId());
+        verify(validateRoomService).validateUserIsExist(createRoomRequest.getUserId());
+        verify(roomRepository).save(any(Room.class));
+        verify(userRoomRepository).save(any(UserRoom.class));
+    }
 
-            willThrow(new BussinessException(BAD_REQUEST))
-                    .given(validateRoomService).validateUserStatusIsActive(user.getId());
+    @Test
+    @DisplayName("유저 상태가 활성 상태가 아닌 경우, 방 생성 요청은 실패 응답이 반환된다.")
+    void create_Room_Fail_UserStatusIsNotActive() {
+        //given
+        User user = UserFixture.notActiveUser(1L);
+        ReflectionTestUtils.setField(user, "id", 1L);
 
-            //when & then
-            assertThrows(BussinessException.class, () -> validateRoomService.validateUserStatusIsActive(user.getId()));
-        }
+        CreateRoomRequest createRoomRequest = RoomDtoFixture.createRoomRequest();
+
+        willThrow(new BussinessException(BAD_REQUEST))
+                .given(validateRoomService).validateUserStatusIsActive(user.getId());
+
+        //when & then
+        assertThatThrownBy(() -> roomService.createRoom(createRoomRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage());
+    }
 
     @Test
     @DisplayName("유저가 이미 참가한 방이 있는 경우, 방 생성 요청은 실패 응답이 반환된다.")
     void create_Room_Fail_UserIsParticipate() {
         // given
         User user = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(user, "id", 1L);
+
         Room room = RoomFixture.roomBuild(user);
+        ReflectionTestUtils.setField(room, "id", 1L);
         UserRoomFixture.userRoomBuild(user, room);
+
+        CreateRoomRequest createRoomRequest = RoomDtoFixture.createRoomRequest();
 
         willThrow(new BussinessException(BAD_REQUEST))
                 .given(validateRoomService).validateUserIsParticipate(user.getId());
 
         //when & then
-        assertThrows(BussinessException.class, () -> validateRoomService.validateUserIsParticipate(user.getId()));
+        assertThatThrownBy(() -> roomService.createRoom(createRoomRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage());
     }
 
     @Test
     @DisplayName("유저가 방을 생성할때, 사용자를 찾을 수 없으면 실패 응답이 반환된다.")
     void create_Room_Fail_NotFoundUser() {
         //given
-        User user = UserFixture.userBuild(1L);
-        Room room = RoomFixture.roomBuild(user);
-        UserRoomFixture.userRoomBuild(user, room);
+        Long notExistUserId = 1L;
+
+        CreateRoomRequest createRoomRequest = RoomDtoFixture.createRoomRequest();
 
         willThrow(new BussinessException(BAD_REQUEST))
-                .given(userRepository).findById(user.getId());
+                .given(validateRoomService).validateUserIsExist(notExistUserId);
 
         //when & then
-        assertThrows(BussinessException.class, () -> userRepository.findById(user.getId()));
+        assertThatThrownBy(() -> roomService.createRoom(createRoomRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage());
     }
 }

@@ -8,7 +8,7 @@ import org.prography.spring.domain.UserRoom;
 import org.prography.spring.repository.RoomRepository;
 import org.prography.spring.repository.UserRepository;
 import org.prography.spring.repository.UserRoomRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +18,7 @@ import static org.prography.spring.domain.enums.RoomStatus.WAIT;
 import static org.prography.spring.domain.enums.RoomType.SINGLE;
 import static org.prography.spring.domain.enums.UserStatus.ACTIVE;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class ValidateRoomService {
 
@@ -42,12 +42,10 @@ public class ValidateRoomService {
         }
     }
 
-    public void validateUserIsHost(Long userId) {
-        Optional<Room> checkUserIsHost = roomRepository.findByHost_Id(userId);
+    public User validateUserIsExist(Long userId) {
 
-        if (checkUserIsHost.isPresent()) {
-            throw new BussinessException(BAD_REQUEST);
-        }
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new BussinessException(BAD_REQUEST));
     }
 
     public void validateRoomIsExist(Long roomId) {
