@@ -149,7 +149,9 @@ public class RoomService {
         validateRoomService.validateHostOfRoom(roomId, userId);
         validateRoomService.validateRoomIsFull(roomId);
 
-        Room room = roomRepository.findById(roomId).get();
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new BussinessException(BAD_REQUEST));
+
         room.startGame();
         roomRepository.save(room);
 
