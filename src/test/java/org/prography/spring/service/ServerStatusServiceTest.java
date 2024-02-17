@@ -13,12 +13,10 @@ import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.boot.actuate.jdbc.DataSourceHealthIndicator;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.BDDMockito.willThrow;
 import static org.prography.spring.common.ApiResponseCode.SEVER_ERROR;
 import static org.prography.spring.common.ApiResponseCode.SUCCESS;
 
@@ -65,15 +63,12 @@ public class ServerStatusServiceTest {
         given(healthEndpoint.health()).willReturn(serverHealth);
         given(dataSourceHealthIndicator.health()).willReturn(dbHealth);
 
-        doThrow(new BussinessException(SEVER_ERROR))
-                .when(validateServerStatusService)
-                .validateServerStatus(any(), any());
+        willThrow(new BussinessException(SEVER_ERROR))
+                .given(validateServerStatusService)
+                .validateServerStatus(dbHealth.getStatus(), serverHealth.getStatus());
 
-        // when
-        Throwable exception = catchThrowable(() -> serverStatusService.serverStatusCheck());
-
-        // then
-        assertThat(exception)
+        // when & then
+        assertThatThrownBy(() -> serverStatusService.serverStatusCheck())
                 .isInstanceOf(BussinessException.class)
                 .hasMessage(SEVER_ERROR.getMessage());
     }
@@ -89,15 +84,12 @@ public class ServerStatusServiceTest {
         given(healthEndpoint.health()).willReturn(serverHealth);
         given(dataSourceHealthIndicator.health()).willReturn(dbHealth);
 
-        doThrow(new BussinessException(SEVER_ERROR))
-                .when(validateServerStatusService)
-                .validateServerStatus(any(), any());
+        willThrow(new BussinessException(SEVER_ERROR))
+                .given(validateServerStatusService)
+                .validateServerStatus(dbHealth.getStatus(), serverHealth.getStatus());
 
-        //when
-        Throwable exception = catchThrowable(() -> serverStatusService.serverStatusCheck());
-
-        //then
-        assertThat(exception)
+        //when & then
+        assertThatThrownBy(() -> serverStatusService.serverStatusCheck())
                 .isInstanceOf(BussinessException.class)
                 .hasMessage(SEVER_ERROR.getMessage());
     }
