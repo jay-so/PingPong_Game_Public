@@ -17,12 +17,12 @@ class UserTest {
     @DisplayName("정상적으로 유저를 생성 할 수 있다.")
     void createUser_Success_Test() {
         //given
-        Long expectedFakerId = 1L;
-        User testUser = UserFixture.userBuild(expectedFakerId);
+        Long fakerId = 1L;
+        User user = UserFixture.userBuild(fakerId);
 
         //when & then
-        assertNotNull(testUser.getFakerId());
-        assertEquals(expectedFakerId, testUser.getFakerId());
+        assertNotNull(user.getFakerId());
+        assertEquals(fakerId, user.getFakerId());
     }
 
     @ParameterizedTest
