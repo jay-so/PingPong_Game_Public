@@ -83,6 +83,7 @@ class RoomAttentionServiceTest {
     @DisplayName("존재하지 않는 방에 유저가 참여하려고 하면, 실패 응답이 반환된다")
     void attentionUser_Fail_RoomNotExist() {
         //given
+        Long notExistRoomId = 100L;
         User host = UserFixture.userBuild(1L);
         ReflectionTestUtils.setField(host, "id", 1L);
 
@@ -91,7 +92,6 @@ class RoomAttentionServiceTest {
 
         Room room = RoomFixture.roomBuild(host);
         ReflectionTestUtils.setField(room, "id", 1L);
-        Long notExistRoomId = 100L;
 
         AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(guest.getId());
 

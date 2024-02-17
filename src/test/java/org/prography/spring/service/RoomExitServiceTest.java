@@ -140,12 +140,12 @@ class RoomExitServiceTest {
     @Test
     @DisplayName("방이 존재하지 않는 경우, 유저가 방에서 나가려고 하면, 실패 응답이 반환된다")
     void exitRoom_Fail_RoomNotExist() {
+        Long notExistRoomId = 99L;
         User user = UserFixture.userBuild(1L);
         ReflectionTestUtils.setField(user, "id", 1L);
 
         Room room = RoomFixture.roomBuild(user);
         ReflectionTestUtils.setField(room, "id", 1L);
-        Long notExistRoomId = 99L;
 
         ExitRoomRequest exitRoomRequest = UserDtoFixture.exitRoomRequest(user.getId());
 

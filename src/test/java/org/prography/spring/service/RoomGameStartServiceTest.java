@@ -69,11 +69,11 @@ class RoomGameStartServiceTest {
     @DisplayName("존재하지 않는 방에서 게임을 시작하려는 경우, 실패 응답이 반환된다")
     void startGame_Fail_RoomNotExist() {
         //given
+        Long notExistRoomId = 99L;
         User user = UserFixture.userBuild(1L);
         ReflectionTestUtils.setField(user, "id", 1L);
 
         StartGameRequest startGameRequest = UserDtoFixture.startGameRequest(user.getId());
-        Long notExistRoomId = 99L;
 
         willThrow(new BussinessException(ApiResponseCode.BAD_REQUEST))
                 .given(validateRoomService).validateRoomIsExist(notExistRoomId);

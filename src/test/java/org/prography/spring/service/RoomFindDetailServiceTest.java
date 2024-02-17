@@ -71,9 +71,8 @@ class RoomFindDetailServiceTest {
     @DisplayName("유저가 방 상세 정보 조회 시 존재하지 않은 방 id로 요청으로 실패하면, 잘못된 요청 응답이 반환된다")
     void findRoomDetail_Fail_BadRequest() {
         // given
-        User host = UserFixture.userBuild(1L);
-        RoomFixture.roomBuild(host);
         Long notExistRoomId = 99L;
+        UserFixture.userBuild(1L);
 
         given(roomRepository.findById(notExistRoomId)).willReturn(Optional.empty());
 
