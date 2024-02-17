@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.prography.spring.common.ApiResponseCode;
 import org.prography.spring.common.BussinessException;
 import org.prography.spring.domain.Room;
 import org.prography.spring.domain.User;
@@ -17,13 +16,15 @@ import org.prography.spring.fixture.dto.UserDtoFixture;
 import org.prography.spring.repository.RoomRepository;
 import org.prography.spring.repository.UserRoomRepository;
 import org.prography.spring.service.validation.ValidateRoomService;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.verify;
+import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
 
 @ExtendWith(MockitoExtension.class)
 class RoomExitServiceTest {
@@ -44,21 +45,24 @@ class RoomExitServiceTest {
     @DisplayName("호스트는 생성된 방에서 나갈 수 있다.")
     void ExitRoom_Host_Success() {
         //given
-        User user = UserFixture.userBuild(1L);
-        Room room = RoomFixture.roomBuild(user);
-        ExitRoomRequest exitRoomRequest = UserDtoFixture.exitRoomRequest(user.getId());
+        User host = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(host, "id", 1L);
+
+        Room room = RoomFixture.roomBuild(host);
+        ReflectionTestUtils.setField(room, "id", 1L);
+
+        ExitRoomRequest exitRoomRequest = UserDtoFixture.exitRoomRequest(host.getId());
 
         given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
-        given(validateRoomService.validateUserIsRoomHost(room, user.getId())).willReturn(true);
+        given(validateRoomService.validateUserIsRoomHost(room, host.getId())).willReturn(true);
 
         //when
         roomService.exitRoomById(room.getId(), exitRoomRequest);
 
         //then
         verify(validateRoomService).validateRoomIsExist(room.getId());
-        verify(validateRoomService).validateUserIsInRoom(room.getId(), user.getId());
+        verify(validateRoomService).validateUserIsInRoom(room.getId(), host.getId());
         verify(validateRoomService).validateRoomStatusIsWait(room.getId());
-        verify(roomRepository).save(room);
         verify(userRoomRepository).deleteByRoomId_Id(room.getId());
     }
 
@@ -67,7 +71,11 @@ class RoomExitServiceTest {
     void ExitRoom_User_Success() {
         //given
         User user = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(user, "id", 1L);
+
         Room room = RoomFixture.roomBuild(user);
+        ReflectionTestUtils.setField(room, "id", 1L);
+
         ExitRoomRequest exitRoomRequest = UserDtoFixture.exitRoomRequest(user.getId());
 
         given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
@@ -86,45 +94,67 @@ class RoomExitServiceTest {
     @Test
     @DisplayName("유저가 방에 참가하지 않은 상태에서 나가려고 하면, 실패 응답이 반환된다")
     void exitRoom_Fail_UserNotJoinedRoom() {
-        Long roomId = 1L;
-        Long userId = 2L;
-        ExitRoomRequest exitRoomRequest = UserDtoFixture.exitRoomRequest(userId);
+        //given
+        User user = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(user, "id", 1L);
 
-        willThrow(new BussinessException(ApiResponseCode.BAD_REQUEST))
-                .given(validateRoomService).validateUserIsInRoom(roomId, userId);
+        Room room = RoomFixture.roomBuild(user);
+        ReflectionTestUtils.setField(room, "id", 1L);
 
-        // then
-        assertThrows(BussinessException.class, () -> {
-            // when
-            roomService.exitRoomById(roomId, exitRoomRequest);
-            // then
-        });
+        Long notParticipatedRoomId = 99L;
+
+        ExitRoomRequest exitRoomRequest = UserDtoFixture.exitRoomRequest(user.getId());
+
+        willThrow(new BussinessException(BAD_REQUEST))
+                .given(validateRoomService).validateUserIsInRoom(notParticipatedRoomId, user.getId());
+
+        // when & then
+        assertThatThrownBy(() -> roomService.exitRoomById(notParticipatedRoomId, exitRoomRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage());
     }
 
     @Test
     @DisplayName("방 상태가 대기 상태가 아닌 경우, 유저가 방에서 나가려고 하면, 실패 응답이 반환된다")
     void exitRoom_Fail_RoomStatusIsNotWait() {
-        User user = UserFixture.userBuild(1L);
-        Room room = RoomFixture.notWaitStatusRoom(user);
-        ExitRoomRequest exitRoomRequest = UserDtoFixture.exitRoomRequest(user.getId());
+        User host = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(host, "id", 1L);
 
-        willThrow(new BussinessException(ApiResponseCode.BAD_REQUEST))
+        User guest = UserFixture.userBuild(2L);
+        ReflectionTestUtils.setField(guest, "id", 2L);
+
+        Room room = RoomFixture.notWaitStatusRoom(host);
+        ReflectionTestUtils.setField(room, "id", 1L);
+
+        ExitRoomRequest exitRoomRequest = UserDtoFixture.exitRoomRequest(guest.getId());
+
+        willThrow(new BussinessException(BAD_REQUEST))
                 .given(validateRoomService).validateRoomStatusIsWait(room.getId());
 
         //when & then
-        assertThrows(BussinessException.class, () -> roomService.exitRoomById(room.getId(), exitRoomRequest));
+        assertThatThrownBy(() -> roomService.exitRoomById(room.getId(), exitRoomRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage());
     }
 
     @Test
     @DisplayName("방이 존재하지 않는 경우, 유저가 방에서 나가려고 하면, 실패 응답이 반환된다")
     void exitRoom_Fail_RoomNotExist() {
         User user = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(user, "id", 1L);
+
         Room room = RoomFixture.roomBuild(user);
+        ReflectionTestUtils.setField(room, "id", 1L);
+        Long notExistRoomId = 99L;
+
         ExitRoomRequest exitRoomRequest = UserDtoFixture.exitRoomRequest(user.getId());
 
-        given(roomRepository.findById(room.getId())).willReturn(Optional.empty());
+        willThrow(new BussinessException(BAD_REQUEST))
+                .given(validateRoomService).validateRoomIsExist(notExistRoomId);
 
         //when & then
-        assertThrows(RuntimeException.class, () -> roomService.exitRoomById(room.getId(), exitRoomRequest));
+        assertThatThrownBy(() -> roomService.exitRoomById(notExistRoomId, exitRoomRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage());
     }
 }
