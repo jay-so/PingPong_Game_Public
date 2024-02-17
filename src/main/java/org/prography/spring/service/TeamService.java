@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.prography.spring.domain.UserRoom;
 import org.prography.spring.dto.request.ChangeTeamRequest;
-import org.prography.spring.repository.RoomRepository;
 import org.prography.spring.repository.UserRoomRepository;
 import org.prography.spring.service.validation.ValidateTeamService;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TeamService {
 
-    private final RoomRepository roomRepository;
     private final UserRoomRepository userRoomRepository;
     private final ValidateTeamService validateTeamService;
 
