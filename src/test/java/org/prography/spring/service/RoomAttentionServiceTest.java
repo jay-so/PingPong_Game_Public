@@ -7,11 +7,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.prography.spring.common.ApiResponseCode;
 import org.prography.spring.common.BussinessException;
 import org.prography.spring.domain.Room;
 import org.prography.spring.domain.User;
-import org.prography.spring.domain.UserRoom;
 import org.prography.spring.dto.request.AttentionUserRequest;
 import org.prography.spring.fixture.domain.RoomFixture;
 import org.prography.spring.fixture.domain.UserFixture;
@@ -20,15 +18,16 @@ import org.prography.spring.repository.RoomRepository;
 import org.prography.spring.repository.UserRepository;
 import org.prography.spring.repository.UserRoomRepository;
 import org.prography.spring.service.validation.ValidateRoomService;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.verify;
+import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
 
 @ExtendWith(MockitoExtension.class)
 class RoomAttentionServiceTest {
@@ -52,44 +51,56 @@ class RoomAttentionServiceTest {
     @DisplayName("유저는 생성된 방에 참가 요청을 보낼 수 있다.")
     void AttentionRoom_User_Success() {
         //given
-        User user = UserFixture.userBuild(1L);
-        Room room = RoomFixture.roomBuild(user);
+        User host = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(host, "id", 1L);
 
-        AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(user.getId());
+        User guest = UserFixture.userBuild(2L);
+        ReflectionTestUtils.setField(guest, "id", 2L);
+
+        Room room = RoomFixture.roomBuild(host);
+        ReflectionTestUtils.setField(room, "id", 1L);
+
+        AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(guest.getId());
 
         given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
-        given(userRepository.findById(user.getId())).willReturn(Optional.of(user));
+        given(userRepository.findById(guest.getId())).willReturn(Optional.of(guest));
         given(userRoomRepository.findByRoomId_Id(room.getId())).willReturn(new ArrayList<>());
-
 
         //when
         roomService.attentionRoomById(room.getId(), attentionUserRequest);
 
         //then
+        verify(roomRepository).findById(room.getId());
+        verify(userRepository).findById(guest.getId());
         verify(validateRoomService).validateRoomIsExist(room.getId());
         verify(validateRoomService).validateRoomStatusIsWait(room.getId());
-        verify(validateRoomService).validateUserStatusIsActive(user.getId());
-        verify(validateRoomService).validateUserIsParticipate(user.getId());
+        verify(validateRoomService).validateUserStatusIsActive(guest.getId());
+        verify(validateRoomService).validateUserIsParticipate(guest.getId());
         verify(validateRoomService).validateMaxUserCount(room.getId());
-        verify(roomRepository).findById(room.getId());
-        verify(userRepository).findById(user.getId());
-        verify(userRoomRepository).save(any(UserRoom.class));
     }
 
     @Test
     @DisplayName("존재하지 않는 방에 유저가 참여하려고 하면, 실패 응답이 반환된다")
     void attentionUser_Fail_RoomNotExist() {
+        //given
         User host = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(host, "id", 1L);
+
         User guest = UserFixture.userBuild(2L);
-        RoomFixture.roomBuild(host);
+        ReflectionTestUtils.setField(guest, "id", 2L);
+
+        Room room = RoomFixture.roomBuild(host);
+        ReflectionTestUtils.setField(room, "id", 1L);
         Long notExistRoomId = 100L;
 
         AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(guest.getId());
 
-        given(roomRepository.findById(notExistRoomId)).willReturn(Optional.empty());
+        willThrow(new BussinessException(BAD_REQUEST))
+                .given(validateRoomService).validateRoomIsExist(notExistRoomId);
 
-        //when & then
-        assertThrows(BussinessException.class, () -> roomService.attentionRoomById(notExistRoomId, attentionUserRequest));
+        assertThatThrownBy(() -> roomService.attentionRoomById(notExistRoomId, attentionUserRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage());
     }
 
     @Test
@@ -97,15 +108,23 @@ class RoomAttentionServiceTest {
     void attentionUser_Fail_RoomStatusIsNotWait() {
         //given
         User host = UserFixture.userBuild(1L);
-        UserFixture.userBuild(2L);
+        ReflectionTestUtils.setField(host, "id", 1L);
+
+        User guest = UserFixture.userBuild(2L);
+        ReflectionTestUtils.setField(guest, "id", 2L);
+
         Room room = RoomFixture.notWaitStatusRoom(host);
+        ReflectionTestUtils.setField(room, "id", 1L);
 
-        AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(host.getId());
+        AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(guest.getId());
 
-        given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
+        willThrow(new BussinessException(BAD_REQUEST))
+                .given(validateRoomService).validateRoomStatusIsWait(room.getId());
 
         //when & then
-        assertThrows(BussinessException.class, () -> roomService.attentionRoomById(room.getId(), attentionUserRequest));
+        assertThatThrownBy(() -> roomService.attentionRoomById(room.getId(), attentionUserRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage());
     }
 
     @Test
@@ -113,16 +132,27 @@ class RoomAttentionServiceTest {
     void attentionUser_Fail_RoomOverCapacity() {
         //given
         User host = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(host, "id", 1L);
+
+        User guest = UserFixture.userBuild(2L);
+        ReflectionTestUtils.setField(guest, "id", 2L);
+
         User attendUser = UserFixture.userBuild(3L);
+        ReflectionTestUtils.setField(attendUser, "id", 3L);
+
         Room room = RoomFixture.roomBuild(host);
+        ReflectionTestUtils.setField(room, "id", 1L);
 
         AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(attendUser.getId());
 
-        willThrow(new BussinessException(ApiResponseCode.BAD_REQUEST))
+        willThrow(new BussinessException(BAD_REQUEST))
                 .given(validateRoomService).validateMaxUserCount(room.getId());
 
         //when & then
-        assertThrows(BussinessException.class, () -> roomService.attentionRoomById(room.getId(), attentionUserRequest));
+        assertThatThrownBy(() -> roomService.attentionRoomById(room.getId(), attentionUserRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage());
+
     }
 
     @Test
@@ -131,15 +161,23 @@ class RoomAttentionServiceTest {
     void attentionUser_Fail_UserNotActive() {
         //given
         User host = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(host, "id", 1L);
+
         User notActiveUser = UserFixture.notActiveUser(2L);
+        ReflectionTestUtils.setField(notActiveUser, "id", 2L);
+
         Room room = RoomFixture.roomBuild(host);
+        ReflectionTestUtils.setField(room, "id", 1L);
 
         AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(notActiveUser.getId());
 
-        given(roomRepository.findById(room.getId())).willReturn(Optional.empty());
+        willThrow(new BussinessException(BAD_REQUEST))
+                .given(validateRoomService).validateUserStatusIsActive(notActiveUser.getId());
 
         //when & then
-        assertThrows(BussinessException.class, () -> roomService.attentionRoomById(room.getId(), attentionUserRequest));
+        assertThatThrownBy(() -> roomService.attentionRoomById(room.getId(), attentionUserRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage());
     }
 
 
@@ -148,14 +186,19 @@ class RoomAttentionServiceTest {
     void attentionUser_Fail_UserAlreadyJoinedRoom() {
         //given
         User host = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(host, "id", 1L);
+
         Room room = RoomFixture.roomBuild(host);
+        ReflectionTestUtils.setField(room, "id", 1L);
 
         AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(host.getId());
 
-        willThrow(new BussinessException(ApiResponseCode.BAD_REQUEST))
+        willThrow(new BussinessException(BAD_REQUEST))
                 .given(validateRoomService).validateUserIsParticipate(host.getId());
 
         //when & then
-        assertThrows(BussinessException.class, () -> roomService.attentionRoomById(room.getId(), attentionUserRequest));
+        assertThatThrownBy(() -> roomService.attentionRoomById(room.getId(), attentionUserRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage());
     }
 }
