@@ -1,7 +1,6 @@
 package org.prography.spring.service;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
@@ -32,46 +31,41 @@ public class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
-    @Nested
-    @DisplayName("사용자 전체 조회 요청을 처리한다.")
-    class FindAll_Users_Check {
+    @Test
+    @DisplayName("초기화 전에는 유저 정보를 전체 조회하면 비어있다.")
+    void findAll_Users_BeforeInitialization_Success() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+        List<User> userList = Collections.emptyList();
 
-        @Test
-        @DisplayName("초기화 전에는 유저 정보를 전체 조회하면 비어있다.")
-        void findAll_Users_BeforeInitialization_Success() {
-            // given
-            Pageable pageable = PageRequest.of(0, 10);
-            List<User> userList = Collections.emptyList();
+        Page<User> users = new PageImpl<>(userList, pageable, userList.size());
+        given(userRepository.findAll(any(Pageable.class))).willReturn(users);
 
-            Page<User> users = new PageImpl<>(userList, pageable, userList.size());
-            given(userRepository.findAll(any(Pageable.class))).willReturn(users);
+        // when
+        UserListResponse userListResponse = userService.findAllUsers(pageable);
 
-            // when
-            UserListResponse userListResponse = userService.findAllUsers(pageable);
+        // then
+        assertEquals(0, userListResponse.getTotalElements());
+        assertEquals(0, userListResponse.getTotalPages());
+        assertEquals(0, userListResponse.getUserList().size());
+    }
 
-            // then
-            assertEquals(0, userListResponse.getTotalElements());
-            assertEquals(0, userListResponse.getTotalPages());
-            assertEquals(0, userListResponse.getUserList().size());
-        }
+    @Test
+    @DisplayName("초기화 후에는 유저 정보를 전체 조회할 수 있다.")
+    void findAll_Users_AfterInitialization_Success() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+        List<User> userList = UserFixture.usersBuild(10);
+        Page<User> users = new PageImpl<>(userList, pageable, userList.size());
 
-        @Test
-        @DisplayName("초기화 후에는 유저 정보를 전체 조회할 수 있다.")
-        void findAll_Users_AfterInitialization_Success() {
-            // given
-            Pageable pageable = PageRequest.of(0, 10);
-            List<User> userList = UserFixture.usersBuild(10);
-            Page<User> users = new PageImpl<>(userList, pageable, userList.size());
+        given(userRepository.findAll(any(Pageable.class))).willReturn(users);
 
-            given(userRepository.findAll(any(Pageable.class))).willReturn(users);
+        // when
+        UserListResponse userListResponse = userService.findAllUsers(pageable);
 
-            // when
-            UserListResponse userListResponse = userService.findAllUsers(pageable);
-
-            // then
-            assertEquals(10, userListResponse.getTotalElements());
-            assertEquals(1, userListResponse.getTotalPages());
-            assertEquals(10, userListResponse.getUserList().size());
-        }
+        // then
+        assertEquals(10, userListResponse.getTotalElements());
+        assertEquals(1, userListResponse.getTotalPages());
+        assertEquals(10, userListResponse.getUserList().size());
     }
 }
