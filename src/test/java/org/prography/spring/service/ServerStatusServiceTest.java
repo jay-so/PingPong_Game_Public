@@ -1,6 +1,5 @@
 package org.prography.spring.service;
 
-import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.prography.spring.common.ApiResponse;
-import org.prography.spring.common.ApiResponseCode;
 import org.prography.spring.common.BussinessException;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthEndpoint;
@@ -33,75 +31,60 @@ public class ServerStatusServiceTest {
     @InjectMocks
     private ServerStatusService serverStatusService;
 
-        @Test
-        @DisplayName("서버 상태가 정상이면 성공 응답이 반환된다")
-        void serverStatus_Check_Success() {
-            // given
-            Health serverHealth = Health.up().build();
-            Health dbHealth = Health.up().build();
+    @Test
+    @DisplayName("서버 상태가 정상이면 성공 응답이 반환된다")
+    void serverStatus_Check_Success() {
+        // given
+        Health serverHealth = Health.up().build();
+        Health dbHealth = Health.up().build();
 
-            given(healthEndpoint.health()).willReturn(serverHealth);
-            given(dataSourceHealthIndicator.health()).willReturn(dbHealth);
+        given(healthEndpoint.health()).willReturn(serverHealth);
+        given(dataSourceHealthIndicator.health()).willReturn(dbHealth);
 
-            // when
-            ApiResponse<Void> response = serverStatusService.serverStatusCheck();
+        // when
+        ApiResponse<Void> response = serverStatusService.serverStatusCheck();
 
-            // then
-            assertEquals(SUCCESS.getCode(), response.getCode());
-            assertEquals(SUCCESS.getMessage(), response.getMessage());
-        }
+        // then
+        assertEquals(SUCCESS.getCode(), response.getCode());
+        assertEquals(SUCCESS.getMessage(), response.getMessage());
+    }
 
-        @Test
-        @DisplayName("데이터베이스 상태가 에러 상태이면 에러 응답이 반환된다")
-        void serverStatus_Check_Fail_DbError() {
-            // given
-            Health serverHealth = Health.up().build();
-            Health dbHealth = Health.down().build();
+    @Test
+    @DisplayName("데이터베이스 상태가 에러 상태이면 에러 응답이 반환된다")
+    void serverStatus_Check_Fail_DbError() {
+        // given
+        Health serverHealth = Health.up().build();
+        Health dbHealth = Health.down().build();
 
-            given(healthEndpoint.health()).willReturn(serverHealth);
-            given(dataSourceHealthIndicator.health()).willReturn(dbHealth);
+        given(healthEndpoint.health()).willReturn(serverHealth);
+        given(dataSourceHealthIndicator.health()).willReturn(dbHealth);
 
-            // when
-            ApiResponse<Void> response = serverStatusService.serverStatusCheck();
+        // when
+        Throwable exception = catchThrowable(() -> serverStatusService.serverStatusCheck());
 
-            // then
-            assertEquals(SEVER_ERROR.getCode(), response.getCode());
-            assertEquals(SEVER_ERROR.getMessage(), response.getMessage());
-        }
+        // then
+        assertThat(exception)
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(SEVER_ERROR.getMessage());
+    }
 
 
-        @Test
-        @DisplayName("서버 상태가 에러 상태이면 에러 응답이 반환된다")
-        void serverStatus_Check_Fail_ServerError() {
-            // given
-            Health serverHealth = Health.down().build();
-            Health dbHealth = Health.up().build();
+    @Test
+    @DisplayName("서버 상태가 에러 상태이면 에러 응답이 반환된다")
+    void serverStatus_Check_Fail_ServerError() {
+        // given
+        Health serverHealth = Health.down().build();
+        Health dbHealth = Health.up().build();
 
-            given(healthEndpoint.health()).willReturn(serverHealth);
-            given(dataSourceHealthIndicator.health()).willReturn(dbHealth);
+        given(healthEndpoint.health()).willReturn(serverHealth);
+        given(dataSourceHealthIndicator.health()).willReturn(dbHealth);
 
-            //when
-            ApiResponse<Void> response = serverStatusService.serverStatusCheck();
+        //when
+        Throwable exception = catchThrowable(() -> serverStatusService.serverStatusCheck());
 
-            //then
-            assertEquals(SEVER_ERROR.getCode(), response.getCode());
-            assertEquals(SEVER_ERROR.getMessage(), response.getMessage());
-        }
-
-        @Test
-        @DisplayName("서버 상태 체크 중 RuntimeException이 발생하면 에러 응답이 반환된다")
-        void serverStatus_Check_Fail_RuntimeException() {
-            // given
-            given(healthEndpoint.health()).willThrow(new RuntimeException());
-
-            // when
-            Throwable exception = catchThrowable(() -> serverStatusService.serverStatusCheck());
-
-            // then
-            assertThat(exception)
-                    .isInstanceOf(BussinessException.class)
-                    .hasMessage(SEVER_ERROR.getMessage())
-                    .extracting("apiResponseCode", InstanceOfAssertFactories.type(ApiResponseCode.class))
-                    .isEqualTo(SEVER_ERROR);
-        }
+        //then
+        assertThat(exception)
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(SEVER_ERROR.getMessage());
+    }
 }

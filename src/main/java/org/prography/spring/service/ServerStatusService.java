@@ -28,18 +28,34 @@ public class ServerStatusService {
     );
 
     public ApiResponse<Void> serverStatusCheck() {
+        Health dbHealth = checkDbHealth();
+        HealthComponent healthComponent = checkServerHealth();
+        Status dbStatus = dbHealth.getStatus();
+        Status status = healthComponent.getStatus();
+
+        validateServerStatus(dbStatus, status);
+
+        ApiResponseCode apiResponseCode = statusApiResponseCodeMap.getOrDefault(status, SEVER_ERROR);
+        return new ApiResponse<>(apiResponseCode.getCode(), apiResponseCode.getMessage(), null);
+    }
+
+    private void validateServerStatus(Status dbStatus, Status status) {
+        if (dbStatus != UP || status != UP) {
+            throw new BussinessException(SEVER_ERROR);
+        }
+    }
+
+    private Health checkDbHealth() {
         try {
-            Health dbHealth = dataSourceHealthIndicator.health();
-            HealthComponent healthComponent = healthEndpoint.health();
-            Status dbStatus = dbHealth.getStatus();
-            Status status = healthComponent.getStatus();
+            return dataSourceHealthIndicator.health();
+        } catch (RuntimeException e) {
+            throw new BussinessException(SEVER_ERROR);
+        }
+    }
 
-            if (dbStatus != UP || status != UP) {
-                return new ApiResponse<>(SEVER_ERROR.getCode(), SEVER_ERROR.getMessage(), null);
-            }
-
-            ApiResponseCode apiResponseCode = statusApiResponseCodeMap.getOrDefault(status, SEVER_ERROR);
-            return new ApiResponse<>(apiResponseCode.getCode(), apiResponseCode.getMessage(), null);
+    private HealthComponent checkServerHealth() {
+        try {
+            return healthEndpoint.health();
         } catch (RuntimeException e) {
             throw new BussinessException(SEVER_ERROR);
         }
