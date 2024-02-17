@@ -21,7 +21,7 @@ import static org.prography.spring.common.ApiResponseCode.SEVER_ERROR;
 import static org.prography.spring.common.ApiResponseCode.SUCCESS;
 
 @ExtendWith(MockitoExtension.class)
-public class ServerStatusServiceTest {
+class ServerStatusServiceTest {
 
     @Mock
     private DataSourceHealthIndicator dataSourceHealthIndicator;

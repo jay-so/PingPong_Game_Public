@@ -27,8 +27,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 @ExtendWith(MockitoExtension.class)
-
-public class RoomFindAllServiceTest {
+class RoomFindAllServiceTest {
 
     @Mock
     private RoomRepository roomRepository;
@@ -36,50 +35,50 @@ public class RoomFindAllServiceTest {
     @InjectMocks
     private RoomService roomService;
 
-        @Test
-        @DisplayName("생성된 모든 방에 대해서 조회를 할 수 있다.")
-        void findAll_Room_Success() {
-            // given
-            User user = UserFixture.userBuild(1L);
-            List<Room> rooms = RoomFixture.roomsBuilder(Arrays.asList(user, user));
+    @Test
+    @DisplayName("생성된 모든 방에 대해서 조회를 할 수 있다.")
+    void findAll_Room_Success() {
+        // given
+        User user = UserFixture.userBuild(1L);
+        List<Room> rooms = RoomFixture.roomsBuilder(Arrays.asList(user, user));
 
-            int totalElements = rooms.size();
-            int pageSize = 1;
+        int totalElements = rooms.size();
+        int pageSize = 1;
 
-            PageRequest pageRequest = PageRequest.of(0, pageSize);
-            Page<Room> pagedRooms = new PageImpl<>(rooms, pageRequest, totalElements);
+        PageRequest pageRequest = PageRequest.of(0, pageSize);
+        Page<Room> pagedRooms = new PageImpl<>(rooms, pageRequest, totalElements);
 
-            given(roomRepository.findAll(pageRequest)).willReturn(pagedRooms);
+        given(roomRepository.findAll(pageRequest)).willReturn(pagedRooms);
 
-            List<RoomResponse> roomResponses = rooms.stream()
-                    .map(room -> RoomResponse.builder()
-                            .id(room.getId())
-                            .title(room.getTitle())
-                            .hostId(room.getHost().getId())
-                            .roomType(room.getRoomType())
-                            .build())
-                    .toList();
+        List<RoomResponse> roomResponses = rooms.stream()
+                .map(room -> RoomResponse.builder()
+                        .id(room.getId())
+                        .title(room.getTitle())
+                        .hostId(room.getHost().getId())
+                        .roomType(room.getRoomType())
+                        .build())
+                .toList();
 
-            RoomListResponse expectedRoomListResponse = RoomDtoFixture.roomListResponse(totalElements, pageSize, roomResponses);
+        RoomListResponse expectedRoomListResponse = RoomDtoFixture.roomListResponse(totalElements, pageSize, roomResponses);
 
-            //when
-            RoomListResponse actualRoomListResponse = roomService.findAllRooms(pageRequest);
+        //when
+        RoomListResponse actualRoomListResponse = roomService.findAllRooms(pageRequest);
 
-            // then
-            then(roomRepository).should().findAll(pageRequest);
-            assertThat(actualRoomListResponse.getTotalElements()).isEqualTo(expectedRoomListResponse.getTotalElements());
-            assertThat(actualRoomListResponse.getTotalPages()).isEqualTo(expectedRoomListResponse.getTotalPages());
-            assertThat(actualRoomListResponse.getRoomList()).hasSize(expectedRoomListResponse.getRoomList().size());
+        // then
+        then(roomRepository).should().findAll(pageRequest);
+        assertThat(actualRoomListResponse.getTotalElements()).isEqualTo(expectedRoomListResponse.getTotalElements());
+        assertThat(actualRoomListResponse.getTotalPages()).isEqualTo(expectedRoomListResponse.getTotalPages());
+        assertThat(actualRoomListResponse.getRoomList()).hasSize(expectedRoomListResponse.getRoomList().size());
 
-            IntStream.range(0, actualRoomListResponse.getRoomList().size())
-                    .forEach(i -> {
-                        RoomResponse actualRoomResponse = actualRoomListResponse.getRoomList().get(i);
-                        RoomResponse expectedRoomResponse = expectedRoomListResponse.getRoomList().get(i);
+        IntStream.range(0, actualRoomListResponse.getRoomList().size())
+                .forEach(i -> {
+                    RoomResponse actualRoomResponse = actualRoomListResponse.getRoomList().get(i);
+                    RoomResponse expectedRoomResponse = expectedRoomListResponse.getRoomList().get(i);
 
-                        assertThat(actualRoomResponse.getId()).isEqualTo(expectedRoomResponse.getId());
-                        assertThat(actualRoomResponse.getTitle()).isEqualTo(expectedRoomResponse.getTitle());
-                        assertThat(actualRoomResponse.getHostId()).isEqualTo(expectedRoomResponse.getHostId());
-                        assertThat(actualRoomResponse.getRoomType()).isEqualTo(expectedRoomResponse.getRoomType());
-                    });
-        }
+                    assertThat(actualRoomResponse.getId()).isEqualTo(expectedRoomResponse.getId());
+                    assertThat(actualRoomResponse.getTitle()).isEqualTo(expectedRoomResponse.getTitle());
+                    assertThat(actualRoomResponse.getHostId()).isEqualTo(expectedRoomResponse.getHostId());
+                    assertThat(actualRoomResponse.getRoomType()).isEqualTo(expectedRoomResponse.getRoomType());
+                });
+    }
 }

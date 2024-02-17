@@ -6,7 +6,6 @@ import org.prography.spring.domain.Room;
 import org.prography.spring.domain.UserRoom;
 import org.prography.spring.domain.enums.TeamStatus;
 import org.prography.spring.repository.RoomRepository;
-import org.prography.spring.repository.UserRepository;
 import org.prography.spring.repository.UserRoomRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +22,6 @@ import static org.prography.spring.domain.enums.TeamStatus.RED;
 public class ValidateTeamService {
 
     private final RoomRepository roomRepository;
-    private final UserRepository userRepository;
     private final UserRoomRepository userRoomRepository;
 
     public void validateRoomIsExist(Long roomId) {

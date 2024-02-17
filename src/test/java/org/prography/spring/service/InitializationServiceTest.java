@@ -25,7 +25,7 @@ import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
 import static org.prography.spring.common.ApiResponseCode.SEVER_ERROR;
 
 @ExtendWith(MockitoExtension.class)
-public class InitializationServiceTest {
+class InitializationServiceTest {
 
     @Mock
     private UserRepository userRepository;

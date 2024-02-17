@@ -25,7 +25,7 @@ import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class RoomGameStartServiceTest {
+class RoomGameStartServiceTest {
 
     @Mock
     private RoomRepository roomRepository;
