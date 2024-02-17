@@ -47,12 +47,9 @@ public class RoomService {
 
     @Transactional
     public void createRoom(CreateRoomRequest createRoomRequest) {
+        User user = validateRoomService.validateUserIsExist(createRoomRequest.getUserId());
         validateRoomService.validateUserStatusIsActive(createRoomRequest.getUserId());
         validateRoomService.validateUserIsParticipate(createRoomRequest.getUserId());
-        validateRoomService.validateUserIsHost(createRoomRequest.getUserId());
-
-        User user = userRepository.findById(createRoomRequest.getUserId())
-                .orElseThrow(() -> new BussinessException(BAD_REQUEST));
 
         RoomType roomType = from(createRoomRequest.getRoomType());
         Room room = createRoomRequest.toEntity(user, roomType);

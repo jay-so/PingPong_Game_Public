@@ -42,12 +42,10 @@ public class ValidateRoomService {
         }
     }
 
-    public void validateUserIsHost(Long userId) {
-        Optional<Room> checkUserIsHost = roomRepository.findByHost_Id(userId);
+    public User validateUserIsExist(Long userId) {
 
-        if (checkUserIsHost.isPresent()) {
-            throw new BussinessException(BAD_REQUEST);
-        }
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new BussinessException(BAD_REQUEST));
     }
 
     public void validateRoomIsExist(Long roomId) {
