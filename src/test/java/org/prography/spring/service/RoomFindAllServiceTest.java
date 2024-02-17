@@ -51,12 +51,7 @@ class RoomFindAllServiceTest {
         given(roomRepository.findAll(pageRequest)).willReturn(pagedRooms);
 
         List<RoomResponse> roomResponses = rooms.stream()
-                .map(room -> RoomResponse.builder()
-                        .id(room.getId())
-                        .title(room.getTitle())
-                        .hostId(room.getHost().getId())
-                        .roomType(room.getRoomType())
-                        .build())
+                .map(RoomResponse::from)
                 .toList();
 
         RoomListResponse expectedRoomListResponse = RoomDtoFixture.roomListResponse(totalElements, pageSize, roomResponses);
