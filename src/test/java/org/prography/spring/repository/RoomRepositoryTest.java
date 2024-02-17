@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
-public class RoomRepositoryTest {
+class RoomRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;

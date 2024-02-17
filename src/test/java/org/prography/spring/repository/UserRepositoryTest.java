@@ -11,14 +11,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
-public class UserRepositoryTest {
+class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
 
     @Test
     @DisplayName("정상적으로 저장된 유저를 찾을 수 있다.")
-    public void findSaveUser_Success_Test() {
+    void findSaveUser_Success_Test() {
         //given
         User saveUser = UserFixture.userBuild(1L);
         userRepository.save(saveUser);
@@ -33,7 +33,7 @@ public class UserRepositoryTest {
 
     @Test
     @DisplayName("정상적으로 저장된 유저의 상태를 유저의 id로 찾을 수 있다.")
-    public void findSaveUser_StatusByUserId_Success_Test() {
+    void findSaveUser_StatusByUserId_Success_Test() {
         //given
         User saveUser = UserFixture.userBuild(2L);
         userRepository.save(saveUser);
