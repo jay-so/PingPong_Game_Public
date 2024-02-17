@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.prography.spring.common.ApiResponse;
 import org.prography.spring.common.BussinessException;
+import org.prography.spring.service.validation.ValidateServerStatusService;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.boot.actuate.jdbc.DataSourceHealthIndicator;
@@ -15,7 +16,9 @@ import org.springframework.boot.actuate.jdbc.DataSourceHealthIndicator;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.prography.spring.common.ApiResponseCode.SEVER_ERROR;
 import static org.prography.spring.common.ApiResponseCode.SUCCESS;
 
@@ -27,6 +30,9 @@ public class ServerStatusServiceTest {
 
     @Mock
     private HealthEndpoint healthEndpoint;
+
+    @Mock
+    private ValidateServerStatusService validateServerStatusService;
 
     @InjectMocks
     private ServerStatusService serverStatusService;
@@ -59,6 +65,10 @@ public class ServerStatusServiceTest {
         given(healthEndpoint.health()).willReturn(serverHealth);
         given(dataSourceHealthIndicator.health()).willReturn(dbHealth);
 
+        doThrow(new BussinessException(SEVER_ERROR))
+                .when(validateServerStatusService)
+                .validateServerStatus(any(), any());
+
         // when
         Throwable exception = catchThrowable(() -> serverStatusService.serverStatusCheck());
 
@@ -78,6 +88,10 @@ public class ServerStatusServiceTest {
 
         given(healthEndpoint.health()).willReturn(serverHealth);
         given(dataSourceHealthIndicator.health()).willReturn(dbHealth);
+
+        doThrow(new BussinessException(SEVER_ERROR))
+                .when(validateServerStatusService)
+                .validateServerStatus(any(), any());
 
         //when
         Throwable exception = catchThrowable(() -> serverStatusService.serverStatusCheck());

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.prography.spring.common.ApiResponse;
 import org.prography.spring.common.ApiResponseCode;
 import org.prography.spring.common.BussinessException;
+import org.prography.spring.service.validation.ValidateServerStatusService;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthComponent;
 import org.springframework.boot.actuate.health.HealthEndpoint;
@@ -23,6 +24,7 @@ public class ServerStatusService {
 
     private final DataSourceHealthIndicator dataSourceHealthIndicator;
     private final HealthEndpoint healthEndpoint;
+    private final ValidateServerStatusService validateServerStatusService;
     private final Map<Status, ApiResponseCode> statusApiResponseCodeMap = Map.of(
             UP, SUCCESS
     );
@@ -33,16 +35,10 @@ public class ServerStatusService {
         Status dbStatus = dbHealth.getStatus();
         Status status = healthComponent.getStatus();
 
-        validateServerStatus(dbStatus, status);
+        validateServerStatusService.validateServerStatus(dbStatus, status);
 
         ApiResponseCode apiResponseCode = statusApiResponseCodeMap.getOrDefault(status, SEVER_ERROR);
         return new ApiResponse<>(apiResponseCode.getCode(), apiResponseCode.getMessage(), null);
-    }
-
-    private void validateServerStatus(Status dbStatus, Status status) {
-        if (dbStatus != UP || status != UP) {
-            throw new BussinessException(SEVER_ERROR);
-        }
     }
 
     private Health checkDbHealth() {
