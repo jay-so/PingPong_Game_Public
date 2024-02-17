@@ -22,8 +22,8 @@ import static org.springframework.boot.actuate.health.Status.UP;
 @RequiredArgsConstructor
 public class ServerStatusService {
 
-    private final DataSourceHealthIndicator dataSourceHealthIndicator;
     private final HealthEndpoint healthEndpoint;
+    private final DataSourceHealthIndicator dataSourceHealthIndicator;
     private final ValidateServerStatusService validateServerStatusService;
     private final Map<Status, ApiResponseCode> statusApiResponseCodeMap = Map.of(
             UP, SUCCESS
