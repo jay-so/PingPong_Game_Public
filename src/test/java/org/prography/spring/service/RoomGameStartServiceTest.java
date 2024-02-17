@@ -16,13 +16,17 @@ import org.prography.spring.fixture.domain.UserFixture;
 import org.prography.spring.fixture.dto.UserDtoFixture;
 import org.prography.spring.repository.RoomRepository;
 import org.prography.spring.service.validation.ValidateRoomService;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.prography.spring.domain.enums.RoomStatus.PROGRESS;
 
 @ExtendWith(MockitoExtension.class)
 class RoomGameStartServiceTest {
@@ -40,7 +44,11 @@ class RoomGameStartServiceTest {
     void StartGame_Host_Success() {
         //given
         User user = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(user, "id", 1L);
+
         Room room = RoomFixture.roomBuild(user);
+        ReflectionTestUtils.setField(room, "id", 1L);
+
         StartGameRequest gameRequest = UserDtoFixture.startGameRequest(user.getId());
 
         given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
@@ -53,7 +61,8 @@ class RoomGameStartServiceTest {
         verify(validateRoomService).validateRoomStatusIsWait(room.getId());
         verify(validateRoomService).validateHostOfRoom(room.getId(), user.getId());
         verify(validateRoomService).validateRoomIsFull(room.getId());
-        verify(roomRepository).save(room);
+        verify(roomRepository, times(1)).save(room);
+        assertEquals(PROGRESS, room.getStatus());
     }
 
     @Test
@@ -61,6 +70,8 @@ class RoomGameStartServiceTest {
     void startGame_Fail_RoomNotExist() {
         //given
         User user = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(user, "id", 1L);
+
         StartGameRequest startGameRequest = UserDtoFixture.startGameRequest(user.getId());
         Long notExistRoomId = 99L;
 
@@ -68,7 +79,8 @@ class RoomGameStartServiceTest {
                 .given(validateRoomService).validateRoomIsExist(notExistRoomId);
 
         //when & then
-        assertThrows(BussinessException.class, () -> roomService.startGameById(notExistRoomId, startGameRequest));
+        assertThatThrownBy(() -> roomService.startGameById(notExistRoomId, startGameRequest))
+                .isInstanceOf(BussinessException.class);
     }
 
     @Test
@@ -76,14 +88,19 @@ class RoomGameStartServiceTest {
     void startGame_Fail_RoomStatusIsNotWait() {
         //given
         User user = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(user, "id", 1L);
+
         Room room = RoomFixture.notWaitStatusRoom(user);
+        ReflectionTestUtils.setField(room, "id", 1L);
+
         StartGameRequest startGameRequest = UserDtoFixture.startGameRequest(user.getId());
 
         willThrow(new BussinessException(ApiResponseCode.BAD_REQUEST))
                 .given(validateRoomService).validateRoomStatusIsWait(room.getId());
 
         //when & then
-        assertThrows(BussinessException.class, () -> roomService.startGameById(room.getId(), startGameRequest));
+        assertThatThrownBy(() -> roomService.startGameById(room.getId(), startGameRequest))
+                .isInstanceOf(BussinessException.class);
     }
 
     @Test
@@ -91,15 +108,22 @@ class RoomGameStartServiceTest {
     void startGame_Fail_UserIsNotHost() {
         //given
         User host = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(host, "id", 1L);
+
         User guest = UserFixture.userBuild(2L);
+        ReflectionTestUtils.setField(guest, "id", 2L);
+
         Room room = RoomFixture.roomBuild(host);
+        ReflectionTestUtils.setField(room, "id", 1L);
+
         StartGameRequest startGameRequest = UserDtoFixture.startGameRequest(guest.getId());
 
         willThrow(new BussinessException(ApiResponseCode.BAD_REQUEST))
                 .given(validateRoomService).validateHostOfRoom(room.getId(), guest.getId());
 
         //when & then
-        assertThrows(BussinessException.class, () -> roomService.startGameById(room.getId(), startGameRequest));
+        assertThatThrownBy(() -> roomService.startGameById(room.getId(), startGameRequest))
+                .isInstanceOf(BussinessException.class);
     }
 
 
@@ -108,13 +132,18 @@ class RoomGameStartServiceTest {
     void startGame_Fail_RoomIsNotFull() {
         //given
         User host = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(host, "id", 1L);
+
         Room room = RoomFixture.roomBuild(host);
+        ReflectionTestUtils.setField(room, "id", 1L);
+
         StartGameRequest startGameRequest = UserDtoFixture.startGameRequest(host.getId());
 
         willThrow(new BussinessException(ApiResponseCode.BAD_REQUEST))
                 .given(validateRoomService).validateRoomIsFull(room.getId());
 
         //when & then
-        assertThrows(BussinessException.class, () -> roomService.startGameById(room.getId(), startGameRequest));
+        assertThatThrownBy(() -> roomService.startGameById(room.getId(), startGameRequest))
+                .isInstanceOf(BussinessException.class);
     }
 }
