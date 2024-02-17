@@ -18,7 +18,7 @@ class UserRepositoryTest {
 
     @Test
     @DisplayName("정상적으로 저장된 유저를 찾을 수 있다.")
-    void findSaveUser_Success_Test() {
+    void findSaveUser_Success() {
         //given
         User saveUser = UserFixture.userBuild(1L);
         userRepository.save(saveUser);
@@ -33,7 +33,7 @@ class UserRepositoryTest {
 
     @Test
     @DisplayName("정상적으로 저장된 유저의 상태를 유저의 id로 찾을 수 있다.")
-    void findSaveUser_StatusByUserId_Success_Test() {
+    void findSaveUser_StatusByUserId_Success() {
         //given
         User saveUser = UserFixture.userBuild(2L);
         userRepository.save(saveUser);

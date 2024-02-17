@@ -17,7 +17,7 @@ class RoomTest {
 
     @Test
     @DisplayName("정상적으로 방을 생성할 수 있다.")
-    void createRoom_Success_Test() {
+    void createRoom_Success() {
         //given
         User user = UserFixture.userBuild(1L);
         Room room = RoomFixture.roomBuild(user);
@@ -30,7 +30,7 @@ class RoomTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 2, 3, 4, 5})
     @DisplayName("정상적으로 여러 개의 방을 생성할 수 있다.")
-    void createRooms_Success_Test(int count) {
+    void createRooms_Success(int count) {
         //given
         List<User> users = UserFixture.usersBuild(count);
         List<Room> rooms = RoomFixture.roomsBuilder(users);

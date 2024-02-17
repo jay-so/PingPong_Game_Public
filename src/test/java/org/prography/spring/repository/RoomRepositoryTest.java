@@ -23,7 +23,7 @@ class RoomRepositoryTest {
 
     @Test
     @DisplayName("정상적으로 생성된 방을 호스트의 id로 찾을 수 있다.")
-    void findRoom_ByHostId_Success_Test() {
+    void findRoom_ByHostId_Success() {
         //given
         User host = UserFixture.userBuild(1L);
         userRepository.save(host);
@@ -42,7 +42,7 @@ class RoomRepositoryTest {
 
     @Test
     @DisplayName("정상적으로 생성된 방의 상태를 방의 id와 방의 상태로 찾을 수 있다.")
-    void findRoom_ByRoomIdAndStatus_Success_Test() {
+    void findRoom_ByRoomIdAndStatus_Success() {
         //given
         User host = UserFixture.userBuild(2L);
         userRepository.save(host);

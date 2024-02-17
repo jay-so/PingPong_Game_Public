@@ -32,7 +32,7 @@ class UserRoomRepsitory_test {
 
     @Test
     @DisplayName("유저 id룰 통해 참여한 방을 찾을 수 있다.")
-    void findUserRoom_ByUserId_Success_Test() {
+    void findUserRoom_ByUserId_Success() {
         //given
         User user = UserFixture.userBuild(1L);
         userRepository.save(user);
@@ -55,7 +55,7 @@ class UserRoomRepsitory_test {
 
     @Test
     @DisplayName("방 id를 통해 해당 방에 참여한 모든 유저를 찾을 수 있다.")
-    void findByRoomId_Id_Success_Test() {
+    void findByRoomId_Id_Success() {
         //given
         User user = UserFixture.userBuild(1L);
         User anotherUser = UserFixture.userBuild(2L);
@@ -80,7 +80,7 @@ class UserRoomRepsitory_test {
 
     @Test
     @DisplayName("유저 id와 방 id를 통해 해당 유저가 특정 방에 참여하고 있는지 확인할 수 있다.")
-    void findByUserId_IdAndRoomId_Id_Success_Test() {
+    void findByUserId_IdAndRoomId_Id_Success() {
         //given
         User user = UserFixture.userBuild(1L);
         userRepository.save(user);
@@ -103,7 +103,7 @@ class UserRoomRepsitory_test {
 
     @Test
     @DisplayName("방 id와 팀 상태를 통해 해당 팀 상태를 가진 유저의 수를 확인할 수 있다.")
-    void countByRoomId_IdAndTeamStatus_Success_Test() {
+    void countByRoomId_IdAndTeamStatus_Success() {
         //given
         User user = UserFixture.userBuild(1L);
         userRepository.save(user);
@@ -123,7 +123,7 @@ class UserRoomRepsitory_test {
 
     @Test
     @DisplayName("방 id와 유저 id로 UserRoom을 찾을 수 있다.")
-    void findByRoomId_IdAndUserId_Id_Success_Test() {
+    void findByRoomId_IdAndUserId_Id_Success() {
         //given
         User user = UserFixture.userBuild(1L);
         userRepository.save(user);
@@ -144,7 +144,7 @@ class UserRoomRepsitory_test {
 
     @Test
     @DisplayName("방 id를 이용하여 UserRoom을 삭제할 수 있다.")
-    void deleteByRoomId_Id_Success_Test() {
+    void deleteByRoomId_Id_Success() {
         //given
         User user = UserFixture.userBuild(1L);
         userRepository.save(user);
@@ -164,7 +164,7 @@ class UserRoomRepsitory_test {
 
     @Test
     @DisplayName("유저 id와 방 id를 이용하여 UserRoom을 삭제할 수 있다.")
-    void deleteByUserId_IdAndRoomId_Id_Success_Test() {
+    void deleteByUserId_IdAndRoomId_Id_Success() {
         //given
         User user = UserFixture.userBuild(1L);
         userRepository.save(user);
