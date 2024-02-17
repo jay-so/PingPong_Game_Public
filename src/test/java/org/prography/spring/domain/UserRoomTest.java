@@ -17,24 +17,24 @@ class UserRoomTest {
 
     @Test
     @DisplayName("정상적으로 유저가 방을 생성할 수 있다.")
-    void createUserRoomSuccess() {
+    void createUserRoom_Success_Test() {
         //given
-        User testUser = UserFixture.userBuild(1L);
-        Room testRoom = RoomFixture.roomBuild(testUser);
-        UserRoom testUserRoom = UserRoomFixture.userRoomBuild(testUser, testRoom);
+        User user = UserFixture.userBuild(1L);
+        Room room = RoomFixture.roomBuild(user);
+        UserRoom userRoom = UserRoomFixture.userRoomBuild(user, room);
 
         //when & then
-        assertNotNull(testUserRoom.getUserId());
-        assertNotNull(testUserRoom.getRoomId());
-        assertEquals(testUser, testUserRoom.getUserId());
-        assertEquals(testRoom, testUserRoom.getRoomId());
-        assertEquals(RED, testUserRoom.getTeamStatus());
+        assertNotNull(userRoom.getUserId());
+        assertNotNull(userRoom.getRoomId());
+        assertEquals(user, userRoom.getUserId());
+        assertEquals(room, userRoom.getRoomId());
+        assertEquals(RED, userRoom.getTeamStatus());
     }
 
     @ParameterizedTest
     @ValueSource(ints = {1, 2, 3, 4, 5})
     @DisplayName("정상적으로 여러 명의 유저가 방을 생성할 수 있다.")
-    void createUserRoomsSuccess(int count) {
+    void createUserRooms_Success_Test(int count) {
         //given
         List<User> users = UserFixture.usersBuild(count);
         List<Room> rooms = RoomFixture.roomsBuilder(users);
