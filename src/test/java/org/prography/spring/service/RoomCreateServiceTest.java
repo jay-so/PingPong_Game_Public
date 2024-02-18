@@ -79,7 +79,9 @@ class RoomCreateServiceTest {
         //when & then
         assertThatThrownBy(() -> roomService.createRoom(createRoomRequest))
                 .isInstanceOf(BussinessException.class)
-                .hasMessage(BAD_REQUEST.getMessage());
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 
     @Test
@@ -101,7 +103,9 @@ class RoomCreateServiceTest {
         //when & then
         assertThatThrownBy(() -> roomService.createRoom(createRoomRequest))
                 .isInstanceOf(BussinessException.class)
-                .hasMessage(BAD_REQUEST.getMessage());
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 
     @Test
@@ -118,6 +122,8 @@ class RoomCreateServiceTest {
         //when & then
         assertThatThrownBy(() -> roomService.createRoom(createRoomRequest))
                 .isInstanceOf(BussinessException.class)
-                .hasMessage(BAD_REQUEST.getMessage());
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 }

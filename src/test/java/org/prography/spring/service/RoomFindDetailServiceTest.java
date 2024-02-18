@@ -20,8 +20,9 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
+import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
 
 @ExtendWith(MockitoExtension.class)
 class RoomFindDetailServiceTest {
@@ -31,7 +32,6 @@ class RoomFindDetailServiceTest {
 
     @InjectMocks
     private RoomService roomService;
-
 
     @Test
     @DisplayName("생성된 방에 대해서 상세 조회를 할 수 있다.")
@@ -77,6 +77,10 @@ class RoomFindDetailServiceTest {
         given(roomRepository.findById(notExistRoomId)).willReturn(Optional.empty());
 
         //when & then
-        assertThrows(BussinessException.class, () -> roomService.findRoomById(notExistRoomId));
+        assertThatThrownBy(() -> roomService.findRoomById(notExistRoomId))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 }

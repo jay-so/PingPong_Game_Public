@@ -70,7 +70,9 @@ class ServerStatusServiceTest {
         // when & then
         assertThatThrownBy(() -> serverStatusService.serverStatusCheck())
                 .isInstanceOf(BussinessException.class)
-                .hasMessage(SEVER_ERROR.getMessage());
+                .hasMessage(SEVER_ERROR.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(SEVER_ERROR.getCode());
     }
 
 
@@ -91,6 +93,8 @@ class ServerStatusServiceTest {
         //when & then
         assertThatThrownBy(() -> serverStatusService.serverStatusCheck())
                 .isInstanceOf(BussinessException.class)
-                .hasMessage(SEVER_ERROR.getMessage());
+                .hasMessage(SEVER_ERROR.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(SEVER_ERROR.getCode());
     }
 }

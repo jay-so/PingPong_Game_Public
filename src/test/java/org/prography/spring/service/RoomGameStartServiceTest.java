@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.prography.spring.common.ApiResponseCode;
 import org.prography.spring.common.BussinessException;
 import org.prography.spring.domain.Room;
 import org.prography.spring.domain.User;
@@ -26,6 +25,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
 import static org.prography.spring.domain.enums.RoomStatus.PROGRESS;
 
 @ExtendWith(MockitoExtension.class)
@@ -75,12 +75,15 @@ class RoomGameStartServiceTest {
 
         StartGameRequest startGameRequest = UserDtoFixture.startGameRequest(user.getId());
 
-        willThrow(new BussinessException(ApiResponseCode.BAD_REQUEST))
+        willThrow(new BussinessException(BAD_REQUEST))
                 .given(validateRoomService).validateRoomIsExist(notExistRoomId);
 
         //when & then
         assertThatThrownBy(() -> roomService.startGameById(notExistRoomId, startGameRequest))
-                .isInstanceOf(BussinessException.class);
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 
     @Test
@@ -95,12 +98,16 @@ class RoomGameStartServiceTest {
 
         StartGameRequest startGameRequest = UserDtoFixture.startGameRequest(user.getId());
 
-        willThrow(new BussinessException(ApiResponseCode.BAD_REQUEST))
+        Long roomId = room.getId();
+        willThrow(new BussinessException(BAD_REQUEST))
                 .given(validateRoomService).validateRoomStatusIsWait(room.getId());
 
         //when & then
-        assertThatThrownBy(() -> roomService.startGameById(room.getId(), startGameRequest))
-                .isInstanceOf(BussinessException.class);
+        assertThatThrownBy(() -> roomService.startGameById(roomId, startGameRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 
     @Test
@@ -118,12 +125,16 @@ class RoomGameStartServiceTest {
 
         StartGameRequest startGameRequest = UserDtoFixture.startGameRequest(guest.getId());
 
-        willThrow(new BussinessException(ApiResponseCode.BAD_REQUEST))
+        Long roomId = room.getId();
+        willThrow(new BussinessException(BAD_REQUEST))
                 .given(validateRoomService).validateHostOfRoom(room.getId(), guest.getId());
 
         //when & then
-        assertThatThrownBy(() -> roomService.startGameById(room.getId(), startGameRequest))
-                .isInstanceOf(BussinessException.class);
+        assertThatThrownBy(() -> roomService.startGameById(roomId, startGameRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 
 
@@ -139,11 +150,15 @@ class RoomGameStartServiceTest {
 
         StartGameRequest startGameRequest = UserDtoFixture.startGameRequest(host.getId());
 
-        willThrow(new BussinessException(ApiResponseCode.BAD_REQUEST))
+        Long roomId = room.getId();
+        willThrow(new BussinessException(BAD_REQUEST))
                 .given(validateRoomService).validateRoomIsFull(room.getId());
 
         //when & then
-        assertThatThrownBy(() -> roomService.startGameById(room.getId(), startGameRequest))
-                .isInstanceOf(BussinessException.class);
+        assertThatThrownBy(() -> roomService.startGameById(roomId, startGameRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 }

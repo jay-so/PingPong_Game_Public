@@ -30,7 +30,7 @@ import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
 import static org.prography.spring.domain.enums.TeamStatus.BLUE;
 
 @ExtendWith(MockitoExtension.class)
-public class TeamServiceTest {
+class TeamServiceTest {
 
     @Mock
     private UserRoomRepository userRoomRepository;
@@ -82,7 +82,11 @@ public class TeamServiceTest {
                 .given(validateTeamService).validateRoomIsExist(notExistRoomId);
 
         // when & then
-        assertThatThrownBy(() -> teamService.changeTeamById(notExistRoomId, changeTeamRequest));
+        assertThatThrownBy(() -> teamService.changeTeamById(notExistRoomId, changeTeamRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 
     @Test
@@ -100,11 +104,16 @@ public class TeamServiceTest {
 
         ChangeTeamRequest changeTeamRequest = UserDtoFixture.changeTeamRequest(guest.getId());
 
+        Long roomId = room.getId();
         willThrow(new BussinessException(BAD_REQUEST))
                 .given(validateTeamService).validateUserParticipationInRoom(room.getId(), guest.getId());
 
         // when & then
-        assertThatThrownBy(() -> teamService.changeTeamById(room.getId(), changeTeamRequest));
+        assertThatThrownBy(() -> teamService.changeTeamById(roomId, changeTeamRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 
     @Test
@@ -122,11 +131,16 @@ public class TeamServiceTest {
 
         ChangeTeamRequest changeTeamRequest = UserDtoFixture.changeTeamRequest(user.getId());
 
+        Long roomId = room.getId();
         willThrow(new BussinessException(BAD_REQUEST))
                 .given(validateTeamService).validateRoomStatusIsWait(room.getId());
 
         // when & then
-        assertThatThrownBy(() -> teamService.changeTeamById(room.getId(), changeTeamRequest));
+        assertThatThrownBy(() -> teamService.changeTeamById(roomId, changeTeamRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 
     @Test
@@ -147,10 +161,15 @@ public class TeamServiceTest {
 
         ChangeTeamRequest changeTeamRequest = UserDtoFixture.changeTeamRequest(user.getId());
 
+        Long roomId = room.getId();
         willThrow(new BussinessException(BAD_REQUEST))
                 .given(validateTeamService).validateChangeTeamStatus(room.getId(), user.getId());
 
         // when & then
-        assertThatThrownBy(() -> teamService.changeTeamById(room.getId(), changeTeamRequest));
+        assertThatThrownBy(() -> teamService.changeTeamById(roomId, changeTeamRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 }

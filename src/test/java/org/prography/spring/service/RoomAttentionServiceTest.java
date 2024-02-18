@@ -98,9 +98,12 @@ class RoomAttentionServiceTest {
         willThrow(new BussinessException(BAD_REQUEST))
                 .given(validateRoomService).validateRoomIsExist(notExistRoomId);
 
+        //when & then
         assertThatThrownBy(() -> roomService.attentionRoomById(notExistRoomId, attentionUserRequest))
                 .isInstanceOf(BussinessException.class)
-                .hasMessage(BAD_REQUEST.getMessage());
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 
     @Test
@@ -118,13 +121,16 @@ class RoomAttentionServiceTest {
 
         AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(guest.getId());
 
+        Long roomId = room.getId();
         willThrow(new BussinessException(BAD_REQUEST))
                 .given(validateRoomService).validateRoomStatusIsWait(room.getId());
 
         //when & then
-        assertThatThrownBy(() -> roomService.attentionRoomById(room.getId(), attentionUserRequest))
+        assertThatThrownBy(() -> roomService.attentionRoomById(roomId, attentionUserRequest))
                 .isInstanceOf(BussinessException.class)
-                .hasMessage(BAD_REQUEST.getMessage());
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 
     @Test
@@ -145,14 +151,16 @@ class RoomAttentionServiceTest {
 
         AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(attendUser.getId());
 
+        Long roomId = room.getId();
         willThrow(new BussinessException(BAD_REQUEST))
                 .given(validateRoomService).validateMaxUserCount(room.getId());
 
         //when & then
-        assertThatThrownBy(() -> roomService.attentionRoomById(room.getId(), attentionUserRequest))
+        assertThatThrownBy(() -> roomService.attentionRoomById(roomId, attentionUserRequest))
                 .isInstanceOf(BussinessException.class)
-                .hasMessage(BAD_REQUEST.getMessage());
-
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 
     @Test
@@ -171,13 +179,16 @@ class RoomAttentionServiceTest {
 
         AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(notActiveUser.getId());
 
+        Long roomId = room.getId();
         willThrow(new BussinessException(BAD_REQUEST))
                 .given(validateRoomService).validateUserStatusIsActive(notActiveUser.getId());
 
         //when & then
-        assertThatThrownBy(() -> roomService.attentionRoomById(room.getId(), attentionUserRequest))
+        assertThatThrownBy(() -> roomService.attentionRoomById(roomId, attentionUserRequest))
                 .isInstanceOf(BussinessException.class)
-                .hasMessage(BAD_REQUEST.getMessage());
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 
 
@@ -193,12 +204,15 @@ class RoomAttentionServiceTest {
 
         AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(host.getId());
 
+        Long roomId = room.getId();
         willThrow(new BussinessException(BAD_REQUEST))
                 .given(validateRoomService).validateUserIsParticipate(host.getId());
 
         //when & then
-        assertThatThrownBy(() -> roomService.attentionRoomById(room.getId(), attentionUserRequest))
+        assertThatThrownBy(() -> roomService.attentionRoomById(roomId, attentionUserRequest))
                 .isInstanceOf(BussinessException.class)
-                .hasMessage(BAD_REQUEST.getMessage());
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 }

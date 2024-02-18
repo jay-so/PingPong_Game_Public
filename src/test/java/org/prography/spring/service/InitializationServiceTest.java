@@ -105,7 +105,9 @@ class InitializationServiceTest {
         // when & then
         assertThatThrownBy(() -> initializationService.init(request))
                 .isInstanceOf(BussinessException.class)
-                .hasMessage(SEVER_ERROR.getMessage());
+                .hasMessage(SEVER_ERROR.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(SEVER_ERROR.getCode());
     }
 
     @Test
@@ -124,7 +126,9 @@ class InitializationServiceTest {
         //when & then
         assertThatThrownBy(() -> initializationService.init(invalidRequest))
                 .isInstanceOf(BussinessException.class)
-                .hasMessage(BAD_REQUEST.getMessage());
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 
     @Test
@@ -143,6 +147,8 @@ class InitializationServiceTest {
         //when & then
         assertThatThrownBy(() -> initializationService.init(request))
                 .isInstanceOf(BussinessException.class)
-                .hasMessage(SEVER_ERROR.getMessage());
+                .hasMessage(SEVER_ERROR.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(SEVER_ERROR.getCode());
     }
 }

@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
-class UserRoomRepsitory_test {
+class UserRoomRepsitoryTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -74,8 +74,9 @@ class UserRoomRepsitory_test {
         List<UserRoom> findUserRoom = userRoomRepository.findByRoomId_Id(room.getId());
 
         //then
-        assertThat(findUserRoom).hasSize(2);
-        assertThat(findUserRoom).containsExactlyInAnyOrder(userRoom, anotherUserRoom);
+        assertThat(findUserRoom)
+                .hasSize(2)
+                .containsExactlyInAnyOrder(userRoom, anotherUserRoom);
     }
 
     @Test

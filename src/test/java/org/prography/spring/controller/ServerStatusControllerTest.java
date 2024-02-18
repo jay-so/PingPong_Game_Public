@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-public class ServerStatusControllerTest {
+class ServerStatusControllerTest {
 
     private static final String BASE_URL = "/health";
 
