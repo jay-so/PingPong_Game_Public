@@ -2,6 +2,7 @@ package org.prography.spring.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.prography.spring.common.AutoCloseScheduledExecutor;
 import org.prography.spring.common.BussinessException;
 import org.prography.spring.domain.Room;
 import org.prography.spring.domain.User;
@@ -26,8 +27,6 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
@@ -121,7 +120,8 @@ public class RoomService {
         validateRoomService.validateUserIsInRoom(roomId, userId);
         validateRoomService.validateRoomStatusIsWait(roomId);
 
-        Room room = roomRepository.findById(roomId).get();
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new BussinessException(BAD_REQUEST));
 
         if (validateRoomService.validateUserIsRoomHost(room, userId)) {
             hostExitRoom(room);
@@ -155,11 +155,14 @@ public class RoomService {
         room.startGame();
         roomRepository.save(room);
 
-        ScheduledExecutorService finishGameStatus = Executors.newSingleThreadScheduledExecutor();
-        finishGameStatus.schedule(() -> {
-            room.finishGame();
-            roomRepository.save(room);
-        }, 1, TimeUnit.MINUTES);
+        try (AutoCloseScheduledExecutor executorService = new AutoCloseScheduledExecutor()) {
+            executorService.schedule(() -> {
+                Room scheduledRoom = roomRepository.findById(roomId)
+                        .orElseThrow(() -> new BussinessException(BAD_REQUEST));
+                scheduledRoom.finishGame();
+                roomRepository.save(scheduledRoom);
+            }, 1, TimeUnit.MINUTES);
+        }
     }
 
     private TeamStatus initTeamStatus(Room room, List<UserRoom> userCount) {
