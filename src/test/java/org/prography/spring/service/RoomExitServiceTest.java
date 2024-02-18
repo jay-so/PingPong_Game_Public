@@ -111,7 +111,9 @@ class RoomExitServiceTest {
         // when & then
         assertThatThrownBy(() -> roomService.exitRoomById(notParticipatedRoomId, exitRoomRequest))
                 .isInstanceOf(BussinessException.class)
-                .hasMessage(BAD_REQUEST.getMessage());
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 
     @Test
@@ -128,13 +130,16 @@ class RoomExitServiceTest {
 
         ExitRoomRequest exitRoomRequest = UserDtoFixture.exitRoomRequest(guest.getId());
 
+        Long roomId = room.getId();
         willThrow(new BussinessException(BAD_REQUEST))
                 .given(validateRoomService).validateRoomStatusIsWait(room.getId());
 
         //when & then
-        assertThatThrownBy(() -> roomService.exitRoomById(room.getId(), exitRoomRequest))
+        assertThatThrownBy(() -> roomService.exitRoomById(roomId, exitRoomRequest))
                 .isInstanceOf(BussinessException.class)
-                .hasMessage(BAD_REQUEST.getMessage());
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 
     @Test

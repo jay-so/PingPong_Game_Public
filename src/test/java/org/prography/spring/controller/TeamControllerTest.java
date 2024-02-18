@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-public class TeamControllerTest {
+class TeamControllerTest {
 
     private static final String BASE_URL = "/team";
 
