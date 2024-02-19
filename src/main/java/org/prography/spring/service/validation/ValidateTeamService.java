@@ -34,7 +34,7 @@ public class ValidateTeamService {
     public void validateRoomStatusIsWait(Long roomId) {
         Optional<Room> checkRoomStatusIsWait = roomRepository.findByIdAndStatus(roomId, WAIT);
 
-        if (!checkRoomStatusIsWait.isPresent()) {
+        if (checkRoomStatusIsWait.isEmpty()) {
             throw new BussinessException(BAD_REQUEST);
         }
     }
@@ -42,7 +42,7 @@ public class ValidateTeamService {
     public void validateUserParticipationInRoom(Long roomId, Long userId) {
         Optional<UserRoom> checkUserIsParticipate = userRoomRepository.findByUserId_IdAndRoomId_Id(userId, roomId);
 
-        if (!checkUserIsParticipate.isPresent()) {
+        if (checkUserIsParticipate.isEmpty()) {
             throw new BussinessException(BAD_REQUEST);
         }
     }
