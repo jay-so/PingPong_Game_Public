@@ -33,7 +33,7 @@ public class ValidateRoomService {
     public void validateUserStatusIsActive(Long userId) {
         Optional<User> checkUserStatusIsActive = userRepository.findByIdAndStatus(userId, ACTIVE);
 
-        if (!checkUserStatusIsActive.isPresent()) {
+        if (checkUserStatusIsActive.isEmpty()) {
             throw new BussinessException(BAD_REQUEST);
         }
     }
@@ -55,7 +55,7 @@ public class ValidateRoomService {
     public void validateRoomIsExist(Long roomId) {
         Optional<Room> checkRoomIsExist = roomRepository.findById(roomId);
 
-        if (!checkRoomIsExist.isPresent()) {
+        if (checkRoomIsExist.isEmpty()) {
             throw new BussinessException(BAD_REQUEST);
         }
     }
@@ -63,7 +63,7 @@ public class ValidateRoomService {
     public void validateRoomStatusIsWait(Long roomId) {
         Optional<Room> checkRoomStatusIsWait = roomRepository.findByIdAndStatus(roomId, WAIT);
 
-        if (!checkRoomStatusIsWait.isPresent()) {
+        if (checkRoomStatusIsWait.isEmpty()) {
             throw new BussinessException(BAD_REQUEST);
         }
     }
@@ -107,7 +107,7 @@ public class ValidateRoomService {
     public void validateUserIsInRoom(Long roomId, Long userId) {
         Optional<UserRoom> checkUserParticipate = userRoomRepository.findByRoomId_IdAndUserId_Id(roomId, userId);
 
-        if (!checkUserParticipate.isPresent()) {
+        if (checkUserParticipate.isEmpty()) {
             throw new BussinessException(BAD_REQUEST);
         }
     }
