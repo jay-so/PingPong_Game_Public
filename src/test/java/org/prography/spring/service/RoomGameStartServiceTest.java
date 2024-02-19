@@ -26,6 +26,7 @@ import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
+import static org.prography.spring.domain.enums.RoomStatus.FINISH;
 import static org.prography.spring.domain.enums.RoomStatus.PROGRESS;
 
 @ExtendWith(MockitoExtension.class)
@@ -63,6 +64,36 @@ class RoomGameStartServiceTest {
         verify(validateRoomService).validateRoomIsFull(room.getId());
         verify(roomRepository, times(1)).save(room);
         assertEquals(PROGRESS, room.getStatus());
+    }
+
+    @Test
+    @DisplayName("게임이 종료되면, 방의 상태가 FINISH로 변경된다.")
+    void finishGame_AfterStart_Success() {
+        // given
+        User host = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(host, "id", 1L);
+
+        User guest = UserFixture.userBuild(2L);
+        ReflectionTestUtils.setField(guest, "id", 2L);
+
+        Room room = RoomFixture.roomBuild(host);
+        ReflectionTestUtils.setField(room, "id", 1L);
+
+        StartGameRequest gameRequest = UserDtoFixture.startGameRequest(host.getId());
+
+        given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
+
+        // when
+        roomService.startGameById(room.getId(), gameRequest);
+        room.finishGame();
+
+        // then
+        verify(validateRoomService).validateRoomIsExist(room.getId());
+        verify(validateRoomService).validateRoomStatusIsWait(room.getId());
+        verify(validateRoomService).validateHostOfRoom(room.getId(), host.getId());
+        verify(validateRoomService).validateRoomIsFull(room.getId());
+        verify(roomRepository, times(1)).save(room);
+        assertEquals(FINISH, room.getStatus());
     }
 
     @Test
