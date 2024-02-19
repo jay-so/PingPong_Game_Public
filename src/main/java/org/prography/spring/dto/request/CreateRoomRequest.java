@@ -38,4 +38,8 @@ public class CreateRoomRequest {
                 .status(WAIT)
                 .build();
     }
+
+    public boolean validateCreateRoomRequest() {
+        return userId == null || userId <= 0 || roomType == null || title == null || title.isEmpty();
+    }
 }

@@ -5,6 +5,10 @@ import org.prography.spring.common.BussinessException;
 import org.prography.spring.domain.Room;
 import org.prography.spring.domain.User;
 import org.prography.spring.domain.UserRoom;
+import org.prography.spring.dto.request.AttentionUserRequest;
+import org.prography.spring.dto.request.CreateRoomRequest;
+import org.prography.spring.dto.request.ExitRoomRequest;
+import org.prography.spring.dto.request.StartGameRequest;
 import org.prography.spring.repository.RoomRepository;
 import org.prography.spring.repository.UserRepository;
 import org.prography.spring.repository.UserRoomRepository;
@@ -120,5 +124,29 @@ public class ValidateRoomService {
 
     public void validateUserExitRoom(Long userId, Long roomId) {
         userRoomRepository.deleteByUserId_IdAndRoomId_Id(userId, roomId);
+    }
+
+    public void validateCreateRoomRequest(CreateRoomRequest createRoomRequest) {
+        if (createRoomRequest.validateCreateRoomRequest()) {
+            throw new BussinessException(BAD_REQUEST);
+        }
+    }
+
+    public void validateAttentionUserRequest(AttentionUserRequest attentionUserRequest) {
+        if (attentionUserRequest.validateAttentionUserRequest()) {
+            throw new BussinessException(BAD_REQUEST);
+        }
+    }
+
+    public void validateExitRoomRequest(ExitRoomRequest exitRoomRequest) {
+        if (exitRoomRequest.validateExitRoomRequest()) {
+            throw new BussinessException(BAD_REQUEST);
+        }
+    }
+
+    public void validateStartGameRequest(StartGameRequest startGameRequest) {
+        if (startGameRequest.validateStartGameRequest()) {
+            throw new BussinessException(BAD_REQUEST);
+        }
     }
 }

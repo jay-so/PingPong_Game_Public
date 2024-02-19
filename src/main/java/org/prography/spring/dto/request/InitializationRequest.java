@@ -19,7 +19,7 @@ public class InitializationRequest {
     @Schema(description = "생성할 데이터 수(quantity)")
     private Long quantity;
 
-    public boolean validateInitializationRequest() {
-        return seed != null && seed >= 0 && quantity != null && quantity >= 0;
+    public boolean validateInitRequest() {
+        return seed == null || seed < 0 || quantity == null || quantity < 0;
     }
 }

@@ -10,7 +10,7 @@ import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
 public class ValidateInitService {
 
     public void validateInitializationRequest(InitializationRequest initializationRequest) {
-        if(!initializationRequest.validateInitializationRequest()){
+        if(initializationRequest.validateInitRequest()){
             throw new BussinessException(BAD_REQUEST);
         }
     }

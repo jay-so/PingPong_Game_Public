@@ -5,6 +5,7 @@ import org.prography.spring.common.BussinessException;
 import org.prography.spring.domain.Room;
 import org.prography.spring.domain.UserRoom;
 import org.prography.spring.domain.enums.TeamStatus;
+import org.prography.spring.dto.request.ChangeTeamRequest;
 import org.prography.spring.repository.RoomRepository;
 import org.prography.spring.repository.UserRoomRepository;
 import org.springframework.stereotype.Service;
@@ -59,5 +60,11 @@ public class ValidateTeamService {
 
         if (changeTeamMemberCount >= maxTeamStatusChangeCount)
             throw new BussinessException(BAD_REQUEST);
+    }
+
+    public void validateTeamRequest(ChangeTeamRequest changeTeamRequest) {
+        if (changeTeamRequest.validateChangeTeamRequest()) {
+            throw new BussinessException(BAD_REQUEST);
+        }
     }
 }

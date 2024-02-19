@@ -13,4 +13,8 @@ public class ChangeTeamRequest {
 
     @Schema(description = "유저 아이디(userId)")
     private Long userId;
+
+    public boolean validateChangeTeamRequest() {
+        return userId == null || userId <= 0;
+    }
 }

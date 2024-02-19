@@ -44,6 +44,8 @@ public class RoomService {
 
     @Transactional
     public void createRoom(CreateRoomRequest createRoomRequest) {
+        validateRoomService.validateCreateRoomRequest(createRoomRequest);
+
         User user = validateRoomService.validateUserIsExist(createRoomRequest.getUserId());
         validateRoomService.validateUserStatusIsActive(createRoomRequest.getUserId());
         validateRoomService.validateUserIsParticipate(createRoomRequest.getUserId());
@@ -84,8 +86,9 @@ public class RoomService {
 
     @Transactional
     public void attentionRoomById(Long roomId, AttentionUserRequest attentionUserRequest) {
-        Long userId = attentionUserRequest.getUserId();
+        validateRoomService.validateAttentionUserRequest(attentionUserRequest);
 
+        Long userId = attentionUserRequest.getUserId();
         validateRoomService.validateRoomIsExist(roomId);
         validateRoomService.validateRoomStatusIsWait(roomId);
         validateRoomService.validateUserStatusIsActive(userId);
@@ -107,8 +110,9 @@ public class RoomService {
 
     @Transactional
     public void exitRoomById(Long roomId, ExitRoomRequest exitRoomRequest) {
-        Long userId = exitRoomRequest.getUserId();
+        validateRoomService.validateExitRoomRequest(exitRoomRequest);
 
+        Long userId = exitRoomRequest.getUserId();
         validateRoomService.validateRoomIsExist(roomId);
         validateRoomService.validateUserIsInRoom(roomId, userId);
         validateRoomService.validateRoomStatusIsWait(roomId);
@@ -124,8 +128,9 @@ public class RoomService {
 
     @Transactional
     public void startGameById(Long roomId, StartGameRequest startGameRequest) {
-        Long userId = startGameRequest.getUserId();
+        validateRoomService.validateStartGameRequest(startGameRequest);
 
+        Long userId = startGameRequest.getUserId();
         validateRoomService.validateRoomIsExist(roomId);
         validateRoomService.validateRoomStatusIsWait(roomId);
         validateRoomService.validateHostOfRoom(roomId, userId);

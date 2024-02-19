@@ -13,4 +13,8 @@ public class ExitRoomRequest {
 
     @Schema(description = "유저 아이디(userId)")
     private Long userId;
+
+    public boolean validateExitRoomRequest() {
+        return userId == null || userId <= 0;
+    }
 }

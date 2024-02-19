@@ -19,8 +19,9 @@ public class TeamService {
 
     @Transactional
     public void changeTeamById(Long roomId, ChangeTeamRequest changeTeamRequest) {
-        Long userId = changeTeamRequest.getUserId();
+        validateTeamService.validateTeamRequest(changeTeamRequest);
 
+        Long userId = changeTeamRequest.getUserId();
         validateTeamService.validateRoomIsExist(roomId);
         validateTeamService.validateRoomStatusIsWait(roomId);
         validateTeamService.validateUserParticipationInRoom(roomId, userId);
