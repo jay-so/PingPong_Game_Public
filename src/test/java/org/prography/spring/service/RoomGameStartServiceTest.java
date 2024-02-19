@@ -40,7 +40,7 @@ class RoomGameStartServiceTest {
 
     @Test
     @DisplayName("호스트는 게임을 시작할 수 있다.")
-    void StartGame_Host_Success() {
+    void startGame_Host_Success() {
         //given
         User user = UserFixture.userBuild(1L);
         ReflectionTestUtils.setField(user, "id", 1L);
@@ -92,6 +92,36 @@ class RoomGameStartServiceTest {
         verify(validateRoomService).validateRoomIsFull(room.getId());
         verify(roomRepository, times(1)).save(room);
         assertEquals(FINISH, room.getStatus());
+    }
+
+    @Test
+    @DisplayName("게임 시작 요청에 잘못된 값이 들어오면, 예외가 발생한다.")
+    void startGame_Fail_BadRequest() {
+        User host = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(host, "id", 1L);
+
+        User guest = UserFixture.userBuild(2L);
+        ReflectionTestUtils.setField(guest, "id", 2L);
+
+        Room room = RoomFixture.roomBuild(host);
+        ReflectionTestUtils.setField(room, "id", 1L);
+
+        //given
+        StartGameRequest startGameRequest = StartGameRequest.builder()
+                .userId(-1L)
+                .build();
+
+        Long roomId = room.getId();
+        willThrow(new BussinessException(BAD_REQUEST))
+                .given(validateRoomService)
+                .validateStartGameRequest(startGameRequest);
+
+        //when & then
+        assertThatThrownBy(() -> roomService.startGameById(roomId, startGameRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 
     @Test

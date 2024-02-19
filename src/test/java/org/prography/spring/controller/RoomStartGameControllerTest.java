@@ -102,6 +102,54 @@ class RoomStartGameControllerTest {
     }
 
     @Test
+    @DisplayName("게임 시작 요청에 잘못된 값이 들어오면, 실패 응답이 반환된다")
+    void startGame_Fail_BadRequest() throws Exception {
+        //given
+        Long fakerId = 1L;
+        Long hostFakerId = 2L;
+        User host = userSetup.setUpUser(hostFakerId);
+        User guest = userSetup.setUpUser(fakerId);
+        Room room = roomSetup.setUpRoom(host);
+
+        userRoomSetUp.setUpUserRoom(guest, room);
+        userRoomSetUp.setUpUserRoom(host, room);
+
+        StartGameRequest startGameRequest = StartGameRequest.builder()
+                .userId(-1L)
+                .build();
+
+        doThrow(new BussinessException(BAD_REQUEST))
+                .when(roomService)
+                .startGameById(room.getId(), startGameRequest);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                RestDocumentationRequestBuilders.put(BASE_URL + "/start/{roomId}", room.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(startGameRequest)
+                        )
+        );
+
+        //then
+        resultActions
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
+                .andDo(print())
+                .andDo(document("RoomControllerTest/startGame_Fail_BadRequest",
+                        pathParameters(
+                                parameterWithName("roomId").description("방 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("userId").description("유저 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )));
+    }
+
+
+    @Test
     @DisplayName("존재하지 않는 방에서 게임을 시작하려는 경우, 실패 응답이 반환된다")
     void startGame_Fail_RoomNotExist() throws Exception {
         //given

@@ -98,6 +98,49 @@ class RoomAttentionControllerTest {
     }
 
     @Test
+    @DisplayName("방 참가 요청에 잘못된 값이 들어오면, 실패 응답이 반환된다")
+    void attentionUser_Fail_BadRequest() throws Exception {
+        //given
+        Long fakerId = 11L;
+        roomSetup.setUpRooms(userSetup.setUpUsers(10));
+        userSetup.setUpUser(fakerId);
+        Room room = roomRepository.findAll().get(2);
+
+        AttentionUserRequest attentionUserRequest = AttentionUserRequest.builder()
+                .userId(-1L)
+                .build();
+
+        doThrow(new BussinessException(BAD_REQUEST))
+                .when(roomService)
+                .attentionRoomById(room.getId(), attentionUserRequest);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                post(BASE_URL + "/attention/{roomId}", room.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(attentionUserRequest))
+        );
+
+        //then
+        resultActions
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
+                .andDo(print())
+                .andDo(document("RoomControllerTest/attentionUser_Fail_BadRequest",
+                        pathParameters(
+                                parameterWithName("roomId").description("방 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("userId").description("유저 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )));
+
+    }
+
+    @Test
     @DisplayName("존재하지 않는 방에 유저가 참여하려고 하면, 실패 응답이 반환된다")
     void attentionUser_Fail_RoomNotExist() throws Exception {
         //given

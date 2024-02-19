@@ -26,6 +26,7 @@ import static org.prography.spring.common.ApiResponseCode.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -71,6 +72,7 @@ class RoomCreateControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(SUCCESS.getCode()))
                 .andExpect(jsonPath("$.message").value(SUCCESS.getMessage()))
+                .andDo(print())
                 .andDo(document("RoomControllerTest/createRoom_Success",
                         requestFields(
                                 fieldWithPath("userId").description("유저 ID"),
@@ -83,6 +85,43 @@ class RoomCreateControllerTest {
                         )
                 ));
     }
+
+    @Test
+    @DisplayName("방 생성 요청에 잘못된 값이 들어오면, 실패 응답이 반환된다")
+void createRoom_Fail_BadRequest() throws Exception {
+        //given
+
+        CreateRoomRequest createRoomRequest = CreateRoomRequest.builder()
+                .userId(-1L)
+                .build();
+
+        doThrow(new BussinessException(BAD_REQUEST))
+                .when(roomService)
+                .createRoom(createRoomRequest);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(createRoomRequest)));
+
+        //then
+        resultActions
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
+                .andDo(print())
+                .andDo(document("createRoom_Fail_BadRequest",
+                        requestFields(
+                                fieldWithPath("userId").description("유저 ID"),
+                                fieldWithPath("roomType").description("방 타입"),
+                                fieldWithPath("title").description("방 제목")),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )
+                ));
+    }
+
 
     @Test
     @DisplayName("유저의 상태가 활성 상태가 아닌 경우, 방 생성을 실패하면, 실패 응답이 반환된다")
@@ -107,6 +146,7 @@ class RoomCreateControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
                 .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
+                .andDo(print())
                 .andDo(document("createRoom_Fail_UserNotActivated",
                         requestFields(
                                 fieldWithPath("userId").description("유저 ID"),
@@ -143,6 +183,7 @@ class RoomCreateControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
                 .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
+                .andDo(print())
                 .andDo(document("createRoom_Fail_UserAlreadyJoinedRoom",
                         requestFields(
                                 fieldWithPath("userId").description("유저 ID"),
@@ -178,6 +219,7 @@ class RoomCreateControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(SEVER_ERROR.getCode()))
                 .andExpect(jsonPath("$.message").value(SEVER_ERROR.getMessage()))
+                .andDo(print())
                 .andDo(document("createRoom_Fail_ServerError",
                         requestFields(
                                 fieldWithPath("userId").description("유저 ID"),

@@ -13,6 +13,7 @@
 - 방을 생성한 사람을 호스트(`HOST`)라고 합니다.
 
 === ⭐️ 방 생성 로직
+
 * 처음 방을 생성하면 방의 상태는 대기(`WAIT`) 상태로 생성됩니다.
 * 방의 상태는 대기(`WAIT`), 진행중(`PROGRESS`), 종료(`FINISH`) 상태가 있습니다.
 * 방의 타입은 단식(`SINGLE`), 복식(`DOUBLE`) 있습니다.
@@ -51,6 +52,30 @@ include::{snippets}/RoomControllerTest/createRoom_Success/http-response.adoc[]
 ==== Response fields
 
 include::{snippets}/RoomControllerTest/createRoom_Success/response-fields.adoc[]
+
+=== 방 생성 API 실패 시(요청 본문에 `userId`, `roomType`, `title` 값이 잘못 입력된 경우)
+
+=== `POST /rooms`
+
+- UserId는 null이거나 0보다 작은 값이 입력될 수 없습니다.
+- RoomType은 null이거나 비어 있을 수 없습니다.
+- Title은 null이거나 비어 있을 수 없습니다.
+
+==== HTTP request
+
+include::{snippets}/createRoom_Fail_BadRequest/http-request.adoc[]
+
+===== Request fields
+
+include::{snippets}/createRoom_Fail_BadRequest/request-fields.adoc[]
+
+==== Http response
+
+include::{snippets}/createRoom_Fail_BadRequest/http-response.adoc[]
+
+==== Response fields
+
+include::{snippets}/createRoom_Fail_BadRequest/response-fields.adoc[]
 
 === 방 생성 API 실패 시(유저가 활성 상태가 아닌 경우)
 

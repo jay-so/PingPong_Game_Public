@@ -12,7 +12,6 @@ import org.prography.spring.domain.User;
 import org.prography.spring.dto.response.RoomDetailResponse;
 import org.prography.spring.fixture.domain.RoomFixture;
 import org.prography.spring.fixture.domain.UserFixture;
-import org.prography.spring.repository.RoomRepository;
 import org.prography.spring.service.validation.ValidateRoomService;
 
 import java.util.Arrays;
@@ -27,9 +26,6 @@ import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
 
 @ExtendWith(MockitoExtension.class)
 class RoomFindDetailServiceTest {
-
-    @Mock
-    private RoomRepository roomRepository;
 
     @Mock
     private ValidateRoomService validateRoomService;

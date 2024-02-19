@@ -32,6 +32,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
@@ -141,6 +142,50 @@ class RoomExitControllerTest {
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지")
                         )));
+    }
+
+    @Test
+    @DisplayName("방 나기기 요청에 잘못된 값이 들어오면, 실패 응답이 반환된다")
+    void exitRoom_Fail_BadRequest() throws Exception {
+        //givn
+        Long fakerId = 1L;
+        Long hostFakerId = 2L;
+        User guest = userSetup.setUpUser(fakerId);
+        User host = userSetup.setUpUser(hostFakerId);
+        Room room = roomSetup.setUpRoom(host);
+        userRoomSetUp.setUpUserRoom(guest, room);
+
+        ExitRoomRequest exitRoomRequest = UserDtoFixture.exitRoomRequest(-1L);
+
+        doThrow(new BussinessException(BAD_REQUEST))
+                .when(roomService)
+                .exitRoomById(room.getId(), exitRoomRequest);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                post(BASE_URL + "/out/{roomId}", room.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(exitRoomRequest))
+        );
+
+        //then
+        resultActions
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
+                .andDo(print())
+                .andDo(document("RoomControllerTest/exitRoom_Fail_BadRequest",
+                        pathParameters(
+                                parameterWithName("roomId").description("방 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("userId").description("유저 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )
+                ));
     }
 
     @Test

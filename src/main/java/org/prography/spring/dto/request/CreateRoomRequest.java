@@ -40,6 +40,6 @@ public class CreateRoomRequest {
     }
 
     public boolean validateCreateRoomRequest() {
-        return userId == null || userId <= 0 || roomType == null || title == null || title.isEmpty();
+        return userId == null || userId <= 0 || roomType == null || roomType.isEmpty() || title == null || title.isEmpty();
     }
 }

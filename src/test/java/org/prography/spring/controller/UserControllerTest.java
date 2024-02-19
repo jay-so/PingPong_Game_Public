@@ -87,6 +87,7 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.result.totalElements").value(0))
                 .andExpect(jsonPath("$.result.totalPages").value(0))
                 .andExpect(jsonPath("$.result.userList", hasSize(0)))
+                .andDo(print())
                 .andDo(document("UserControllerTest/findAll_Users_BeforeInitialization_Success",
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -130,6 +131,7 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.result.userList[0].status").exists())
                 .andExpect(jsonPath("$.result.userList[0].createdAt").exists())
                 .andExpect(jsonPath("$.result.userList[0].updatedAt").exists())
+                .andDo(print())
                 .andDo(document("UserControllerTest/findAll_Users_AfterInitialization_Success",
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -167,7 +169,8 @@ class UserControllerTest {
         resultActions
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
-                .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage())).andDo(print())
+                .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
+                .andDo(print())
                 .andDo(document("UserControllerTest/findAll_Users_Fail_BadRequest",
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),

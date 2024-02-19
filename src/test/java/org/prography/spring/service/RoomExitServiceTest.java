@@ -13,8 +13,6 @@ import org.prography.spring.dto.request.ExitRoomRequest;
 import org.prography.spring.fixture.domain.RoomFixture;
 import org.prography.spring.fixture.domain.UserFixture;
 import org.prography.spring.fixture.dto.UserDtoFixture;
-import org.prography.spring.repository.RoomRepository;
-import org.prography.spring.repository.UserRoomRepository;
 import org.prography.spring.service.validation.ValidateRoomService;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -26,12 +24,6 @@ import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
 
 @ExtendWith(MockitoExtension.class)
 class RoomExitServiceTest {
-
-    @Mock
-    private RoomRepository roomRepository;
-
-    @Mock
-    private UserRoomRepository userRoomRepository;
 
     @Mock
     private ValidateRoomService validateRoomService;
@@ -85,6 +77,33 @@ class RoomExitServiceTest {
         verify(validateRoomService).validateRoomIsExist(room.getId());
         verify(validateRoomService).validateUserIsInRoom(room.getId(), user.getId());
         verify(validateRoomService).validateRoomStatusIsWait(room.getId());
+    }
+
+    @Test
+    @DisplayName("방 나가기 요청에 잘못된 값이 들어오면, 예외가 발생한다.")
+    void exitRoom_Fail_BadRequest() {
+        User host = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(host, "id", 1L);
+
+        Room room = RoomFixture.roomBuild(host);
+        ReflectionTestUtils.setField(room, "id", 1L);
+
+        //given
+        ExitRoomRequest exitRoomRequest = ExitRoomRequest.builder()
+                .userId(-1L)
+                .build();
+
+        Long roomId = room.getId();
+        willThrow(new BussinessException(BAD_REQUEST))
+                .given(validateRoomService)
+                .validateExitRoomRequest(exitRoomRequest);
+
+        //when & then
+        assertThatThrownBy(() -> roomService.exitRoomById(roomId, exitRoomRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 
     @Test

@@ -86,6 +86,28 @@ include::{snippets}/RoomControllerTest/exitRoom_Success_HostExit/http-response.a
 
 include::{snippets}/RoomControllerTest/exitRoom_Success_HostExit/response-fields.adoc[]
 
+=== 방 나가기 API 실패 시(요청 본문에 `userId` 값이 잘못 입력된 경우)
+
+=== `POST /room/out/{roomId}`
+
+- UserId는 null이거나 0보다 작은 값이 입력될 수 없습니다.
+
+==== HTTP request
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_BadRequest/http-request.adoc[]
+
+===== Request fields
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_BadRequest/request-fields.adoc[]
+
+==== Http response
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_BadRequest/http-response.adoc[]
+
+==== Response fields
+
+include::{snippets}/RoomControllerTest/exitRoom_Fail_BadRequest/response-fields.adoc[]
+
 === 방 나가기 API 실패 시(해당 유저가 방에 참가하지 않은 경우)
 
 === `POST /room/out/{roomId}`

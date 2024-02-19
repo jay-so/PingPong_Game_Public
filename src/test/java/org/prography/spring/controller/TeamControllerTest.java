@@ -97,6 +97,50 @@ class TeamControllerTest {
     }
 
     @Test
+    @DisplayName("팀 변경 요청에 잘못된 값이 들어오면, 실패 응답이 반환된다")
+    void changeTeam_Fail_BadRequest() throws Exception {
+        //given
+        Long fakerId = 2L;
+        User user = userSetup.setUpUser(fakerId);
+        Room room = roomSetup.setUpRoom(user);
+        userRoomSetUp.setUpUserRoom(user, room);
+
+        ChangeTeamRequest changeTeamRequest = ChangeTeamRequest.builder()
+                .userId(-1L)
+                .build();
+
+        doThrow(new BussinessException(BAD_REQUEST))
+                .when(teamService)
+                .changeTeamById(room.getId(), changeTeamRequest);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                put(BASE_URL + "/{roomId}", room.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(changeTeamRequest))
+        );
+
+        //then
+
+        resultActions
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.getCode()))
+                .andExpect(jsonPath("$.message").value(BAD_REQUEST.getMessage()))
+                .andDo(print())
+                .andDo(document("TeamControllerTest/changeTeam_Fail_BadRequest",
+                        pathParameters(
+                                parameterWithName("roomId").description("방 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("userId").description("유저 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )));
+
+    }
+
+    @Test
     @DisplayName("존재하지 않는 방에 팀 변경 요청이 오면, 실패 응답이 반환된다.")
     void changeTeam_Fail_NotExistRoom() throws Exception {
         //given

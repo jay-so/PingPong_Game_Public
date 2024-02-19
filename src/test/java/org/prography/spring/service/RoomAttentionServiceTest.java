@@ -14,8 +14,6 @@ import org.prography.spring.dto.request.AttentionUserRequest;
 import org.prography.spring.fixture.domain.RoomFixture;
 import org.prography.spring.fixture.domain.UserFixture;
 import org.prography.spring.fixture.dto.UserDtoFixture;
-import org.prography.spring.repository.RoomRepository;
-import org.prography.spring.repository.UserRepository;
 import org.prography.spring.repository.UserRoomRepository;
 import org.prography.spring.service.validation.ValidateRoomService;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -30,12 +28,6 @@ import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
 
 @ExtendWith(MockitoExtension.class)
 class RoomAttentionServiceTest {
-
-    @Mock
-    private RoomRepository roomRepository;
-
-    @Mock
-    private UserRepository userRepository;
 
     @Mock
     private UserRoomRepository userRoomRepository;
@@ -74,6 +66,33 @@ class RoomAttentionServiceTest {
         verify(validateRoomService).validateUserStatusIsActive(guest.getId());
         verify(validateRoomService).validateUserIsParticipate(guest.getId());
         verify(validateRoomService).validateMaxUserCount(room.getId());
+    }
+
+    @Test
+    @DisplayName("방 참가 요청에 잘못된 값이 들어오면, 예외가 발생한다.")
+    void AttentionRoom_Fail_BadRequest() {
+        User host = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(host, "id", 1L);
+
+        Room room = RoomFixture.roomBuild(host);
+        ReflectionTestUtils.setField(room, "id", 1L);
+
+        //given
+        AttentionUserRequest attentionUserRequest = AttentionUserRequest.builder()
+                .userId(-1L)
+                .build();
+
+        Long roomId = room.getId();
+        willThrow(new BussinessException(BAD_REQUEST))
+                .given(validateRoomService)
+                .validateAttentionUserRequest(attentionUserRequest);
+
+        //when & then
+        assertThatThrownBy(() -> roomService.attentionRoomById(roomId, attentionUserRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
     }
 
     @Test

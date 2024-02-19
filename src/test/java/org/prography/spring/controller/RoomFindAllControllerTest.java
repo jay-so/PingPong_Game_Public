@@ -87,6 +87,7 @@ class RoomFindAllControllerTest {
                 .andExpect(jsonPath("$.result.roomList[0].hostId").exists())
                 .andExpect(jsonPath("$.result.roomList[0].roomType").exists())
                 .andExpect(jsonPath("$.result.roomList[0].status").exists())
+                .andDo(print())
                 .andDo(document("RoomControllerTest/findAllRoom_Success",
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),

@@ -53,6 +53,28 @@ include::{snippets}/TeamControllerTest/changeTeam_Success/http-response.adoc[]
 
 include::{snippets}/TeamControllerTest/changeTeam_Success/response-fields.adoc[]
 
+=== 팀 변경 API 실패 시(요청 본문에 `userId` 값이 잘못 입력된 경우)
+
+=== `PUT /team/{roomId}`
+
+- UserId는 null이거나 0보다 작은 값이 입력될 수 없습니다.
+
+==== HTTP request
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_BadRequest/http-request.adoc[]
+
+===== Request fields
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_BadRequest/request-fields.adoc[]
+
+==== Http response
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_BadRequest/http-response.adoc[]
+
+==== Response fields
+
+include::{snippets}/TeamControllerTest/changeTeam_Fail_BadRequest/response-fields.adoc[]
+
 === 팀 변경 API 실패 시(방이 존재하지 않는 경우)
 
 === `PUT /team/{roomId}`

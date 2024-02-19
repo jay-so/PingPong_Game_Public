@@ -70,6 +70,33 @@ class TeamServiceTest {
     }
 
     @Test
+    @DisplayName("팀 변경 요청에 잘못된 값이 들어오면, 예외가 발생한다.")
+    void ChangeTeam_Fail_BadRequest() {
+        User host = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(host, "id", 1L);
+
+        Room room = RoomFixture.roomBuild(host);
+        ReflectionTestUtils.setField(room, "id", 1L);
+
+        //given
+        ChangeTeamRequest changeTeamRequest = ChangeTeamRequest.builder()
+                .userId(-1L)
+                .build();
+
+        Long roomId = room.getId();
+        willThrow(new BussinessException(BAD_REQUEST))
+                .given(validateTeamService)
+                .validateTeamRequest(changeTeamRequest);
+
+        //when & then
+        assertThatThrownBy(() -> teamService.changeTeamById(roomId, changeTeamRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
+    }
+
+    @Test
     @DisplayName("존재하지 않는 방에 대한 팀 변경 요청은 실패한다.")
     void ChangeTeam_NotExistRoom_Fail() {
         Long notExistRoomId = 99L;

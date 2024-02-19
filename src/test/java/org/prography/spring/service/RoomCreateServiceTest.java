@@ -44,7 +44,7 @@ class RoomCreateServiceTest {
 
     @Test
     @DisplayName("방 요청이 정상적으로 처리되면, 방이 생성된다.")
-    void create_Room_Success() {
+    void createRoom_Success() {
         // given
         User user = UserFixture.userBuild(1L);
         ReflectionTestUtils.setField(user, "id", 1L);
@@ -65,8 +65,31 @@ class RoomCreateServiceTest {
     }
 
     @Test
+    @DisplayName("방 생성 요청에 잘못된 값이 들어오면, 예외가 발생한다.")
+    void createRoom_Fail_BadRequest() {
+        User host = UserFixture.userBuild(1L);
+        ReflectionTestUtils.setField(host, "id", 1L);
+
+        //given
+        CreateRoomRequest createRoomRequest = CreateRoomRequest.builder()
+                .userId(-1L)
+                .build();
+
+        willThrow(new BussinessException(BAD_REQUEST))
+                .given(validateRoomService)
+                .validateCreateRoomRequest(createRoomRequest);
+
+        //when & then
+        assertThatThrownBy(() -> roomService.createRoom(createRoomRequest))
+                .isInstanceOf(BussinessException.class)
+                .hasMessage(BAD_REQUEST.getMessage())
+                .extracting(ex -> ((BussinessException) ex).getApiResponseCode().getCode())
+                .isEqualTo(BAD_REQUEST.getCode());
+    }
+
+    @Test
     @DisplayName("유저 상태가 활성 상태가 아닌 경우, 방 생성 요청은 실패 응답이 반환된다.")
-    void create_Room_Fail_UserStatusIsNotActive() {
+    void createRoom_Fail_UserStatusIsNotActive() {
         //given
         User user = UserFixture.notActiveUser(1L);
         ReflectionTestUtils.setField(user, "id", 1L);
@@ -86,7 +109,7 @@ class RoomCreateServiceTest {
 
     @Test
     @DisplayName("유저가 이미 참가한 방이 있는 경우, 방 생성 요청은 실패 응답이 반환된다.")
-    void create_Room_Fail_UserIsParticipate() {
+    void createRoom_Fail_UserIsParticipate() {
         // given
         User user = UserFixture.userBuild(1L);
         ReflectionTestUtils.setField(user, "id", 1L);
@@ -110,7 +133,7 @@ class RoomCreateServiceTest {
 
     @Test
     @DisplayName("유저가 방을 생성할때, 사용자를 찾을 수 없으면 실패 응답이 반환된다.")
-    void create_Room_Fail_NotFoundUser() {
+    void createRoom_Fail_NotFoundUser() {
         //given
         Long notExistUserId = 1L;
 
