@@ -286,7 +286,7 @@ GET /health
 
 **fakerAPI 경로**
 
-```Http
+``` Https
 https://fakerapi.it/api/v1/users?_seed={seed}&_quantity={quantity}&_locale=ko_KR
 ```
 
@@ -306,7 +306,7 @@ https://fakerapi.it/api/v1/users?_seed={seed}&_quantity={quantity}&_locale=ko_KR
 
 - fakerAPI의 id 필드 값에 따른 회원 상태는 다음 규칙에 따라 저장됩니다.
 
-```text
+``` text
 1. 응답 값의 id(fakerId) 값 ≤ 30 (30이하)
 - 회원 상태 = 활성상태(ACTIVATE) 상태로 세팅합니다.
 
@@ -319,7 +319,7 @@ https://fakerapi.it/api/v1/users?_seed={seed}&_quantity={quantity}&_locale=ko_KR
 
 **API 경로**
 
-```HTTP
+``` HTTP
 POST /health
 ```
 
@@ -355,7 +355,7 @@ POST /health
 
 API 경로
 
-```HTTP
+``` HTTP
 GET /user?size={size}&page={page}
 ```
 
@@ -418,7 +418,7 @@ GET /user?size={size}&page={page}
 
 **API 경로**
 
-```HTTP
+``` HTTP
 POST /room
 ```
 
@@ -452,7 +452,7 @@ POST /room
 
 **API 경로**
 
-```HTTP
+``` HTTP
 GET /room?size={size}&page={page}
 ```
 
@@ -501,7 +501,7 @@ GET /room?size={size}&page={page}
 
 **API 경로**
 
-```HTTP
+``` HTTP
 GET /room/{roomId}
 ```
 
@@ -550,7 +550,7 @@ GET /room/{roomId}
 
 **API 경로**
 
-```HTTP
+``` HTTP
 POST /room/attention/{roomId}
 ```
 
@@ -588,7 +588,7 @@ POST /room/attention/{roomId}
 
 **API 경로**
 
-``` json
+``` HTTP
 POST /room/out/{roomId}
 ```
 
@@ -677,7 +677,7 @@ PUT /room/start/{roomId}
 
 **API 경로**
 
-``` json
+``` HTTP
 PUT /team/{roomId}
 ```
 
@@ -713,13 +713,13 @@ PUT /team/{roomId}
 
 ### 1. 헬스체크 API 호출
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/health' -i -X GET \
     -H 'Accept: application/json' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
   "code": 200,
   "message": "API 요청이 성공했습니다."
@@ -730,13 +730,13 @@ curl 'http://localhost:8080/health' -i -X GET \
 ### 2. 유저 전체 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
   "code": 200,
   "message": "API 요청이 성공했습니다.",
@@ -752,14 +752,14 @@ curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
 ### 3. 초기화
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/init' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"seed":123,"quantity":10}' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
   "code": 200,
   "message": "API 요청이 성공했습니다."
@@ -772,13 +772,13 @@ curl 'http://localhost:8080/init' -i -X POST \
 > Request
 >
 
-```bash
+``` bash
 curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
    "code": 200,
    "message": "API 요청이 성공했습니다.",
@@ -826,13 +826,13 @@ curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
 
 ### 1. 헬스체크 API 호출
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/health' -i -X GET \
     -H 'Accept: application/json' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
   "code": 200,
   "message": "API 요청이 성공했습니다."
@@ -842,13 +842,13 @@ curl 'http://localhost:8080/health' -i -X GET \
 ### 2. 유저 전체 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
   "code": 200,
   "message": "API 요청이 성공했습니다.",
@@ -863,14 +863,14 @@ curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
 ### 3. 초기화
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/init' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"seed":123,"quantity":10}' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
   "code": 200,
   "message": "API 요청이 성공했습니다."
@@ -881,13 +881,13 @@ curl 'http://localhost:8080/init' -i -X POST \
 ### 4. 유저 전체 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
    "code": 200,
    "message": "API 요청이 성공했습니다.",
@@ -931,7 +931,7 @@ curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
 ### 5. 방 전체 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room?page=0&size=10' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
@@ -953,12 +953,12 @@ curl 'http://localhost:8080/room?page=0&size=10' -i -X GET \
 ### 6. 방 생성
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"userId":1,"roomType":"SINGLE","title":"첫번째 테스트 방"}' -w "\n"
 ```
-```bash
+``` bash
 curl 'http://localhost:8080/room' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"userId":2,"roomType":"DOUBLE","title":"두번째 테스트 방"}' -w "\n"
@@ -971,11 +971,17 @@ curl 'http://localhost:8080/room' -i -X POST \
     "message": "API 요청이 성공했습니다."
 }
 ```
+``` json
+{
+    "code": 200,
+    "message": "API 요청이 성공했습니다."
+}
+```
 
 ### 7. 방 전체 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room?page=0&size=10' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
@@ -1011,7 +1017,7 @@ curl 'http://localhost:8080/room?page=0&size=10' -i -X GET \
 ### 8. 방 상세 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room/1' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
@@ -1039,13 +1045,13 @@ curl 'http://localhost:8080/room/1' -i -X GET \
 
 ### 1. 헬스체크 API 호출
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/health' -i -X GET \
     -H 'Accept: application/json' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
   "code": 200,
   "message": "API 요청이 성공했습니다."
@@ -1055,13 +1061,13 @@ curl 'http://localhost:8080/health' -i -X GET \
 ### 2. 유저 전체 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
   "code": 200,
   "message": "API 요청이 성공했습니다.",
@@ -1076,14 +1082,14 @@ curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
 ### 3. 초기화
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/init' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"seed":123,"quantity":10}' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
   "code": 200,
   "message": "API 요청이 성공했습니다."
@@ -1094,13 +1100,13 @@ curl 'http://localhost:8080/init' -i -X POST \
 ### 4. 유저 전체 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
    "code": 200,
    "message": "API 요청이 성공했습니다.",
@@ -1144,7 +1150,7 @@ curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
 ### 5. 방 전체 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room?page=0&size=10' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
@@ -1166,7 +1172,7 @@ curl 'http://localhost:8080/room?page=0&size=10' -i -X GET \
 ### 6. 방 생성
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"userId":1,"roomType":"SINGLE","title":"첫번째 테스트 방"}' -w "\n"
@@ -1183,7 +1189,7 @@ curl 'http://localhost:8080/room' -i -X POST \
 ### 7. 방 전체 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room?page=0&size=10' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
@@ -1212,7 +1218,7 @@ curl 'http://localhost:8080/room?page=0&size=10' -i -X GET \
 ### 8. 방 상세 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room/1' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
@@ -1237,7 +1243,7 @@ curl 'http://localhost:8080/room/1' -i -X GET \
 ### 9. 방 참가
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room/attention/1' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"userId":2}' -w "\n"
@@ -1255,7 +1261,7 @@ curl 'http://localhost:8080/room/attention/1' -i -X POST \
 - 방의 인원을 초과해서 참가하는 경우, 잘못된 요청으로 처리합니다.
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room/attention/1' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"userId":3}' -w "\n"
@@ -1275,13 +1281,13 @@ curl 'http://localhost:8080/room/attention/1' -i -X POST \
 
 ### 1. 헬스체크 API 호출
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/health' -i -X GET \
     -H 'Accept: application/json' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
   "code": 200,
   "message": "API 요청이 성공했습니다."
@@ -1291,13 +1297,13 @@ curl 'http://localhost:8080/health' -i -X GET \
 ### 2. 유저 전체 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
   "code": 200,
   "message": "API 요청이 성공했습니다.",
@@ -1312,14 +1318,14 @@ curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
 ### 3. 초기화
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/init' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"seed":123,"quantity":10}' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
   "code": 200,
   "message": "API 요청이 성공했습니다."
@@ -1330,13 +1336,13 @@ curl 'http://localhost:8080/init' -i -X POST \
 ### 4. 유저 전체 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
    "code": 200,
    "message": "API 요청이 성공했습니다.",
@@ -1380,7 +1386,7 @@ curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
 ### 5. 방 전체 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room?page=0&size=10' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
@@ -1402,7 +1408,7 @@ curl 'http://localhost:8080/room?page=0&size=10' -i -X GET \
 ### 6. 방 생성
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"userId":1,"roomType":"DOUBLE","title":"첫번째 테스트 방"}' -w "\n"
@@ -1419,7 +1425,7 @@ curl 'http://localhost:8080/room' -i -X POST \
 ### 7. 방 전체 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room?page=0&size=10' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
@@ -1448,7 +1454,7 @@ curl 'http://localhost:8080/room?page=0&size=10' -i -X GET \
 ### 8. 방 상세 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room/1' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
@@ -1473,12 +1479,12 @@ curl 'http://localhost:8080/room/1' -i -X GET \
 ### 9. 방 참가
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room/attention/1' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"userId":2}' -w "\n"
 ```
-```bash
+``` bash
 curl 'http://localhost:8080/room/attention/1' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"userId":3}' -w "\n"
@@ -1502,7 +1508,7 @@ curl 'http://localhost:8080/room/attention/1' -i -X POST \
 ### 10. 팀 변경
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/team/1' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"userId":2}' -w "\n"
@@ -1519,7 +1525,7 @@ curl 'http://localhost:8080/team/1' -i -X PUT \
 ### 11. 방 참가
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room/attention/1' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"userId":4}' -w "\n"
@@ -1538,7 +1544,7 @@ curl 'http://localhost:8080/room/attention/1' -i -X POST \
 - 게임 시작은 해당 방의 호스트만 시작 할 수 있습니다.
 #### 호스트가 아닌 유저가 게임 시작을 요청하는 경우
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room/start/1' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"userId":2}' -w "\n"
@@ -1554,7 +1560,7 @@ curl 'http://localhost:8080/room/start/1' -i -X PUT \
 
 #### 호스트가 게임 시작할 경우
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room/start/1' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"userId":1}' -w "\n"
@@ -1571,16 +1577,17 @@ curl 'http://localhost:8080/room/start/1' -i -X PUT \
 
 ### 5️⃣ 5번 작동 시나리오  
 
+---
 
 ### 1. 헬스체크 API 호출
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/health' -i -X GET \
     -H 'Accept: application/json' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
   "code": 200,
   "message": "API 요청이 성공했습니다."
@@ -1590,13 +1597,13 @@ curl 'http://localhost:8080/health' -i -X GET \
 ### 2. 유저 전체 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
   "code": 200,
   "message": "API 요청이 성공했습니다.",
@@ -1611,14 +1618,14 @@ curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
 ### 3. 초기화
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/init' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"seed":123,"quantity":10}' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
   "code": 200,
   "message": "API 요청이 성공했습니다."
@@ -1629,13 +1636,13 @@ curl 'http://localhost:8080/init' -i -X POST \
 ### 4. 유저 전체 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
 
 > Response
-```json
+``` json
 {
    "code": 200,
    "message": "API 요청이 성공했습니다.",
@@ -1679,7 +1686,7 @@ curl 'http://localhost:8080/user?page=0&size=10' -i -X GET \
 ### 5. 방 전체 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room?page=0&size=10' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
@@ -1701,7 +1708,7 @@ curl 'http://localhost:8080/room?page=0&size=10' -i -X GET \
 ### 6. 방 생성
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"userId":1,"roomType":"SINGLE","title":"첫번째 테스트 방"}' -w "\n"
@@ -1718,7 +1725,7 @@ curl 'http://localhost:8080/room' -i -X POST \
 ### 7. 방 전체 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room?page=0&size=10' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
@@ -1747,7 +1754,7 @@ curl 'http://localhost:8080/room?page=0&size=10' -i -X GET \
 ### 8. 방 상세 조회
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room/1' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
@@ -1772,7 +1779,7 @@ curl 'http://localhost:8080/room/1' -i -X GET \
 ### 9. 방 참가
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room/attention/1' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"userId":2}' -w "\n"
@@ -1789,7 +1796,7 @@ curl 'http://localhost:8080/room/attention/1' -i -X POST \
 ### 10. 방 나가기
 - 일반 유저가 방을 나갈 경우
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room/out/1' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"userId":2}' -w "\n"
@@ -1806,7 +1813,7 @@ curl 'http://localhost:8080/room/out/1' -i -X POST \
 ### 11. 방 참가
 
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room/attention/1' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"userId":3}' -w "\n"
@@ -1824,7 +1831,7 @@ curl 'http://localhost:8080/room/attention/1' -i -X POST \
  
 #### 호스트가 방을 나갈 경우
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room/out/1' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{"userId":1}' -w "\n"
@@ -1840,7 +1847,7 @@ curl 'http://localhost:8080/room/out/1' -i -X POST \
 
 #### 방 상세 조회
 > Request
-```bash
+``` bash
 curl 'http://localhost:8080/room/1' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' -w "\n"
 ```
