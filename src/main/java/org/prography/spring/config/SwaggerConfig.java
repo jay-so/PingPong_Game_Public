@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
         info = @Info(
-                title = "Prography API 명세서(소재훈)",
-                description = "프로그라피 9기 백엔드 과제 API 명세서입니다.",
+                title = "탁구 게임 서비스 API 명세서",
+                description = " 탁구 게임 명세서입니다.",
                 version = "v1"
         )
 )
