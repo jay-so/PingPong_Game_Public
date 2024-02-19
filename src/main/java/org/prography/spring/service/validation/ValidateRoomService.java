@@ -111,4 +111,14 @@ public class ValidateRoomService {
     public boolean validateUserIsRoomHost(Room room, Long userId) {
         return room.getHost().getId().equals(userId);
     }
+
+    public void validateHostExitRoom(Room room) {
+        room.exitRoom();
+        roomRepository.save(room);
+        userRoomRepository.deleteByRoomId_Id(room.getId());
+    }
+
+    public void validateUserExitRoom(Long userId, Long roomId) {
+        userRoomRepository.deleteByUserId_IdAndRoomId_Id(userId, roomId);
+    }
 }

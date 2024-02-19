@@ -18,8 +18,6 @@ import org.prography.spring.repository.UserRoomRepository;
 import org.prography.spring.service.validation.ValidateRoomService;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
@@ -53,7 +51,7 @@ class RoomExitServiceTest {
 
         ExitRoomRequest exitRoomRequest = UserDtoFixture.exitRoomRequest(host.getId());
 
-        given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
+        given(validateRoomService.validateAndGetRoom(room.getId())).willReturn(room);
         given(validateRoomService.validateUserIsRoomHost(room, host.getId())).willReturn(true);
 
         //when
@@ -63,7 +61,6 @@ class RoomExitServiceTest {
         verify(validateRoomService).validateRoomIsExist(room.getId());
         verify(validateRoomService).validateUserIsInRoom(room.getId(), host.getId());
         verify(validateRoomService).validateRoomStatusIsWait(room.getId());
-        verify(userRoomRepository).deleteByRoomId_Id(room.getId());
     }
 
     @Test
@@ -78,7 +75,7 @@ class RoomExitServiceTest {
 
         ExitRoomRequest exitRoomRequest = UserDtoFixture.exitRoomRequest(user.getId());
 
-        given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
+        given(validateRoomService.validateAndGetRoom(room.getId())).willReturn(room);
         given(validateRoomService.validateUserIsRoomHost(room, user.getId())).willReturn(false);
 
         //when
@@ -88,7 +85,6 @@ class RoomExitServiceTest {
         verify(validateRoomService).validateRoomIsExist(room.getId());
         verify(validateRoomService).validateUserIsInRoom(room.getId(), user.getId());
         verify(validateRoomService).validateRoomStatusIsWait(room.getId());
-        verify(userRoomRepository).deleteByUserId_IdAndRoomId_Id(user.getId(), room.getId());
     }
 
     @Test

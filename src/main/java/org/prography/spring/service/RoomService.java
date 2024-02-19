@@ -17,7 +17,6 @@ import org.prography.spring.dto.response.RoomDetailResponse;
 import org.prography.spring.dto.response.RoomListResponse;
 import org.prography.spring.dto.response.RoomResponse;
 import org.prography.spring.repository.RoomRepository;
-import org.prography.spring.repository.UserRepository;
 import org.prography.spring.repository.UserRoomRepository;
 import org.prography.spring.service.validation.ValidateRoomService;
 import org.springframework.data.domain.Page;
@@ -40,7 +39,6 @@ import static org.prography.spring.domain.enums.TeamStatus.RED;
 public class RoomService {
 
     private final RoomRepository roomRepository;
-    private final UserRepository userRepository;
     private final UserRoomRepository userRoomRepository;
     private final ValidateRoomService validateRoomService;
 
@@ -79,8 +77,7 @@ public class RoomService {
     }
 
     public RoomDetailResponse findRoomById(Long roomId) {
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new BussinessException(BAD_REQUEST));
+        Room room = validateRoomService.validateAndGetRoom(roomId);
 
         return RoomDetailResponse.of(room);
     }
@@ -95,12 +92,8 @@ public class RoomService {
         validateRoomService.validateUserIsParticipate(userId);
         validateRoomService.validateMaxUserCount(roomId);
 
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new BussinessException(BAD_REQUEST));
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BussinessException(BAD_REQUEST));
-
+        Room room = validateRoomService.validateAndGetRoom(roomId);
+        User user = validateRoomService.validateUserIsExist(userId);
         TeamStatus teamStatus = initTeamStatus(room, userRoomRepository.findByRoomId_Id(roomId));
 
         UserRoom userRoom = UserRoom.builder()
@@ -120,24 +113,14 @@ public class RoomService {
         validateRoomService.validateUserIsInRoom(roomId, userId);
         validateRoomService.validateRoomStatusIsWait(roomId);
 
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new BussinessException(BAD_REQUEST));
+        Room room = validateRoomService.validateAndGetRoom(roomId);
 
         if (validateRoomService.validateUserIsRoomHost(room, userId)) {
-            hostExitRoom(room);
+            validateRoomService.validateHostExitRoom(room);
         } else {
-            userExitRoom(userId, roomId);
+
+            validateRoomService.validateUserExitRoom(roomId, userId);
         }
-    }
-
-    private void hostExitRoom(Room room) {
-        room.exitRoom();
-        roomRepository.save(room);
-        userRoomRepository.deleteByRoomId_Id(room.getId());
-    }
-
-    private void userExitRoom(Long userId, Long roomId) {
-        userRoomRepository.deleteByUserId_IdAndRoomId_Id(userId, roomId);
     }
 
     @Transactional
@@ -149,9 +132,7 @@ public class RoomService {
         validateRoomService.validateHostOfRoom(roomId, userId);
         validateRoomService.validateRoomIsFull(roomId);
 
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new BussinessException(BAD_REQUEST));
-
+        Room room = validateRoomService.validateAndGetRoom(roomId);
         room.startGame();
         roomRepository.save(room);
 

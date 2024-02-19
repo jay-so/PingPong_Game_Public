@@ -21,7 +21,6 @@ import org.prography.spring.service.validation.ValidateRoomService;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
@@ -62,16 +61,14 @@ class RoomAttentionServiceTest {
 
         AttentionUserRequest attentionUserRequest = UserDtoFixture.attentionUserRequest(guest.getId());
 
-        given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
-        given(userRepository.findById(guest.getId())).willReturn(Optional.of(guest));
+        given(validateRoomService.validateAndGetRoom(room.getId())).willReturn(room);
+        given(validateRoomService.validateUserIsExist(guest.getId())).willReturn(guest);
         given(userRoomRepository.findByRoomId_Id(room.getId())).willReturn(new ArrayList<>());
 
         //when
         roomService.attentionRoomById(room.getId(), attentionUserRequest);
 
         //then
-        verify(roomRepository).findById(room.getId());
-        verify(userRepository).findById(guest.getId());
         verify(validateRoomService).validateRoomIsExist(room.getId());
         verify(validateRoomService).validateRoomStatusIsWait(room.getId());
         verify(validateRoomService).validateUserStatusIsActive(guest.getId());

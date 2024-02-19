@@ -13,15 +13,16 @@ import org.prography.spring.dto.response.RoomDetailResponse;
 import org.prography.spring.fixture.domain.RoomFixture;
 import org.prography.spring.fixture.domain.UserFixture;
 import org.prography.spring.repository.RoomRepository;
+import org.prography.spring.service.validation.ValidateRoomService;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.prography.spring.common.ApiResponseCode.BAD_REQUEST;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,6 +30,9 @@ class RoomFindDetailServiceTest {
 
     @Mock
     private RoomRepository roomRepository;
+
+    @Mock
+    private ValidateRoomService validateRoomService;
 
     @InjectMocks
     private RoomService roomService;
@@ -42,7 +46,7 @@ class RoomFindDetailServiceTest {
 
         RoomDetailResponse expectRoomDetailResponse = RoomDetailResponse.of(room);
 
-        given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
+        given(validateRoomService.validateAndGetRoom(room.getId())).willReturn(room);
 
         //when
         RoomDetailResponse actualResponse = roomService.findRoomById(room.getId());
@@ -74,7 +78,8 @@ class RoomFindDetailServiceTest {
         Long notExistRoomId = 99L;
         UserFixture.userBuild(1L);
 
-        given(roomRepository.findById(notExistRoomId)).willReturn(Optional.empty());
+        willThrow(new BussinessException(BAD_REQUEST))
+                .given(validateRoomService).validateAndGetRoom(notExistRoomId);
 
         //when & then
         assertThatThrownBy(() -> roomService.findRoomById(notExistRoomId))

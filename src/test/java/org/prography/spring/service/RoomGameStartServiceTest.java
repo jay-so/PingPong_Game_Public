@@ -17,8 +17,6 @@ import org.prography.spring.repository.RoomRepository;
 import org.prography.spring.service.validation.ValidateRoomService;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
@@ -52,7 +50,7 @@ class RoomGameStartServiceTest {
 
         StartGameRequest gameRequest = UserDtoFixture.startGameRequest(user.getId());
 
-        given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
+        given(validateRoomService.validateAndGetRoom(room.getId())).willReturn(room);
 
         //when
         roomService.startGameById(room.getId(), gameRequest);
@@ -81,7 +79,7 @@ class RoomGameStartServiceTest {
 
         StartGameRequest gameRequest = UserDtoFixture.startGameRequest(host.getId());
 
-        given(roomRepository.findById(room.getId())).willReturn(Optional.of(room));
+        given(validateRoomService.validateAndGetRoom(room.getId())).willReturn(room);
 
         // when
         roomService.startGameById(room.getId(), gameRequest);
